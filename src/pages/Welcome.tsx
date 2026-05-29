@@ -14,18 +14,18 @@ import { cn } from "@/lib/utils";
 const SLIDES = [
   {
     icon: Brain,
-    title: "Habits stick when they're easy to start",
-    body: "Behavioural science is clear: tiny, repeatable actions beat willpower. Make the bar low, show up daily, and the habit builds itself.",
+    title: "Small habits, big results",
+    body: "Tiny daily actions beat willpower. Lower the bar, show up consistently, and watch habits build themselves.",
   },
   {
     icon: Sparkles,
-    title: "Rewards rewire the loop",
-    body: "Pairing a habit with an immediate reward is how your brain learns to crave the next rep. Make the reward real and the loop closes faster.",
+    title: "Reward the effort",
+    body: "Pairing a habit with an instant reward trains your brain to crave the next win. Close the loop, repeat.",
   },
   {
     icon: Coins,
-    title: "Here's how Habit Rewards works",
-    body: "Log a habit → it adds to your reward pot → cash out when you're ready. You decide what each habit is worth.",
+    title: "How it works",
+    body: "Log a habit → grow your pot → cash out anytime. You set the value for every win.",
   },
 ];
 
