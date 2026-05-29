@@ -6,12 +6,16 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsPro } from "@/hooks/usePro";
+import { ManageActivities } from "@/components/ManageActivities";
+import { ProInterestCard } from "@/components/ProInterestCard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { data: isPro, isLoading: proLoading } = useIsPro();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
@@ -100,6 +104,18 @@ const Settings = () => {
             </Button>
           </form>
         </Card>
+
+        <div className="mt-6">
+          {proLoading ? (
+            <Card className="p-6 border-border/50 shadow-xl">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </Card>
+          ) : isPro ? (
+            <ManageActivities />
+          ) : (
+            <ProInterestCard />
+          )}
+        </div>
       </div>
     </div>
   );

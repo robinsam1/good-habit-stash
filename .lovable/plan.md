@@ -1,74 +1,54 @@
-# Multi-tenant Habit Rewards
+## Goal
 
-## 1. Data model changes (wipe & rebuild)
+Ship the "Habit Rewards Pro" customisation UI now, gated to your own account so you can dogfood it. Everyone else sees a "Register interest" CTA, and those signups are stored for re-engagement once payments are live.
 
-Wipe existing rows in `log`, `activity_values`, `activities`. Add ownership and currency:
+## Access model (interim)
 
-- `activities`: add `user_id uuid not null`. Index on `user_id`.
-- `activity_values`: unchanged structure, lifecycle scoped by parent activity's user_id.
-- `log`: add `user_id uuid not null`, default `auth.uid()`.
-- New `profiles` table: `user_id uuid primary key`, `region_code text not null` (e.g. `GB`, `US`, `IN`), `currency_code text not null` (e.g. `GBP`), `created_at`.
-- Trigger `handle_new_user()` on `auth.users` insert → creates profile from signup metadata (region, currency), then seeds the default activities + their `activity_values` rows (value = 1 unit in user's currency, stored in smallest integer unit).
+- A new SQL helper `public.is_pro(uid uuid)` returns `true` if the user's email matches an allowlist. For now the allowlist is a single hard-coded email: `samuel.robinson@mail.mcgill.ca` (looked up via `auth.users.email`).
+- When you wire up Paddle later, `is_pro` swaps to read from a `subscribers` table — call sites don't change.
 
-### RLS rewrite
-All policies switch from "any authenticated" to `user_id = auth.uid()`:
-- `activities`, `activity_values` (joined via activity), `log`, `profiles` — full CRUD scoped to owner.
-- Update RPCs (`mark_unpaid_as_paid`, `soft_delete_log_entry`, `update_log_activity`, `update_log_notes`) to scope by `auth.uid()`.
+## Database changes (one migration)
 
-### Default activity seed (per new user)
-Sleep – Get up early · Sleep – Go to bed on time · Exercise – 30 minutes of exercise · Exercise – 1 hour walking · Habits – Make bed · Habits – Do laundry · Habits – Clean room · Eating – Cook your meal · Eating – Drink 2L water · Finances – Skip big purchase · Finances – Save {SYMBOL}10 · Mind – 10 minutes meditation · Mind – Read 20 pages
+1. **`is_pro(uid uuid)` SECURITY DEFINER function** — returns true if `auth.users.email = 'samuel.robinson@mail.mcgill.ca'`.
+2. **RPCs** (all SECURITY DEFINER, all check `is_pro(auth.uid())`, else raise):
+   - `create_activity(name text, value bigint) → bigint`
+   - `update_activity(activity_id bigint, name text, value bigint, active boolean)` — if value differs from latest `activity_values`, insert a new row (preserves history).
+   - `delete_activity(activity_id bigint)` — soft delete via `active = false`.
+3. **`pro_interest` table** — capture leads:
+   ```text
+   pro_interest
+     id bigint PK
+     user_id uuid (auth.uid, unique)
+     email text
+     created_at timestamptz
+     notified_at timestamptz null   -- for later outreach
+   ```
+   RLS: user can INSERT and SELECT their own row; service_role full access. Grants for `authenticated` + `service_role` only.
+4. Keep existing `activities` / `activity_values` RLS as-is (owner CRUD). The Pro check lives in the RPCs the UI calls — non-Pro users simply won't see the UI, and writes go via RPC. (If you want a hard server-side block on direct table writes later, we can tighten then.)
 
-All seeded at value = 1 unit in user's currency.
+## Frontend changes
 
-## 2. Currency / region
+- **`src/hooks/useIsPro.ts`** — calls `is_pro(auth.uid())` via `supabase.rpc`. Cached with react-query.
+- **`src/hooks/useInterest.ts`** — read + register interest in `pro_interest`.
+- **`src/pages/Settings.tsx`** — new "Habit Rewards Pro" section:
+  - If `isPro` → render `<ManageActivities />`.
+  - Else → render `<ProInterestCard />` with value prop ("Add your own habits, set custom rewards, rename or remove any activity"), a single "Register interest" button. After click → success state ("We'll email you when Pro launches"). Idempotent.
+- **`src/components/ManageActivities.tsx`** — list of all owned activities (active + inactive) with:
+  - Inline edit (name + value).
+  - Active toggle.
+  - "Add activity" button → dialog with name + value inputs (defaults to `currency_unit_amount`).
+  - "Delete" → soft delete (sets active=false). Show inactive in a collapsed section so they can be re-enabled.
+  - Mobile-friendly (drawer for add/edit on small screens, dialog on desktop).
+- **`src/components/ProInterestCard.tsx`** — value prop + CTA.
 
-New `src/lib/regions.ts`: dictionary of the 50 most populous countries → `{ code, name, currencyCode, currencySymbol, locale, minorUnitDigits }` (e.g. JPY/KRW have 0 minor digits).
+## Build order
 
-New `src/hooks/useProfile.ts`: fetches current user's profile, exposes `currency` + `formatMoney(minorUnits)` using `Intl.NumberFormat(locale, { style: 'currency', currency })`. Replace all hard-coded `£`/pence formatting in `TotalDisplay`, `LogEntry`, `History`, etc.
+1. Migration: `is_pro`, the 3 RPCs, `pro_interest` table + RLS + grants.
+2. `useIsPro` + `useInterest` hooks.
+3. `ProInterestCard` + `ManageActivities` components.
+4. Wire both into `Settings.tsx` under a new section.
+5. Smoke test on your account (should see ManageActivities) and on a second account (should see interest CTA, row appears in `pro_interest`).
 
-## 3. First-run experience
+## Open questions
 
-New `/welcome` route — 3-slide carousel (embla, already in shadcn):
-1. **Habits stick when they're easy to start.** Behavioural science: tiny, repeatable actions beat willpower.
-2. **Rewards rewire the loop.** Pairing a habit with an immediate reward makes your brain crave the next rep.
-3. **Here's how it works.** Log a habit → it adds to your reward pot → cash out when you're ready.
-
-Primary CTA "Get started" → `/signup`; secondary "I already have an account" → `/auth`.
-
-Unauthenticated visitors landing on `/` redirect to `/welcome`. Signed-in users skip the FRE.
-
-## 4. Auth flow (email + password only)
-
-- `/signup`: email, password, region `<Select>` (searchable, 50 countries). Validates with zod. `supabase.auth.signUp({ email, password, options: { data: { region_code, currency_code } }})`. Trigger reads metadata to create the profile + seed activities.
-- `/auth` (login): email + password.
-- Drop the existing `username@app.local` hack in `useAuth`; real emails now.
-- Open public signup, email confirmation **off**.
-
-## 5. Routing & gating
-
-```
-/welcome  → FRE carousel (public)
-/signup   → signup form (public)
-/auth     → login (public)
-/         → app home (auth required; otherwise → /welcome)
-/history  → auth required
-```
-
-`<AuthGate>` wrapper redirects unauthenticated users to `/welcome`.
-
-## 6. UI/branding
-
-Keep existing Monzo-style system. Polished gradient hero for FRE carousel + signup, reusing navy/orange tokens.
-
-## 7. Out of scope
-
-- No FX conversion — each account locked to signup region's currency.
-- No data migration — existing samuel999 account and logs are wiped.
-- No admin/role system.
-
-## Technical notes
-
-- Currency stored as smallest integer unit; `regions.ts` carries `minorUnitDigits` and `formatMoney` respects it.
-- Trigger seeding: one `INSERT ... SELECT FROM (VALUES ...)` for activities, then `INSERT ... SELECT` for activity_values referencing the new activity ids.
-- RPCs stay `SECURITY INVOKER` so RLS enforces tenancy automatically.
-- Memory: drop "single-user samuel999" rule and add multi-tenant + per-user currency rules after build.
+None — proceeding with the email above as the sole allowlist entry. When Paddle is enabled later, the only change is swapping `is_pro`'s implementation.
