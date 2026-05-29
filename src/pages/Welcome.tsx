@@ -25,7 +25,7 @@ const SLIDES = [
   {
     icon: Coins,
     title: "How it works",
-    body: "Log a habit → grow your pot → cash out anytime. You set the value for every win.",
+    body: "Log a habit → grow your pot → move it to savings anytime. Real money, in your own savings pot — you transfer it yourself.",
   },
 ];
 

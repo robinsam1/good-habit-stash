@@ -126,7 +126,7 @@ const Index = () => {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-lg font-semibold text-foreground">
-              Pending Habits
+              Logged Today
             </h2>
             <Link to="/history">
               <Button variant="ghost" size="sm" className="text-muted-foreground">
