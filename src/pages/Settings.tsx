@@ -15,6 +15,7 @@ import { toast } from "sonner";
 const Settings = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { data: isPro, isLoading: proLoading } = useIsPro();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
