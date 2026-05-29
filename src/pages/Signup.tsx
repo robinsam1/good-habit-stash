@@ -81,7 +81,7 @@ const Signup = () => {
     setSubmitting(false);
 
     if (error) {
-      toast.error("Couldn't create account", { description: error.message });
+      toast.error("Couldn't create account", { description: "Please check your details and try again." });
       return;
     }
     toast.success("Welcome! 🎉");

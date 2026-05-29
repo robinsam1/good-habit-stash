@@ -24,8 +24,8 @@ const Settings = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    if (password.length < 8 || password.length > 100) {
+      toast.error("Password must be 8-100 characters");
       return;
     }
     if (password !== confirm) {
@@ -79,7 +79,7 @@ const Settings = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 6 characters"
+                placeholder="At least 8 characters"
                 autoComplete="new-password"
                 className="text-base"
               />
