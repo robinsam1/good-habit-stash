@@ -1,16 +1,18 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { History, LogOut, Loader2 } from "lucide-react";
+import { History, LogOut, Loader2, Sparkles } from "lucide-react";
 import { TotalDisplay } from "@/components/TotalDisplay";
 import { ActivityPicker } from "@/components/ActivityPicker";
 import { ActivityLog } from "@/components/ActivityLog";
 import { MarkAsPaidButton } from "@/components/MarkAsPaidButton";
+import { FloatingDecor } from "@/components/FloatingDecor";
 import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -81,8 +83,14 @@ const Index = () => {
   }
   
   return (
-    <div className="min-h-screen">
-      <div className="max-w-lg mx-auto px-4 py-8 sm:py-12">
+    <div className="min-h-screen relative overflow-hidden">
+      <FloatingDecor />
+
+      {/* Soft gradient blobs */}
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
+      <div className="absolute bottom-40 right-1/4 w-56 h-56 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
+
+      <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 relative">
           <Button
@@ -94,8 +102,11 @@ const Index = () => {
           >
             <LogOut className="h-4 w-4" />
           </Button>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
+            <Sparkles className="h-7 w-7 text-primary-foreground" />
+          </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2 tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent animate-shimmer">
               Habit Rewards
             </span>
           </h1>
@@ -103,27 +114,30 @@ const Index = () => {
             Track habits, earn rewards ✨
           </p>
         </header>
-        
+
         {/* Total Display */}
-        <div className="mb-10">
-          <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
-        </div>
-        
+        <Card className="mb-10 border-border/50 shadow-xl overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
+          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
+          <div className="py-8 px-4">
+            <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
+          </div>
+        </Card>
+
         {/* Activity Picker */}
-        <div className="mb-8">
-          <ActivityPicker 
-            onSelect={handleSelectActivity} 
+        <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+          <ActivityPicker
+            onSelect={handleSelectActivity}
             isLogging={isPending}
           />
         </div>
-        
+
         {/* Mark as Paid Button */}
-        <div className="mb-8">
+        <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
           <MarkAsPaidButton />
         </div>
-        
+
         {/* Activity Log */}
-        <div>
+        <div className="animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-lg font-semibold text-foreground">
               Logged Today

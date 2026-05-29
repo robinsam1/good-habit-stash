@@ -5,9 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Loader2, LogIn, ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2, LogIn, ArrowLeft, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingDecor } from "@/components/FloatingDecor";
 
 const schema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -62,30 +63,38 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden">
+      <FloatingDecor />
+
+      {/* Soft gradient blobs */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-72 h-72 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-56 h-56 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
+
+      <div className="w-full max-w-sm relative z-10">
         <Link to="/welcome">
           <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </Link>
+
         <header className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
+            <Sparkles className="h-7 w-7 text-primary-foreground" />
+          </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-              Habit Rewards
+              Welcome back
             </span>
           </h1>
-          <p className="text-muted-foreground mt-2">Track habits, earn rewards ✨</p>
+          <p className="text-muted-foreground mt-2">Pick up where you left off.</p>
         </header>
 
-        <Card className="border-border/50 shadow-lg">
-          <CardHeader className="pb-4">
-            <h2 className="font-display text-xl font-semibold text-center">Sign In</h2>
-          </CardHeader>
-          <CardContent>
+        <Card className="border-border/50 shadow-xl overflow-hidden">
+          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
+          <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -100,7 +109,7 @@ const Auth = () => {
                 {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
@@ -115,7 +124,12 @@ const Auth = () => {
                 {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
 
-              <Button type="submit" className="w-full h-12" disabled={submitting}>
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity animate-slide-up"
+                style={{ animationDelay: "0.15s", animationFillMode: "both" }}
+                disabled={submitting}
+              >
                 {submitting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
