@@ -139,7 +139,7 @@ const Signup = () => {
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
-              Join Habit Rewards
+              Join Habit Visor
             </span>
           </h1>
           <p className="text-muted-foreground mt-2">Start turning habits into wins.</p>
