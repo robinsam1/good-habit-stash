@@ -83,7 +83,7 @@ const Auth = () => {
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent animate-shimmer">
               Welcome back
             </span>
           </h1>
