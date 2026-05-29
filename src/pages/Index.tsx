@@ -9,7 +9,7 @@ import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { formatPoundsShort } from "@/components/TotalDisplay";
+import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
