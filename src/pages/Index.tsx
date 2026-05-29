@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { History, LogOut, Loader2, Sparkles } from "lucide-react";
+import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon } from "lucide-react";
 import { TotalDisplay } from "@/components/TotalDisplay";
 import { ActivityPicker } from "@/components/ActivityPicker";
 import { ActivityLog } from "@/components/ActivityLog";
