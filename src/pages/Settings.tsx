@@ -6,6 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsPro } from "@/hooks/usePro";
+import { ManageActivities } from "@/components/ManageActivities";
+import { ProInterestCard } from "@/components/ProInterestCard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
