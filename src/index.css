@@ -229,7 +229,7 @@
 
 .animate-shimmer {
   background-size: 200% auto;
-  animation: shimmer 3s linear infinite;
+  animation: shimmer 30s linear infinite;
 }
 
 @keyframes glow-pulse {
