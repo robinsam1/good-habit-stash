@@ -104,6 +104,18 @@ const Settings = () => {
             </Button>
           </form>
         </Card>
+
+        <div className="mt-6">
+          {proLoading ? (
+            <Card className="p-6 border-border/50 shadow-xl">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </Card>
+          ) : isPro ? (
+            <ManageActivities />
+          ) : (
+            <ProInterestCard />
+          )}
+        </div>
       </div>
     </div>
   );
