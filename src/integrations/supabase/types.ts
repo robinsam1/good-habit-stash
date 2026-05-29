@@ -105,6 +105,30 @@ export type Database = {
           },
         ]
       }
+      pro_interest: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+          notified_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: never
+          notified_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: never
+          notified_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -137,7 +161,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_activity: {
+        Args: { p_name: string; p_value: number }
+        Returns: number
+      }
       currency_unit_amount: { Args: { _currency: string }; Returns: number }
+      delete_activity: { Args: { p_activity_id: number }; Returns: undefined }
+      is_pro: { Args: { _user_id: string }; Returns: boolean }
       mark_unpaid_as_paid: { Args: never; Returns: number }
       soft_delete_log_entry: {
         Args: { p_log_id: number }
@@ -157,6 +187,15 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      update_activity: {
+        Args: {
+          p_active: boolean
+          p_activity_id: number
+          p_name: string
+          p_value: number
+        }
+        Returns: undefined
       }
       update_log_activity: {
         Args: { p_activity_id: number; p_log_id: number }
