@@ -93,15 +93,27 @@ const Index = () => {
       <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="absolute right-0 top-0 text-muted-foreground hover:text-foreground"
-            title="Sign out"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="absolute right-0 top-0 flex items-center gap-1">
+            <Link to="/settings">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+                title="Settings"
+              >
+                <SettingsIcon className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSignOut}
+              className="text-muted-foreground hover:text-foreground"
+              title="Sign out"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
