@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMoney } from "@/hooks/useProfile";
 
 interface TotalDisplayProps {
   total: number;
@@ -10,8 +11,8 @@ interface TotalDisplayProps {
 
 export function TotalDisplay({ total, className, animate, isLoading }: TotalDisplayProps) {
   const isPositive = total >= 0;
-  const formattedTotal = formatPounds(total);
-  
+  const { formatMoney } = useMoney();
+
   return (
     <div className={cn("text-center", className)}>
       <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">
@@ -27,7 +28,7 @@ export function TotalDisplay({ total, className, animate, isLoading }: TotalDisp
             animate && "animate-pulse-success"
           )}
         >
-          {formattedTotal}
+          {formatMoney(total)}
         </div>
       )}
       <p className="text-sm text-muted-foreground mt-2">
@@ -35,16 +36,4 @@ export function TotalDisplay({ total, className, animate, isLoading }: TotalDisp
       </p>
     </div>
   );
-}
-
-export function formatPounds(pence: number): string {
-  const pounds = pence / 100;
-  const sign = pounds >= 0 ? "" : "-";
-  return `${sign}£${Math.abs(pounds).toFixed(2)}`;
-}
-
-export function formatPoundsShort(pence: number): string {
-  const pounds = pence / 100;
-  const sign = pounds >= 0 ? "+" : "";
-  return `${sign}£${pounds.toFixed(2)}`;
 }

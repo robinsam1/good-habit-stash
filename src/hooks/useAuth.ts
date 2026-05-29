@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { Region } from '@/lib/regions';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -8,16 +9,14 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
       }
     );
 
-    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -27,15 +26,26 @@ export function useAuth() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = useCallback(async (username: string, password: string) => {
-    // Convert username to email format for Supabase
-    const email = `${username}@app.local`;
-    
-    const { error } = await supabase.auth.signInWithPassword({
+  const signIn = useCallback(async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error };
+  }, []);
+
+  const signUp = useCallback(async (email: string, password: string, region: Region) => {
+    const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+        data: {
+          region_code: region.code,
+          currency_code: region.currencyCode,
+          currency_symbol: region.currencySymbol,
+          locale: region.locale,
+          minor_unit_digits: region.minorUnitDigits,
+        },
+      },
     });
-    
     return { error };
   }, []);
 
@@ -50,6 +60,7 @@ export function useAuth() {
     isLoading,
     isAuthenticated: !!session,
     signIn,
+    signUp,
     signOut,
   };
 }
