@@ -59,7 +59,7 @@ const Index = () => {
         });
       },
     });
-  }, [logActivity]);
+  }, [logActivity, formatMoneySigned]);
 
   const handleSignOut = useCallback(async () => {
     await signOut();
