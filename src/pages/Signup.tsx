@@ -195,7 +195,7 @@ const Signup = () => {
                 </Select>
                 {errors.region && <p className="text-sm text-destructive">{errors.region}</p>}
                 <p className="text-xs text-muted-foreground">
-                  Sets your currency. You can't change this later.
+                  Sets your currency for all rewards. Choose carefully — this is used throughout the app.
                 </p>
               </div>
 

@@ -25,8 +25,8 @@ export function MarkAsPaidButton() {
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
       onSuccess: () => {
-        toast.success("Marked as paid!", {
-          description: `${formatMoney(total)} transferred to your discretionary spending`,
+        toast.success("Nice — balance reset", {
+          description: `${formatMoney(total)} moved to your savings`,
           icon: <CheckCircle className="h-5 w-5" />,
         });
         setOpen(false);
@@ -51,17 +51,18 @@ export function MarkAsPaidButton() {
           className="w-full h-14 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/25 transition-all hover:shadow-xl hover:shadow-accent/30"
         >
           <Banknote className="h-5 w-5 mr-2" />
-          Mark as Paid
+          Move to savings
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-display text-2xl">
-            Transfer {formatMoney(total)}?
+            Move {formatMoney(total)} to your savings?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
-            This will mark all current habits as paid. Transfer this amount to your 
-            discretionary spending pot in your banking app, then confirm here.
+            You've earned {formatMoney(total)}. Move this into your savings pot in your own
+            banking app, then confirm here to reset your balance. Habit Rewards never touches
+            your money — you're in control.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:gap-0">
@@ -76,7 +77,7 @@ export function MarkAsPaidButton() {
             ) : (
               <CheckCircle className="h-4 w-4 mr-2" />
             )}
-            Confirm Transfer
+            I've moved it ✓
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
