@@ -1,0 +1,1 @@
+UPDATE public.activities SET name = 'Habits - 5x Affirmations about Job Skills and Employability' WHERE name = 'Habits - Daily Affirmations about Skills';
