@@ -61,7 +61,7 @@ export function MarkAsPaidButton() {
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
             You've earned {formatMoney(total)}. Move this into your savings pot in your own
-            banking app, then confirm here to reset your balance. Habit Rewards never touches
+            banking app, then confirm here to reset your balance. Habit Visor never touches
             your money — you're in control.
           </AlertDialogDescription>
         </AlertDialogHeader>

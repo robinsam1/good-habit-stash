@@ -107,7 +107,7 @@ const Index = () => {
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2 tracking-tight">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
-              Habit Rewards
+              Habit Visor
             </span>
           </h1>
           <p className="text-muted-foreground text-lg font-medium tracking-wide">
