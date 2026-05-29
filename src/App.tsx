@@ -8,6 +8,7 @@ import History from "./pages/History";
 import Auth from "./pages/Auth";
 import Welcome from "./pages/Welcome";
 import Signup from "./pages/Signup";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
