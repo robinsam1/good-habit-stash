@@ -277,3 +277,7 @@
 .animate-scale-bounce {
   animation: scale-bounce 0.5s ease-out forwards;
 }
+
+#lovable-badge {
+  display: none !important;
+}
