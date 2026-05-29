@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { formatPoundsShort } from "./TotalDisplay";
+import { useMoney } from "@/hooks/useProfile";
 import { format } from "date-fns";
 import { MessageSquare, X, Check, Loader2, Trash2, Pencil, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,7 @@ export function LogEntry({ id, activityId, activityName, value, date, notes, isN
   const { mutate: updateActivity, isPending: isUpdatingActivity } = useUpdateLogActivity();
   const { data: activities } = useActivityValues();
   const isMobile = useIsMobile();
+  const { formatMoneySigned } = useMoney();
   
   // Sync local state when notes prop changes (after successful save)
   useEffect(() => {
@@ -187,7 +188,7 @@ export function LogEntry({ id, activityId, activityName, value, date, notes, isN
               isPositive ? "text-positive" : "text-negative"
             )}
           >
-            {formatPoundsShort(value)}
+            {formatMoneySigned(value)}
           </span>
           {showNoteButton && !isEditingNote && (
             <Button

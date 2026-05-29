@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { usePaidLog } from "@/hooks/useHabits";
 import { useAuth } from "@/hooks/useAuth";
+import { useMoney } from "@/hooks/useProfile";
 import { LogEntry } from "@/components/LogEntry";
 import { format, parseISO } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,11 +13,12 @@ const History = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: logEntries, isLoading } = usePaidLog();
+  const { formatMoney } = useMoney();
   
   // Redirect to auth if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      navigate('/auth', { replace: true });
+      navigate('/welcome', { replace: true });
     }
   }, [isAuthenticated, authLoading, navigate]);
   
@@ -89,7 +91,7 @@ const History = () => {
                       </p>
                     </div>
                     <span className="font-display font-bold text-lg text-primary">
-                      £{(totalValue / 100).toFixed(2)}
+                      {formatMoney(totalValue)}
                     </span>
                   </div>
                   <div className="p-2 space-y-2">

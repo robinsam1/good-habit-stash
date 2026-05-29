@@ -13,19 +13,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
-import { formatPounds } from "./TotalDisplay";
+import { useMoney } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
 export function MarkAsPaidButton() {
   const [open, setOpen] = useState(false);
   const total = useRunningTotal();
   const { mutate: markAsPaid, isPending } = useMarkAsPaid();
+  const { formatMoney } = useMoney();
   
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
       onSuccess: () => {
         toast.success("Marked as paid!", {
-          description: `${formatPounds(total)} transferred to your discretionary spending`,
+          description: `${formatMoney(total)} transferred to your discretionary spending`,
           icon: <CheckCircle className="h-5 w-5" />,
         });
         setOpen(false);
@@ -56,7 +57,7 @@ export function MarkAsPaidButton() {
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-display text-2xl">
-            Transfer {formatPounds(total)}?
+            Transfer {formatMoney(total)}?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
             This will mark all current habits as paid. Transfer this amount to your 

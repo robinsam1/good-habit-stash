@@ -9,7 +9,7 @@ import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { formatPoundsShort } from "@/components/TotalDisplay";
+import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
@@ -17,11 +17,12 @@ const Index = () => {
   const { isAuthenticated, isLoading: authLoading, signOut } = useAuth();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [animateTotal, setAnimateTotal] = useState(false);
+  const { formatMoneySigned } = useMoney();
   
-  // Redirect to auth if not authenticated
+  // Redirect to welcome if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      navigate('/auth', { replace: true });
+      navigate('/welcome', { replace: true });
     }
   }, [isAuthenticated, authLoading, navigate]);
   
@@ -42,7 +43,7 @@ const Index = () => {
         toast.success(
           isPositive ? "Great job! 🎉" : "Logged",
           {
-            description: `${entry.activity?.name}: ${formatPoundsShort(entry.value)}`,
+            description: `${entry.activity?.name}: ${formatMoneySigned(entry.value)}`,
           }
         );
         
@@ -58,7 +59,7 @@ const Index = () => {
         });
       },
     });
-  }, [logActivity]);
+  }, [logActivity, formatMoneySigned]);
 
   const handleSignOut = useCallback(async () => {
     await signOut();

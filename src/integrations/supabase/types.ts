@@ -19,16 +19,19 @@ export type Database = {
           active: boolean
           id: number
           name: string
+          user_id: string
         }
         Insert: {
           active?: boolean
           id?: number
           name: string
+          user_id: string
         }
         Update: {
           active?: boolean
           id?: number
           name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -69,6 +72,7 @@ export type Database = {
           id: number
           notes: string | null
           paid_out: string | null
+          user_id: string
           value: number
         }
         Insert: {
@@ -78,6 +82,7 @@ export type Database = {
           id?: number
           notes?: string | null
           paid_out?: string | null
+          user_id?: string
           value: number
         }
         Update: {
@@ -87,6 +92,7 @@ export type Database = {
           id?: number
           notes?: string | null
           paid_out?: string | null
+          user_id?: string
           value?: number
         }
         Relationships: [
@@ -99,11 +105,39 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string
+          currency_code: string
+          locale: string
+          minor_unit_digits: number
+          region_code: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency_code: string
+          locale: string
+          minor_unit_digits?: number
+          region_code: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency_code?: string
+          locale?: string
+          minor_unit_digits?: number
+          region_code?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      currency_unit_amount: { Args: { _currency: string }; Returns: number }
       mark_unpaid_as_paid: { Args: never; Returns: number }
       soft_delete_log_entry: {
         Args: { p_log_id: number }
@@ -114,6 +148,7 @@ export type Database = {
           id: number
           notes: string | null
           paid_out: string | null
+          user_id: string
           value: number
         }
         SetofOptions: {
@@ -132,6 +167,7 @@ export type Database = {
           id: number
           notes: string | null
           paid_out: string | null
+          user_id: string
           value: number
         }[]
         SetofOptions: {
@@ -150,6 +186,7 @@ export type Database = {
           id: number
           notes: string | null
           paid_out: string | null
+          user_id: string
           value: number
         }
         SetofOptions: {
