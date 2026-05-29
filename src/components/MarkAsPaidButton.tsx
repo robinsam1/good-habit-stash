@@ -13,13 +13,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
-import { formatPounds } from "./TotalDisplay";
+import { useMoney } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
 export function MarkAsPaidButton() {
   const [open, setOpen] = useState(false);
   const total = useRunningTotal();
   const { mutate: markAsPaid, isPending } = useMarkAsPaid();
+  const { formatMoney } = useMoney();
   
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
