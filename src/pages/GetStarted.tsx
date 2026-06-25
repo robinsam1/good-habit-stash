@@ -124,17 +124,13 @@ const GetStarted = () => {
                   <SelectValue placeholder="Choose your country" />
                 </SelectTrigger>
                 <SelectContent className="max-h-72">
-                  {REGION_GROUPS.map((group) => (
-                    <SelectGroup key={group.label}>
-                      <SelectLabel>{group.label}</SelectLabel>
-                      {group.regions.map((r) => (
-                        <SelectItem key={r.code} value={r.code}>
-                          {r.name} · {r.currencySymbol} {r.currencyCode}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
+                  {REGION_GROUPS.flatMap((group) => group.regions).map((r) => (
+                    <SelectItem key={r.code} value={r.code}>
+                      {r.name} · {r.currencySymbol} {r.currencyCode}
+                    </SelectItem>
                   ))}
                 </SelectContent>
+
               </Select>
             </div>
 
