@@ -6,9 +6,12 @@ import { ActivityPicker } from "@/components/ActivityPicker";
 import { ActivityLog } from "@/components/ActivityLog";
 import { MarkAsPaidButton } from "@/components/MarkAsPaidButton";
 import { FloatingDecor } from "@/components/FloatingDecor";
+import { SaveProgressButton } from "@/components/SaveProgressButton";
+import { OnboardingTour } from "@/components/OnboardingTour";
 import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnonymousLifecycle } from "@/hooks/useAnonymousLifecycle";
 import { toast } from "sonner";
 import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
@@ -16,31 +19,33 @@ import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading: authLoading, signOut } = useAuth();
+  const { isAuthenticated, isAnonymous, isLoading: authLoading, signOut } = useAuth();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [animateTotal, setAnimateTotal] = useState(false);
   const { formatMoneySigned } = useMoney();
-  
+
   // Redirect to welcome if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       navigate('/welcome', { replace: true });
     }
   }, [isAuthenticated, authLoading, navigate]);
-  
+
   // Enable cross-device realtime sync
   useRealtimeSync();
-  
+  // Guest-account lifecycle (1h nudge → /signup, 24h purge → /welcome)
+  useAnonymousLifecycle();
+
   const { isLoading: isLoadingLog } = useUnpaidLog();
   const total = useRunningTotal();
   const { mutate: logActivity, isPending } = useLogActivity();
-  
+
   const handleSelectActivity = useCallback((activityId: number) => {
     logActivity(activityId, {
       onSuccess: (entry) => {
         setNewEntryId(entry.id);
         setAnimateTotal(true);
-        
+
         const isPositive = entry.value >= 0;
         toast.success(
           isPositive ? "Great job! 🎉" : "Logged",
@@ -48,7 +53,7 @@ const Index = () => {
             description: `${entry.activity?.name}: ${formatMoneySigned(entry.value)}`,
           }
         );
-        
+
         // Reset animation states after a delay
         setTimeout(() => {
           setNewEntryId(undefined);
@@ -67,7 +72,7 @@ const Index = () => {
     await signOut();
     toast.success('Signed out');
   }, [signOut]);
-  
+
   // Show loading while checking auth
   if (authLoading) {
     return (
@@ -76,12 +81,12 @@ const Index = () => {
       </div>
     );
   }
-  
+
   // Don't render content if not authenticated (will redirect)
   if (!isAuthenticated) {
     return null;
   }
-  
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <FloatingDecor />
@@ -93,8 +98,14 @@ const Index = () => {
       <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 relative">
+          {/* Save (guests only) — top-left, mirroring the sign-out CTA */}
+          {isAnonymous && (
+            <div className="absolute left-0 top-0">
+              <SaveProgressButton data-tour="save" />
+            </div>
+          )}
           <div className="absolute right-0 top-0 flex items-center gap-1">
-            <Link to="/tasks">
+            <Link to="/tasks" data-tour="tasks">
               <Button
                 variant="ghost"
                 size="icon"
@@ -114,15 +125,17 @@ const Index = () => {
                 <SettingsIcon className="h-4 w-4" />
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleSignOut}
-              className="text-muted-foreground hover:text-foreground"
-              title="Sign out"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
+            {!isAnonymous && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleSignOut}
+                className="text-muted-foreground hover:text-foreground"
+                title="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            )}
           </div>
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
@@ -138,7 +151,7 @@ const Index = () => {
         </header>
 
         {/* Total Display */}
-        <Card className="mb-10 border-border/50 shadow-xl overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
+        <Card data-tour="total" className="mb-10 border-border/50 shadow-xl overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
           <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
           <div className="py-8 px-4">
             <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
@@ -146,7 +159,7 @@ const Index = () => {
         </Card>
 
         {/* Activity Picker */}
-        <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+        <div data-tour="picker" className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
           <ActivityPicker
             onSelect={handleSelectActivity}
             isLogging={isPending}
@@ -154,7 +167,7 @@ const Index = () => {
         </div>
 
         {/* Mark as Paid Button */}
-        <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+        <div data-tour="mark-paid" className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
           <MarkAsPaidButton />
         </div>
 
@@ -174,6 +187,9 @@ const Index = () => {
           <ActivityLog newEntryId={newEntryId} />
         </div>
       </div>
+
+      {/* Guided tour for new guest users */}
+      <OnboardingTour enabled={isAnonymous} />
     </div>
   );
 };
