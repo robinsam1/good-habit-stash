@@ -32,6 +32,8 @@ const Index = () => {
   const { isAuthenticated, isAnonymous, isLoading: authLoading, signOut } = useAuth();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [animateTotal, setAnimateTotal] = useState(false);
+  const [tourTarget, setTourTarget] = useState<string | null>(null);
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
   const { formatMoneySigned } = useMoney();
 
   // Redirect to welcome if not authenticated
