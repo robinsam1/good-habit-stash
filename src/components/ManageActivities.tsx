@@ -75,8 +75,8 @@ export function ManageActivities() {
       return;
     }
     const parsed = Number(valueInput);
-    if (!Number.isFinite(parsed) || parsed < 0) {
-      toast.error("Enter a valid reward amount");
+    if (!Number.isFinite(parsed)) {
+      toast.error("Enter a valid amount");
       return;
     }
     const minorUnits = Math.round(parsed * factor);
