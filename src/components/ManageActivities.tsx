@@ -236,11 +236,13 @@ export function ManageActivities() {
                 type="number"
                 inputMode="decimal"
                 step={1 / factor}
-                min={0}
                 value={valueInput}
                 onChange={(e) => setValueInput(e.target.value)}
                 className="text-base"
               />
+              <p className="text-xs text-muted-foreground">
+                Use a negative value for habits you want to discourage (e.g. -1).
+              </p>
             </div>
           </div>
           <DialogFooter>
