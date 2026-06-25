@@ -75,8 +75,8 @@ export function ManageActivities() {
       return;
     }
     const parsed = Number(valueInput);
-    if (!Number.isFinite(parsed) || parsed < 0) {
-      toast.error("Enter a valid reward amount");
+    if (!Number.isFinite(parsed)) {
+      toast.error("Enter a valid amount");
       return;
     }
     const minorUnits = Math.round(parsed * factor);
@@ -236,11 +236,13 @@ export function ManageActivities() {
                 type="number"
                 inputMode="decimal"
                 step={1 / factor}
-                min={0}
                 value={valueInput}
                 onChange={(e) => setValueInput(e.target.value)}
                 className="text-base"
               />
+              <p className="text-xs text-muted-foreground">
+                Use a negative value for habits you want to discourage (e.g. -1).
+              </p>
             </div>
           </div>
           <DialogFooter>

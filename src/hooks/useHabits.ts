@@ -91,24 +91,22 @@ export function useLogActivity() {
   
   return useMutation({
     mutationFn: async (activityId: number) => {
-      // Get the latest value for this activity
-      const value = await getLatestActivityValue(activityId);
-      
-      // Insert the log entry
-      const { data, error } = await supabase
-        .from("log")
-        .insert({
-          activity_id: activityId,
-          value: value,
-          date: new Date().toISOString(),
-        })
-        .select(`
-          *,
-          activity:activities(*)
-        `)
-        .single();
-      
+      // Server-side RPC resolves the reward value from activity_values and inserts the log entry.
+      const { data: inserted, error } = await supabase.rpc("log_activity", {
+        p_activity_id: activityId,
+      });
+
       if (error) throw error;
+      if (!inserted) throw new Error("Could not log activity.");
+
+      // Fetch with joined activity for the UI.
+      const { data, error: fetchError } = await supabase
+        .from("log")
+        .select(`*, activity:activities(*)`)
+        .eq("id", (inserted as { id: number }).id)
+        .single();
+
+      if (fetchError) throw fetchError;
       return data as LogEntry & { activity: Activity };
     },
     onSuccess: () => {

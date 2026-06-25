@@ -183,6 +183,25 @@ export type Database = {
       currency_unit_amount: { Args: { _currency: string }; Returns: number }
       delete_activity: { Args: { p_activity_id: number }; Returns: undefined }
       is_pro: { Args: { _user_id: string }; Returns: boolean }
+      log_activity: {
+        Args: { p_activity_id: number }
+        Returns: {
+          activity_id: number
+          date: string
+          deleted_at: string | null
+          id: number
+          notes: string | null
+          paid_out: string | null
+          user_id: string
+          value: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "log"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       mark_unpaid_as_paid: { Args: never; Returns: number }
       soft_delete_log_entry: {
         Args: { p_log_id: number }
