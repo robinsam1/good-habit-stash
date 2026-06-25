@@ -52,13 +52,15 @@ function readRect(target: string): Rect | null {
   const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
   if (!el) return null;
   const r = el.getBoundingClientRect();
+  // Viewport-relative — the overlay is position: fixed, so do NOT add scroll offsets.
   return {
-    top: r.top + window.scrollY - PADDING,
-    left: r.left + window.scrollX - PADDING,
+    top: r.top - PADDING,
+    left: r.left - PADDING,
     width: r.width + PADDING * 2,
     height: r.height + PADDING * 2,
   };
 }
+
 
 export function OnboardingTour({
   enabled,
