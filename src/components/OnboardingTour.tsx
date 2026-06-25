@@ -60,7 +60,13 @@ function readRect(target: string): Rect | null {
   };
 }
 
-export function OnboardingTour({ enabled }: { enabled: boolean }) {
+export function OnboardingTour({
+  enabled,
+  onTargetChange,
+}: {
+  enabled: boolean;
+  onTargetChange?: (target: string | null) => void;
+}) {
   const [active, setActive] = useState(false);
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
