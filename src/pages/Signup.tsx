@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Star, Zap, Trophy, Target, Sparkles } from "lucide-react";
+import { Loader2, ArrowLeft, Star, Zap, Trophy, Target, Sparkles, Save } from "lucide-react";
 import { toast } from "sonner";
 import { REGIONS, getRegion } from "@/lib/regions";
 import {
@@ -16,10 +16,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  ANON_STARTED_KEY,
+  ANON_NUDGED_KEY,
+  ONBOARDING_PENDING_KEY,
+} from "@/hooks/useAnonymousLifecycle";
 
-const schema = z.object({
+const baseSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
   password: z.string().min(8, "At least 8 characters").max(100),
+});
+
+const fullSchema = baseSchema.extend({
   region: z.string().min(1, "Pick a region"),
 });
 
@@ -44,7 +52,10 @@ const FloatingIcon = ({
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, signUp } = useAuth();
+  const { isAuthenticated, isAnonymous, isLoading, signUp, upgradeAccount } = useAuth();
+
+  // "Save" mode = there's already an anonymous session to convert.
+  const saveMode = isAuthenticated && isAnonymous;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,14 +64,45 @@ const Signup = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) navigate("/", { replace: true });
-  }, [isAuthenticated, isLoading, navigate]);
+    // Permanent (non-anonymous) sessions never need this page — bounce home.
+    if (!isLoading && isAuthenticated && !isAnonymous) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, isAnonymous, isLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
-    const result = schema.safeParse({ email, password, region: regionCode });
+    if (saveMode) {
+      const result = baseSchema.safeParse({ email, password });
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.errors.forEach((err) => {
+          fieldErrors[err.path[0] as string] = err.message;
+        });
+        setErrors(fieldErrors);
+        return;
+      }
+      setSubmitting(true);
+      const { error } = await upgradeAccount(email, password);
+      setSubmitting(false);
+      if (error) {
+        toast.error("Couldn't save your account", {
+          description: "Please check your details and try again.",
+        });
+        return;
+      }
+      // Clear guest-session markers — this is a permanent account now.
+      localStorage.removeItem(ANON_STARTED_KEY);
+      localStorage.removeItem(ANON_NUDGED_KEY);
+      localStorage.removeItem(ONBOARDING_PENDING_KEY);
+      toast.success("Progress saved! 🎉");
+      navigate("/", { replace: true });
+      return;
+    }
+
+    const result = fullSchema.safeParse({ email, password, region: regionCode });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
@@ -88,45 +130,19 @@ const Signup = () => {
     navigate("/", { replace: true });
   };
 
+  const Icon = saveMode ? Save : Sparkles;
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden">
-      {/* Floating decorative icons */}
-      <FloatingIcon
-        Icon={Star}
-        className="top-[12%] left-[8%] w-6 h-6 text-accent/20"
-        delay={0}
-      />
-      <FloatingIcon
-        Icon={Zap}
-        className="top-[20%] right-[10%] w-5 h-5 text-primary/20"
-        delay={1}
-      />
-      <FloatingIcon
-        Icon={Trophy}
-        className="bottom-[18%] left-[12%] w-7 h-7 text-accent/15"
-        delay={0.5}
-        slow
-      />
-      <FloatingIcon
-        Icon={Target}
-        className="bottom-[25%] right-[8%] w-6 h-6 text-primary/15"
-        delay={1.5}
-        slow
-      />
-      <FloatingIcon
-        Icon={Sparkles}
-        className="top-[45%] left-[5%] w-5 h-5 text-accent/10"
-        delay={2}
-      />
-      <FloatingIcon
-        Icon={Star}
-        className="top-[8%] right-[20%] w-4 h-4 text-primary/10"
-        delay={2.5}
-        slow
-      />
+      <FloatingIcon Icon={Star} className="top-[12%] left-[8%] w-6 h-6 text-accent/20" delay={0} />
+      <FloatingIcon Icon={Zap} className="top-[20%] right-[10%] w-5 h-5 text-primary/20" delay={1} />
+      <FloatingIcon Icon={Trophy} className="bottom-[18%] left-[12%] w-7 h-7 text-accent/15" delay={0.5} slow />
+      <FloatingIcon Icon={Target} className="bottom-[25%] right-[8%] w-6 h-6 text-primary/15" delay={1.5} slow />
+      <FloatingIcon Icon={Sparkles} className="top-[45%] left-[5%] w-5 h-5 text-accent/10" delay={2} />
+      <FloatingIcon Icon={Star} className="top-[8%] right-[20%] w-4 h-4 text-primary/10" delay={2.5} slow />
 
       <div className="w-full max-w-sm relative z-10">
-        <Link to="/welcome">
+        <Link to={saveMode ? "/" : "/welcome"}>
           <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -135,14 +151,18 @@ const Signup = () => {
 
         <header className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
-            <Sparkles className="h-7 w-7 text-primary-foreground" />
+            <Icon className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
-              Join Habit Visor
+              {saveMode ? "Save your progress" : "Join Habit Visor"}
             </span>
           </h1>
-          <p className="text-muted-foreground mt-2">Start turning habits into wins.</p>
+          <p className="text-muted-foreground mt-2">
+            {saveMode
+              ? "Lock in your habits and rewards so you don't lose them."
+              : "Start turning habits into wins."}
+          </p>
         </header>
 
         <Card className="border-border/50 shadow-xl overflow-hidden">
@@ -179,25 +199,27 @@ const Signup = () => {
                 {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
 
-              <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
-                <Label htmlFor="region">Region</Label>
-                <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
-                  <SelectTrigger id="region" className={errors.region ? "border-destructive" : ""}>
-                    <SelectValue placeholder="Choose your country" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-72">
-                    {REGIONS.map((r) => (
-                      <SelectItem key={r.code} value={r.code}>
-                        {r.name} · {r.currencySymbol} {r.currencyCode}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.region && <p className="text-sm text-destructive">{errors.region}</p>}
-                <p className="text-xs text-muted-foreground">
-                  Sets your currency for all rewards. Choose carefully — this is used throughout the app.
-                </p>
-              </div>
+              {!saveMode && (
+                <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+                  <Label htmlFor="region">Region</Label>
+                  <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
+                    <SelectTrigger id="region" className={errors.region ? "border-destructive" : ""}>
+                      <SelectValue placeholder="Choose your country" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-72">
+                      {REGIONS.map((r) => (
+                        <SelectItem key={r.code} value={r.code}>
+                          {r.name} · {r.currencySymbol} {r.currencyCode}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.region && <p className="text-sm text-destructive">{errors.region}</p>}
+                  <p className="text-xs text-muted-foreground">
+                    Sets your currency for all rewards. Choose carefully — this is used throughout the app.
+                  </p>
+                </div>
+              )}
 
               <Button
                 type="submit"
@@ -207,6 +229,11 @@ const Signup = () => {
               >
                 {submitting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
+                ) : saveMode ? (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Create account to save your progress
+                  </>
                 ) : (
                   <>
                     <Zap className="h-4 w-4 mr-2" />
@@ -216,12 +243,14 @@ const Signup = () => {
               </Button>
             </form>
 
-            <p className="text-sm text-center text-muted-foreground mt-4">
-              Already have an account?{" "}
-              <Link to="/auth" className="text-primary font-medium hover:underline">
-                Sign in
-              </Link>
-            </p>
+            {!saveMode && (
+              <p className="text-sm text-center text-muted-foreground mt-4">
+                Already have an account?{" "}
+                <Link to="/auth" className="text-primary font-medium hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
