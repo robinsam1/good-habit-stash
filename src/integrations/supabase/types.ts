@@ -183,6 +183,7 @@ export type Database = {
       }
       currency_unit_amount: { Args: { _currency: string }; Returns: number }
       delete_activity: { Args: { p_activity_id: number }; Returns: undefined }
+      delete_my_anonymous_account: { Args: never; Returns: undefined }
       is_pro: { Args: { _user_id: string }; Returns: boolean }
       log_activity: {
         Args: { p_activity_id: number }

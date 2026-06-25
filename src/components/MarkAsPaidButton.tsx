@@ -16,12 +16,12 @@ import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
 import { useMoney } from "@/hooks/useProfile";
 import { toast } from "sonner";
 
-export function MarkAsPaidButton() {
+export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: boolean }) {
   const [open, setOpen] = useState(false);
   const total = useRunningTotal();
   const { mutate: markAsPaid, isPending } = useMarkAsPaid();
   const { formatMoney } = useMoney();
-  
+
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
       onSuccess: () => {
@@ -38,17 +38,22 @@ export function MarkAsPaidButton() {
       },
     });
   };
-  
-  if (total === 0) {
+
+  // Normally hidden when there's nothing to pay out, but the onboarding tour
+  // forces it visible (disabled) so the user can see the CTA being explained.
+  if (total === 0 && !forceVisible) {
     return null;
   }
+
+  const disabled = total === 0;
   
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button
           size="lg"
-          className="w-full h-14 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/25 transition-all hover:shadow-xl hover:shadow-accent/30"
+          disabled={disabled}
+          className="w-full h-14 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/25 transition-all hover:shadow-xl hover:shadow-accent/30 disabled:opacity-70"
         >
           <Banknote className="h-5 w-5 mr-2" />
           Move to savings

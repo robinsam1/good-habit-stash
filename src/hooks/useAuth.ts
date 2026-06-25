@@ -83,9 +83,17 @@ export function useAuth() {
   }, []);
 
   const signOut = useCallback(async () => {
+    // Guest accounts are purged on sign-out so we don't leave orphan data.
+    if (user?.is_anonymous) {
+      try {
+        await supabase.rpc('delete_my_anonymous_account');
+      } catch {
+        // Fall through — 24h cron will clean up if the delete failed.
+      }
+    }
     const { error } = await supabase.auth.signOut();
     return { error };
-  }, []);
+  }, [user]);
 
   return {
     user,
