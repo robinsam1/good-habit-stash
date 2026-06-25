@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Region } from '@/lib/regions';
+import { GoalCode } from '@/lib/goals';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -49,6 +50,38 @@ export function useAuth() {
     return { error };
   }, []);
 
+  /**
+   * Create a temporary (anonymous) account. The handle_new_user trigger
+   * reads `goal_code` from raw_user_meta_data and seeds tasks accordingly.
+   */
+  const signInAnonymously = useCallback(
+    async (goal: GoalCode, region: Region) => {
+      const { error } = await supabase.auth.signInAnonymously({
+        options: {
+          data: {
+            goal_code: goal,
+            region_code: region.code,
+            currency_code: region.currencyCode,
+            currency_symbol: region.currencySymbol,
+            locale: region.locale,
+            minor_unit_digits: region.minorUnitDigits,
+          },
+        },
+      });
+      return { error };
+    },
+    []
+  );
+
+  /**
+   * Convert the current anonymous account into a permanent one.
+   * Same user_id — all activities/log entries follow automatically.
+   */
+  const upgradeAccount = useCallback(async (email: string, password: string) => {
+    const { error } = await supabase.auth.updateUser({ email, password });
+    return { error };
+  }, []);
+
   const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     return { error };
@@ -59,8 +92,11 @@ export function useAuth() {
     session,
     isLoading,
     isAuthenticated: !!session,
+    isAnonymous: !!user?.is_anonymous,
     signIn,
     signUp,
+    signInAnonymously,
+    upgradeAccount,
     signOut,
   };
 }

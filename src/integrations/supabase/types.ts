@@ -176,6 +176,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_anonymous_users: { Args: never; Returns: number }
       create_activity: {
         Args: { p_name: string; p_value: number }
         Returns: number
