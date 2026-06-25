@@ -151,13 +151,14 @@ export function OnboardingTour({
       Math.max(16, rect.left + rect.width / 2 - width / 2),
       viewport.w - width - 16
     );
-    // Prefer below; if no room, go above.
-    const spaceBelow = viewport.h - (rect.top - window.scrollY + rect.height);
+    // Prefer below; if no room, go above. rect is viewport-relative.
+    const spaceBelow = viewport.h - (rect.top + rect.height);
     const placeBelow = spaceBelow > 220;
     const top = placeBelow
       ? rect.top + rect.height + 16
       : Math.max(16, rect.top - 220);
     return { top, left, width };
+
   }, [rect, viewport]);
 
   if (!active || !currentStep) return null;
