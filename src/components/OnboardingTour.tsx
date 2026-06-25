@@ -92,11 +92,15 @@ export function OnboardingTour({
   useLayoutEffect(() => {
     if (!active || !currentStep) return;
     let raf = 0;
+    // Bring the target into view so the spotlight isn't offscreen after scrolling.
+    const el = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
     const update = () => {
       setRect(readRect(currentStep.target));
       setViewport({ w: window.innerWidth, h: window.innerHeight });
     };
     update();
+
     // Re-poll briefly to catch any post-mount animations.
     let i = 0;
     const interval = window.setInterval(() => {
