@@ -116,9 +116,16 @@ export function OnboardingTour({
     };
   }, [active, step, currentStep]);
 
+  // Notify parent of current target (so e.g. mark-paid CTA can be forced visible).
+  useEffect(() => {
+    if (!onTargetChange) return;
+    onTargetChange(active && currentStep ? currentStep.target : null);
+  }, [active, currentStep, onTargetChange]);
+
   const finish = () => {
     localStorage.removeItem(ONBOARDING_PENDING_KEY);
     setActive(false);
+    onTargetChange?.(null);
   };
 
   const next = () => {
