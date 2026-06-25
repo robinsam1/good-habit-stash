@@ -6,13 +6,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { GOALS, GoalCode } from "@/lib/goals";
-import { REGIONS, getRegion } from "@/lib/regions";
+import { REGION_GROUPS, getRegion } from "@/lib/regions";
+
 import { useAuth } from "@/hooks/useAuth";
 import { FloatingDecor } from "@/components/FloatingDecor";
 import {
