@@ -149,17 +149,15 @@ const Index = () => {
                 <SettingsIcon className="h-4 w-4" />
               </Button>
             </Link>
-            {!isAnonymous && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleSignOut}
-                className="text-muted-foreground hover:text-foreground"
-                title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSignOutClick}
+              className="text-muted-foreground hover:text-foreground"
+              title={isAnonymous ? "Sign out and clear guest data" : "Sign out"}
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
@@ -192,7 +190,7 @@ const Index = () => {
 
         {/* Mark as Paid Button */}
         <div data-tour="mark-paid" className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
-          <MarkAsPaidButton />
+          <MarkAsPaidButton forceVisible={tourTarget === "mark-paid"} />
         </div>
 
         {/* Activity Log */}
@@ -213,7 +211,34 @@ const Index = () => {
       </div>
 
       {/* Guided tour for new guest users */}
-      <OnboardingTour enabled={isAnonymous} />
+      <OnboardingTour enabled={isAnonymous} onTargetChange={setTourTarget} />
+
+      {/* Confirm sign-out for guest accounts (destructive) */}
+      <AlertDialog open={confirmSignOut} onOpenChange={setConfirmSignOut}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display text-2xl">
+              Sign out and clear guest data?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              You're using a guest account. Signing out will permanently delete your
+              habits, log entries and balance. Save your progress first to keep them.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel className="font-medium">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConfirmSignOut(false);
+                void handleSignOut();
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold"
+            >
+              Sign out & delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
