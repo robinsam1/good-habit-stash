@@ -60,35 +60,35 @@ const GetStarted = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-3 sm:py-6 relative overflow-hidden">
       <FloatingDecor />
       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
       <div className="absolute bottom-40 right-1/4 w-56 h-56 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
 
       <div className="w-full max-w-lg relative z-10">
         <Link to="/welcome">
-          <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
+          <Button variant="ghost" size="sm" className="mb-2 -ml-2 text-muted-foreground h-8">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </Link>
 
-        <header className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
-            <Sparkles className="h-7 w-7 text-primary-foreground" />
+        <header className="text-center mb-3">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-2 animate-pop-in">
+            <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <h1 className="font-display text-3xl font-bold tracking-tight">
+          <h1 className="font-display text-2xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
               What matters most?
             </span>
           </h1>
-          <p className="text-muted-foreground mt-2">Pick a focus — we'll build your starter habits.</p>
+          <p className="text-sm text-muted-foreground mt-1">Pick a focus — we'll build your starter habits.</p>
         </header>
 
         <Card className="border-border/50 shadow-xl overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
-          <CardContent className="pt-6 space-y-6">
-            <div className="grid grid-cols-2 gap-3">
+          <CardContent className="pt-4 pb-4 space-y-4">
+            <div className="grid grid-cols-2 gap-2.5">
               {GOALS.map((g, i) => {
                 const selected = goal === g.code;
                 return (
@@ -97,7 +97,7 @@ const GetStarted = () => {
                     type="button"
                     onClick={() => setGoal(g.code)}
                     className={cn(
-                      "group relative rounded-2xl border-2 p-4 text-left transition-all animate-slide-up",
+                      "group relative rounded-2xl border-2 p-3 text-left transition-all animate-slide-up",
                       "hover:border-primary/60 hover:shadow-md",
                       selected
                         ? "border-primary bg-gradient-to-br from-primary/10 to-accent/10 shadow-lg scale-[1.02]"
@@ -106,41 +106,42 @@ const GetStarted = () => {
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
                   >
                     <div className={cn(
-                      "text-4xl mb-2 transition-transform",
+                      "text-3xl mb-1 transition-transform",
                       selected ? "scale-110" : "group-hover:scale-105"
                     )}>
                       {g.emoji}
                     </div>
                     <div className="font-display font-semibold text-sm leading-tight">{g.label}</div>
-                    <div className="text-xs text-muted-foreground mt-1 leading-snug">{g.blurb}</div>
                   </button>
                 );
               })}
             </div>
 
-            <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.25s", animationFillMode: "both" }}>
+            <div className="space-y-1.5 animate-slide-up" style={{ animationDelay: "0.25s", animationFillMode: "both" }}>
               <label htmlFor="region" className="text-sm font-medium">Choose your country</label>
               <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
                 <SelectTrigger id="region">
                   <SelectValue placeholder="Choose your country" />
                 </SelectTrigger>
                 <SelectContent className="max-h-72">
-                  {REGIONS.map((r) => (
-                    <SelectItem key={r.code} value={r.code}>
-                      {r.name} · {r.currencySymbol} {r.currencyCode}
-                    </SelectItem>
+                  {REGION_GROUPS.map((group) => (
+                    <SelectGroup key={group.label}>
+                      <SelectLabel>{group.label}</SelectLabel>
+                      {group.regions.map((r) => (
+                        <SelectItem key={r.code} value={r.code}>
+                          {r.name} · {r.currencySymbol} {r.currencyCode}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-muted-foreground">
-                Sets the currency your rewards are tracked in.
-              </p>
             </div>
 
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+              className="w-full h-11 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
             >
               {submitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -154,7 +155,7 @@ const GetStarted = () => {
           </CardContent>
         </Card>
 
-        <p className="text-sm text-center text-muted-foreground mt-4">
+        <p className="text-sm text-center text-muted-foreground mt-3">
           Already have an account?{" "}
           <Link to="/auth" className="text-primary font-medium hover:underline">
             Sign in
@@ -162,6 +163,7 @@ const GetStarted = () => {
         </p>
       </div>
     </div>
+
   );
 };
 
