@@ -64,7 +64,32 @@ export const REGIONS: Region[] = [
   { code: "MG", name: "Madagascar",      currencyCode: "MGA", currencySymbol: "Ar", locale: "fr-MG", minorUnitDigits: 2 },
   { code: "CI", name: "Côte d'Ivoire",   currencyCode: "XOF", currencySymbol: "CFA",locale: "fr-CI", minorUnitDigits: 0 },
   { code: "AU", name: "Australia",       currencyCode: "AUD", currencySymbol: "$",  locale: "en-AU", minorUnitDigits: 2 },
+  { code: "NZ", name: "New Zealand",     currencyCode: "NZD", currencySymbol: "$",  locale: "en-NZ", minorUnitDigits: 2 },
 ];
+
+// Ordered groups for UI display: English-speaking first, then European, then the rest.
+const ENGLISH_FIRST = ["US", "GB", "CA", "AU", "NZ"];
+const EUROPEAN = ["DE", "FR", "IT", "ES", "PL", "UA"];
+
+export interface RegionGroup {
+  label: string;
+  regions: Region[];
+}
+
+export const REGION_GROUPS: RegionGroup[] = (() => {
+  const byCode = (code: string) => REGIONS.find((r) => r.code === code)!;
+  const english = ENGLISH_FIRST.map(byCode).filter(Boolean);
+  const european = EUROPEAN.map(byCode).filter(Boolean);
+  const used = new Set([...ENGLISH_FIRST, ...EUROPEAN]);
+  const rest = REGIONS
+    .filter((r) => !used.has(r.code))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return [
+    { label: "English-speaking", regions: english },
+    { label: "Europe", regions: european },
+    { label: "Rest of the world", regions: rest },
+  ];
+})();
 
 export function getRegion(code: string | null | undefined): Region | undefined {
   if (!code) return undefined;
@@ -74,3 +99,4 @@ export function getRegion(code: string | null | undefined): Region | undefined {
 export function unitAmountForRegion(region: Region): number {
   return Math.pow(10, region.minorUnitDigits);
 }
+
