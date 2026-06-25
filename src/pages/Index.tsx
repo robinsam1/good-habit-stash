@@ -83,7 +83,7 @@ const Index = () => {
   }
   
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-pink-200">
       <FloatingDecor />
 
       {/* Soft gradient blobs */}
