@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon } from "lucide-react";
+import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon, ListChecks } from "lucide-react";
 import { TotalDisplay } from "@/components/TotalDisplay";
 import { ActivityPicker } from "@/components/ActivityPicker";
 import { ActivityLog } from "@/components/ActivityLog";
@@ -94,6 +94,16 @@ const Index = () => {
         {/* Header */}
         <header className="text-center mb-10 relative">
           <div className="absolute right-0 top-0 flex items-center gap-1">
+            <Link to="/tasks">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+                title="Edit tasks"
+              >
+                <ListChecks className="h-4 w-4" />
+              </Button>
+            </Link>
             <Link to="/settings">
               <Button
                 variant="ghost"
