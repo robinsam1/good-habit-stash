@@ -168,7 +168,7 @@ const Welcome = () => {
             <Button
               size="lg"
               className="w-full h-14 text-base font-semibold bg-gradient-to-r from-primary via-primary to-accent hover:opacity-90 transition-all shadow-lg shadow-primary/25 animate-pulse-success"
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/get-started")}
             >
               <Sparkles className="h-5 w-5 mr-2" />
               Get started
