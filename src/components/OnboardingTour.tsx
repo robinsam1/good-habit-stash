@@ -52,13 +52,15 @@ function readRect(target: string): Rect | null {
   const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
   if (!el) return null;
   const r = el.getBoundingClientRect();
+  // Viewport-relative — the overlay is position: fixed, so do NOT add scroll offsets.
   return {
-    top: r.top + window.scrollY - PADDING,
-    left: r.left + window.scrollX - PADDING,
+    top: r.top - PADDING,
+    left: r.left - PADDING,
     width: r.width + PADDING * 2,
     height: r.height + PADDING * 2,
   };
 }
+
 
 export function OnboardingTour({
   enabled,
@@ -90,11 +92,15 @@ export function OnboardingTour({
   useLayoutEffect(() => {
     if (!active || !currentStep) return;
     let raf = 0;
+    // Bring the target into view so the spotlight isn't offscreen after scrolling.
+    const el = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
     const update = () => {
       setRect(readRect(currentStep.target));
       setViewport({ w: window.innerWidth, h: window.innerHeight });
     };
     update();
+
     // Re-poll briefly to catch any post-mount animations.
     let i = 0;
     const interval = window.setInterval(() => {
@@ -149,13 +155,14 @@ export function OnboardingTour({
       Math.max(16, rect.left + rect.width / 2 - width / 2),
       viewport.w - width - 16
     );
-    // Prefer below; if no room, go above.
-    const spaceBelow = viewport.h - (rect.top - window.scrollY + rect.height);
+    // Prefer below; if no room, go above. rect is viewport-relative.
+    const spaceBelow = viewport.h - (rect.top + rect.height);
     const placeBelow = spaceBelow > 220;
     const top = placeBelow
       ? rect.top + rect.height + 16
       : Math.max(16, rect.top - 220);
     return { top, left, width };
+
   }, [rect, viewport]);
 
   if (!active || !currentStep) return null;
