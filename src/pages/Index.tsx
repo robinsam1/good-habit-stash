@@ -82,8 +82,20 @@ const Index = () => {
 
   const handleSignOut = useCallback(async () => {
     await signOut();
-    toast.success('Signed out');
-  }, [signOut]);
+    // Clear guest-session markers so the lifecycle hook doesn't fire again.
+    localStorage.removeItem('hv_anon_started_at');
+    localStorage.removeItem('hv_anon_nudged_save');
+    localStorage.removeItem('hv_onboarding_pending');
+    toast.success(isAnonymous ? 'Signed out — guest data cleared' : 'Signed out');
+  }, [signOut, isAnonymous]);
+
+  const handleSignOutClick = useCallback(() => {
+    if (isAnonymous) {
+      setConfirmSignOut(true);
+    } else {
+      void handleSignOut();
+    }
+  }, [isAnonymous, handleSignOut]);
 
   // Show loading while checking auth
   if (authLoading) {
