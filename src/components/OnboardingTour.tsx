@@ -240,7 +240,7 @@ export function OnboardingTour({
           top: tooltipPos.top,
           left: tooltipPos.left,
           width: tooltipPos.width,
-          transition: "top 350ms cubic-bezier(0.4,0,0.2,1), left 350ms cubic-bezier(0.4,0,0.2,1)",
+          transition: "top 180ms cubic-bezier(0.4,0,0.2,1), left 180ms cubic-bezier(0.4,0,0.2,1)",
         }}
       >
         <div className="flex items-center gap-2 mb-2">
