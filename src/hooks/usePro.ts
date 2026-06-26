@@ -8,7 +8,7 @@ export function useIsPro() {
     queryKey: ["isPro", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("is_pro", { _user_id: user!.id });
+      const { data, error } = await supabase.rpc("is_pro");
       if (error) throw error;
       return !!data;
     },
