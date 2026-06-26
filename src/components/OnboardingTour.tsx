@@ -69,7 +69,12 @@ export function OnboardingTour({
   enabled: boolean;
   onTargetChange?: (target: string | null) => void;
 }) {
-  const [active, setActive] = useState(false);
+  // Initialise synchronously from localStorage so the overlay can paint on
+  // the same frame as the dashboard — no auth roundtrip, no setTimeout.
+  const [active, setActive] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(ONBOARDING_PENDING_KEY) === "1";
+  });
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const [viewport, setViewport] = useState({
@@ -77,14 +82,17 @@ export function OnboardingTour({
     h: typeof window !== "undefined" ? window.innerHeight : 0,
   });
 
+  // `enabled` arrives once auth resolves. It's only used as a CANCEL signal —
+  // if the user turns out to be fully registered, tear the tour down.
   useEffect(() => {
-    if (!enabled) return;
     if (typeof window === "undefined") return;
-    if (localStorage.getItem(ONBOARDING_PENDING_KEY) !== "1") return;
-    // Small delay to let the page mount its targets / animations land.
-    const t = window.setTimeout(() => setActive(true), 400);
-    return () => window.clearTimeout(t);
-  }, [enabled]);
+    if (localStorage.getItem(ONBOARDING_PENDING_KEY) !== "1") {
+      if (active) setActive(false);
+      return;
+    }
+    // Flag is set: only show for anonymous sessions.
+    if (!enabled && active) setActive(false);
+  }, [enabled, active]);
 
   const currentStep = STEPS[step];
 
