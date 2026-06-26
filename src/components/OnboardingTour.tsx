@@ -199,7 +199,7 @@ export function OnboardingTour({
               rx={RADIUS}
               ry={RADIUS}
               fill="black"
-              style={{ transition: "all 350ms cubic-bezier(0.4,0,0.2,1)" }}
+              style={{ transition: "all 180ms cubic-bezier(0.4,0,0.2,1)" }}
             />
           </mask>
         </defs>
