@@ -221,7 +221,7 @@ export function OnboardingTour({
             width: rect.width,
             height: rect.height,
             borderRadius: RADIUS,
-            transition: "all 350ms cubic-bezier(0.4,0,0.2,1)",
+            transition: "all 180ms cubic-bezier(0.4,0,0.2,1)",
             boxShadow:
               "0 0 0 2px hsl(var(--primary)), 0 0 0 8px hsl(var(--primary) / 0.25)",
             animation: "glow-pulse 2s ease-in-out infinite",
