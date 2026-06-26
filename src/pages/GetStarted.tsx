@@ -77,6 +77,9 @@ const GetStarted = () => {
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-2 animate-pop-in">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
+          <div className="font-display text-sm font-semibold tracking-widest uppercase text-muted-foreground mb-1">
+            Habit Visor
+          </div>
           <h1 className="font-display text-2xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
               What matters most?
