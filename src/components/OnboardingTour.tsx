@@ -91,34 +91,40 @@ export function OnboardingTour({
   // Recompute rect whenever step changes or the layout shifts.
   useLayoutEffect(() => {
     if (!active || !currentStep) return;
-    let raf = 0;
-    // Bring the target into view so the spotlight isn't offscreen after scrolling.
+    let raf1 = 0;
+    let raf2 = 0;
+    let settle = 0;
+    // Bring the target into view INSTANTLY so we can measure its final position
+    // immediately — smooth scroll on mobile was the main source of perceived lag.
     const el = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
-    el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    try {
+      el?.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "center", inline: "nearest" });
+    } catch {
+      el?.scrollIntoView({ block: "center", inline: "nearest" });
+    }
     const update = () => {
       setRect(readRect(currentStep.target));
       setViewport({ w: window.innerWidth, h: window.innerHeight });
     };
+    // Measure now, next frame, and once more after a short settle to catch
+    // any post-mount animation without running a 480ms polling loop.
     update();
-
-    // Re-poll briefly to catch any post-mount animations.
-    let i = 0;
-    const interval = window.setInterval(() => {
+    raf1 = requestAnimationFrame(() => {
       update();
-      if (++i >= 6) window.clearInterval(interval);
-    }, 80);
+      raf2 = requestAnimationFrame(update);
+    });
+    settle = window.setTimeout(update, 120);
 
     const onResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(update);
+      cancelAnimationFrame(raf1);
+      raf1 = requestAnimationFrame(update);
     };
     window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", onResize, true);
     return () => {
-      window.clearInterval(interval);
+      window.clearTimeout(settle);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onResize, true);
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
     };
   }, [active, step, currentStep]);
 
