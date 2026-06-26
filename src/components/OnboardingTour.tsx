@@ -210,7 +210,7 @@ export function OnboardingTour({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] pointer-events-none animate-fade-in">
+    <div className="fixed inset-0 z-[100] pointer-events-none">
       {/* SVG mask overlay with a cutout for the highlighted element */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-auto"
