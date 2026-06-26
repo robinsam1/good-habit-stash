@@ -267,11 +267,9 @@ export function OnboardingTour({
             ))}
           </div>
           <div className="flex items-center gap-1">
-            {step < STEPS.length - 1 && (
-              <Button variant="ghost" size="sm" onClick={finish} className="text-muted-foreground">
-                Skip
-              </Button>
-            )}
+            <Button variant="ghost" size="sm" onClick={finish} className="text-muted-foreground">
+              Skip tour
+            </Button>
             <Button
               size="sm"
               onClick={next}
