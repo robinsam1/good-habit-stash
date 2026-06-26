@@ -303,7 +303,9 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
-      is_pro: { Args: { _user_id: string }; Returns: boolean }
+      is_pro:
+        | { Args: never; Returns: boolean }
+        | { Args: { _user_id: string }; Returns: boolean }
       log_activity: {
         Args: { p_activity_id: number }
         Returns: {
