@@ -210,7 +210,7 @@ export function OnboardingTour({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] pointer-events-none animate-fade-in">
+    <div className="fixed inset-0 z-[100] pointer-events-none">
       {/* SVG mask overlay with a cutout for the highlighted element */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-auto"
@@ -228,7 +228,7 @@ export function OnboardingTour({
               rx={RADIUS}
               ry={RADIUS}
               fill="black"
-              style={{ transition: "all 180ms cubic-bezier(0.4,0,0.2,1)" }}
+              
             />
           </mask>
         </defs>
@@ -250,7 +250,7 @@ export function OnboardingTour({
             width: rect.width,
             height: rect.height,
             borderRadius: RADIUS,
-            transition: "all 180ms cubic-bezier(0.4,0,0.2,1)",
+            
             boxShadow:
               "0 0 0 2px hsl(var(--primary)), 0 0 0 8px hsl(var(--primary) / 0.25)",
             animation: "glow-pulse 2s ease-in-out infinite",
@@ -263,13 +263,13 @@ export function OnboardingTour({
         key={step}
         className={cn(
           "absolute pointer-events-auto rounded-2xl border bg-card text-card-foreground shadow-2xl",
-          "p-5 animate-slide-up"
+          "p-5"
         )}
         style={{
           top: tooltipPos.top,
           left: tooltipPos.left,
           width: tooltipPos.width,
-          transition: "top 180ms cubic-bezier(0.4,0,0.2,1), left 180ms cubic-bezier(0.4,0,0.2,1)",
+          
         }}
       >
         <div className="flex items-center gap-2 mb-2">
