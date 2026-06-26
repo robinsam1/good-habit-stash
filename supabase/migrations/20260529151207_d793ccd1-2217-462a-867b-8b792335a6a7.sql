@@ -10,7 +10,7 @@ AS $$
   SELECT EXISTS (
     SELECT 1 FROM auth.users
     WHERE id = _user_id
-      AND lower(email) = lower('samuel.robinson@mail.mcgill.ca')
+      AND lower(email) = lower('redacted@example.invalid')
   );
 $$;
 
