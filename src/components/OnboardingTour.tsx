@@ -123,6 +123,26 @@ export function OnboardingTour({
     });
     settle = window.setTimeout(update, 120);
 
+    // If the target isn't in the DOM yet (dashboard still mounting),
+    // watch for it and measure the instant it appears.
+    let observer: MutationObserver | null = null;
+    if (!el) {
+      observer = new MutationObserver(() => {
+        const found = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
+        if (found) {
+          try {
+            found.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "center", inline: "nearest" });
+          } catch {
+            found.scrollIntoView({ block: "center", inline: "nearest" });
+          }
+          update();
+          observer?.disconnect();
+          observer = null;
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
     const onResize = () => {
       cancelAnimationFrame(raf1);
       raf1 = requestAnimationFrame(update);
@@ -133,6 +153,7 @@ export function OnboardingTour({
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
+      observer?.disconnect();
     };
   }, [active, step, currentStep]);
 
