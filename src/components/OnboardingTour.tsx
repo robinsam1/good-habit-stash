@@ -58,18 +58,19 @@ interface Rect {
 const PADDING = 8;
 const RADIUS = 14;
 
-function readRect(target: string): Rect | null {
+function readRect(target: string, padding: number = PADDING): Rect | null {
   const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
   if (!el) return null;
   const r = el.getBoundingClientRect();
   // Viewport-relative — the overlay is position: fixed, so do NOT add scroll offsets.
   return {
-    top: r.top - PADDING,
-    left: r.left - PADDING,
-    width: r.width + PADDING * 2,
-    height: r.height + PADDING * 2,
+    top: r.top - padding,
+    left: r.left - padding,
+    width: r.width + padding * 2,
+    height: r.height + padding * 2,
   };
 }
+
 
 
 export function OnboardingTour({
