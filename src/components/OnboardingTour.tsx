@@ -246,12 +246,16 @@ export function OnboardingTour({
       Math.max(16, rect.left + rect.width / 2 - width / 2),
       viewport.w - width - 16
     );
-    // Prefer below; if no room, go above. rect is viewport-relative.
+    // Prefer below; if no room, go above. Clamp to viewport in either case
+    // so the tooltip's CTAs are always reachable.
+    const TOOLTIP_H = 260;
     const spaceBelow = viewport.h - (rect.top + rect.height);
-    const placeBelow = spaceBelow > 220;
-    const top = placeBelow
+    const placeBelow = spaceBelow > TOOLTIP_H + 16;
+    let top = placeBelow
       ? rect.top + rect.height + 16
-      : Math.max(16, rect.top - 220);
+      : rect.top - TOOLTIP_H - 16;
+    const maxTop = viewport.h - TOOLTIP_H - 16;
+    top = Math.max(16, Math.min(top, maxTop));
     return { top, left, width };
 
   }, [rect, viewport]);
