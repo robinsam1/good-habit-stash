@@ -33,6 +33,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <PostHogPageviews />
         <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/welcome" element={<Welcome />} />
