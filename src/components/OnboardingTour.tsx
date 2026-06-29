@@ -10,7 +10,9 @@ interface Step {
   body: string;
   interactive?: "log" | "paid";
   hint?: string;
+  padding?: number; // override default highlight padding
 }
+
 
 const STEPS: Step[] = [
   {
@@ -41,8 +43,10 @@ const STEPS: Step[] = [
     target: "save",
     title: "Don't lose your progress!",
     body: "Save your account to keep everything you've built. You can do this any time.",
+    padding: 14,
   },
 ];
+
 
 interface Rect {
   top: number;
@@ -54,18 +58,19 @@ interface Rect {
 const PADDING = 8;
 const RADIUS = 14;
 
-function readRect(target: string): Rect | null {
+function readRect(target: string, padding: number = PADDING): Rect | null {
   const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
   if (!el) return null;
   const r = el.getBoundingClientRect();
   // Viewport-relative — the overlay is position: fixed, so do NOT add scroll offsets.
   return {
-    top: r.top - PADDING,
-    left: r.left - PADDING,
-    width: r.width + PADDING * 2,
-    height: r.height + PADDING * 2,
+    top: r.top - padding,
+    left: r.left - padding,
+    width: r.width + padding * 2,
+    height: r.height + padding * 2,
   };
 }
+
 
 
 export function OnboardingTour({
@@ -121,7 +126,7 @@ export function OnboardingTour({
       el?.scrollIntoView({ block: "center", inline: "nearest" });
     }
     const update = () => {
-      setRect(readRect(currentStep.target));
+      setRect(readRect(currentStep.target, currentStep.padding));
       setViewport({ w: window.innerWidth, h: window.innerHeight });
     };
     // Measure now, next frame, and once more after a short settle to catch
