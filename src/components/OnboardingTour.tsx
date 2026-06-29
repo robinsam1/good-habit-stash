@@ -71,9 +71,13 @@ function readRect(target: string): Rect | null {
 export function OnboardingTour({
   enabled,
   onTargetChange,
+  unpaidCount = 0,
+  paidCount = 0,
 }: {
   enabled: boolean;
   onTargetChange?: (target: string | null) => void;
+  unpaidCount?: number;
+  paidCount?: number;
 }) {
   // Initialise synchronously from localStorage so the overlay can paint on
   // the same frame as the dashboard — no auth roundtrip, no setTimeout.
