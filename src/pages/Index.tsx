@@ -225,7 +225,12 @@ const Index = () => {
       </div>
 
       {/* Guided tour for new guest users */}
-      <OnboardingTour enabled={isAnonymous} onTargetChange={setTourTarget} />
+      <OnboardingTour
+        enabled={isAnonymous}
+        onTargetChange={setTourTarget}
+        unpaidCount={unpaidLog?.length ?? 0}
+        paidCount={paidLog?.length ?? 0}
+      />
 
       {/* Confirm sign-out for guest accounts (destructive) */}
       <AlertDialog open={confirmSignOut} onOpenChange={setConfirmSignOut}>
