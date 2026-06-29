@@ -8,6 +8,7 @@ import { MarkAsPaidButton } from "@/components/MarkAsPaidButton";
 import { FloatingDecor } from "@/components/FloatingDecor";
 import { SaveProgressButton } from "@/components/SaveProgressButton";
 import { OnboardingTour } from "@/components/OnboardingTour";
+import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
@@ -65,6 +66,18 @@ const Index = () => {
             description: `${entry.activity?.name}: ${formatMoneySigned(entry.value)}`,
           }
         );
+
+        // First-task confetti for guest users only, once per browser.
+        if (isAnonymous) {
+          try {
+            if (!localStorage.getItem(CONFETTI_FLAGS.task)) {
+              fireConfetti(["🌟", "🏅", "🏆"]);
+              localStorage.setItem(CONFETTI_FLAGS.task, "1");
+            }
+          } catch {
+            /* ignore */
+          }
+        }
 
         // Reset animation states after a delay
         setTimeout(() => {

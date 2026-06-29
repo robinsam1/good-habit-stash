@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
 import { useMoney } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { toast } from "sonner";
 
 export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: boolean }) {
@@ -21,6 +23,7 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
   const total = useRunningTotal();
   const { mutate: markAsPaid, isPending } = useMarkAsPaid();
   const { formatMoney } = useMoney();
+  const { isAnonymous } = useAuth();
 
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
@@ -29,6 +32,17 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
           description: `${formatMoney(total)} moved to your savings`,
           icon: <CheckCircle className="h-5 w-5" />,
         });
+        // First mark-as-paid confetti for guest users only, once per browser.
+        if (isAnonymous) {
+          try {
+            if (!localStorage.getItem(CONFETTI_FLAGS.paid)) {
+              fireConfetti(["💸"]);
+              localStorage.setItem(CONFETTI_FLAGS.paid, "1");
+            }
+          } catch {
+            /* ignore */
+          }
+        }
         setOpen(false);
       },
       onError: () => {
