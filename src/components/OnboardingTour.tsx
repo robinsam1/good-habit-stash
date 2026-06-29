@@ -263,7 +263,10 @@ export function OnboardingTour({
     <div className="fixed inset-0 z-[100] pointer-events-none">
       {/* SVG mask overlay with a cutout for the highlighted element */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-auto"
+        className={cn(
+          "absolute inset-0 w-full h-full",
+          currentStep.interactive ? "pointer-events-none" : "pointer-events-auto"
+        )}
         onClick={currentStep.interactive ? undefined : next}
         aria-hidden
       >
