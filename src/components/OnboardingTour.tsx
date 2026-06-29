@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { ONBOARDING_PENDING_KEY } from "@/hooks/useAnonymousLifecycle";
@@ -8,6 +8,8 @@ interface Step {
   target: string; // data-tour attribute value
   title: string;
   body: string;
+  interactive?: "log" | "paid";
+  hint?: string;
 }
 
 const STEPS: Step[] = [
@@ -18,13 +20,17 @@ const STEPS: Step[] = [
   },
   {
     target: "picker",
-    title: "Log a habit in one tap",
-    body: "Pick a habit from the dropdown the moment you complete it.",
+    title: "What have you done for yourself today?",
+    body: "Pick any habit from the dropdown that you've already completed today — go on, give yourself credit.",
+    interactive: "log",
+    hint: "Pick a habit to continue",
   },
   {
     target: "mark-paid",
-    title: "Pay yourself out",
-    body: "At the end of the day, move what you earned into your savings.",
+    title: "Reward yourself",
+    body: "Open your banking app, set up a savings pot, and transfer the amount above into it. Then tap the pay-out button to mark it done — a job well done deserves a real reward.",
+    interactive: "paid",
+    hint: "Tap pay-out to continue",
   },
   {
     target: "tasks",
