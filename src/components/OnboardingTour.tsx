@@ -157,10 +157,16 @@ export function OnboardingTour({
       cancelAnimationFrame(raf1);
       raf1 = requestAnimationFrame(update);
     };
+    const onScroll = () => {
+      cancelAnimationFrame(raf1);
+      raf1 = requestAnimationFrame(update);
+    };
     window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, true);
     return () => {
       window.clearTimeout(settle);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll, true);
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
       observer?.disconnect();
