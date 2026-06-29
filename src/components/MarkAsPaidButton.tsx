@@ -73,7 +73,7 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
           Move to savings
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="sm:max-w-md">
+      <AlertDialogContent className="sm:max-w-md z-[110]">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-display text-2xl">
             Move {formatMoney(total)} to your savings?
