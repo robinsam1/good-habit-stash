@@ -24,6 +24,7 @@ import {
   ONBOARDING_PENDING_KEY,
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
+import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 
 const GetStarted = () => {
   const navigate = useNavigate();
