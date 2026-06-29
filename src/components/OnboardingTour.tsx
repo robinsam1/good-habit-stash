@@ -11,7 +11,9 @@ interface Step {
   interactive?: "log" | "paid";
   hint?: string;
   padding?: number; // override default highlight padding
+  square?: boolean; // force highlight to be a square centered on the target
 }
+
 
 
 const STEPS: Step[] = [
