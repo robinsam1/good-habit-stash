@@ -1,41 +1,37 @@
-# Simplify country/currency selection
+# Interactive Onboarding Tour
 
-Trim the country picker down to a short, opinionated list and add a single "Europe (€)" option for the Eurozone.
+Turn passive tour steps 2 ("Log a habit") and 3 ("Pay yourself out") into hands-on actions the user must complete to advance. Steps 1, 4, 5 remain click-to-advance.
 
-## New list (in display order)
+## Behaviour
 
-1. United States — USD ($)
-2. United Kingdom — GBP (£)
-3. Canada — CAD ($)
-4. Australia — AUD ($)
-5. Europe — EUR (€)  *(generic Eurozone entry)*
-6. Poland — PLN (zł)  *(non-Euro EU)*
-7. Sweden — SEK (kr)  *(non-Euro EU, new)*
-8. Denmark — DKK (kr)  *(non-Euro EU, new)*
-9. Czechia — CZK (Kč)  *(non-Euro EU, new)*
-10. Hungary — HUF (Ft)  *(non-Euro EU, new)*
-11. Romania — RON (lei)  *(non-Euro EU, new)*
-12. Bulgaria — BGN (лв)  *(non-Euro EU, new)*
-13. India — INR (₹)
-14. China — CNY (¥)
-15. Japan — JPY (¥)
-16. Brazil — BRL (R$)
+**Step 2 — "What have you done for yourself today?"**
+- Tooltip copy changes to prompt the user to pick any habit from the dropdown.
+- "Next" button is removed; tour advances automatically when a new log entry is created.
+- "Skip tour" remains.
 
-If you'd rather collapse the non-Euro EU countries into a single line too, say the word — but each has its own currency so they can't share one entry the way Eurozone members can.
+**Step 3 — "Reward yourself"**
+- Tooltip copy: prompt the user to open their banking app, set up a savings pot, and transfer the value shown — then tap the pay-out CTA to confirm.
+- "Next" button removed; tour advances automatically when the user taps Mark as Paid (i.e. pending balance drops to 0 / log marked paid).
+- "Skip tour" remains.
+- Mark-as-paid CTA stays force-visible during this step (already wired via `onTargetChange`).
 
-## Changes
+Steps 1, 4, 5 keep the existing "Next" button behaviour.
 
-### `src/lib/regions.ts`
-- Replace `REGIONS` array with just the entries above.
-- Add a generic `EU` region: `{ code: "EU", name: "Europe", currencyCode: "EUR", currencySymbol: "€", locale: "en-IE", minorUnitDigits: 2 }`.
-- Add the missing non-Euro EU regions (SE, DK, CZ, HU, RO, BG) with sensible locales.
-- Replace `REGION_GROUPS` with a single flat ordered list matching the order above (no group headers — `GetStarted.tsx` already flattens them, so a single group works fine).
-- Keep `getRegion` and `unitAmountForRegion` unchanged.
+## Implementation (technical)
 
-### No other code changes required
-- `GetStarted.tsx` already does `REGION_GROUPS.flatMap(...)` so the new flat list renders correctly.
-- `useAuth.signUp` / `signInAnonymously` pass region fields through generically — works for the new `EU` entry.
-- `handle_new_user` trigger reads `currency_symbol` from metadata, so `€` flows through to seeded activities for the Europe option.
+**`src/components/OnboardingTour.tsx`**
+- Extend `Step` with `interactive?: "log" | "paid"`.
+- Update STEPS[1] and STEPS[2] copy + set `interactive`.
+- Hide the Next button when `currentStep.interactive` is set; show a small italic hint ("Pick a habit to continue" / "Tap pay-out to continue") instead. Keep "Skip tour".
+- Advancement signal: parent (`Index.tsx`) passes counters/flags via new props `logCount` and `paidCount` (or `lastLogAt` / `lastPaidAt` timestamps). When on step 2 and `logCount` increments, auto-advance. Same for step 3 / `paidCount`.
 
-## Notes
-- Existing users whose `profiles.region_code` points to a now-removed country (e.g. `DE`, `FR`, `IT`, `ES`) keep working — `profiles` stores the resolved currency fields directly, so `useMoney()` is unaffected. Only the picker shrinks; no data migration needed.
+**`src/pages/Index.tsx`**
+- Read pending log count and paid-out count from existing hooks (`useHabits` / running total / log list already in scope).
+- Pass change-detection values to `<OnboardingTour>`.
+- No business-logic changes — purely observation.
+
+No DB or RPC changes. No copy changes elsewhere.
+
+## Out of scope
+- Confetti behaviour (already wired for first log / first paid).
+- Tour persistence rules — unchanged.
