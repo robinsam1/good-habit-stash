@@ -49,7 +49,8 @@ const Index = () => {
   // Guest-account lifecycle (1h nudge → /signup, 24h purge → /welcome)
   useAnonymousLifecycle();
 
-  const { isLoading: isLoadingLog } = useUnpaidLog();
+  const { data: unpaidLog, isLoading: isLoadingLog } = useUnpaidLog();
+  const { data: paidLog } = usePaidLog();
   const total = useRunningTotal();
   const { mutate: logActivity, isPending } = useLogActivity();
 
