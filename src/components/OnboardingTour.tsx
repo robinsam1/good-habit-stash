@@ -349,14 +349,20 @@ export function OnboardingTour({
             <Button variant="ghost" size="sm" onClick={finish} className="text-muted-foreground">
               Skip tour
             </Button>
-            <Button
-              size="sm"
-              onClick={next}
-              className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
-            >
-              {step === STEPS.length - 1 ? "Got it" : "Next"}
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Button>
+            {currentStep.interactive ? (
+              <span className="text-xs italic text-muted-foreground pr-1">
+                {currentStep.hint ?? "Try it to continue"}
+              </span>
+            ) : (
+              <Button
+                size="sm"
+                onClick={next}
+                className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              >
+                {step === STEPS.length - 1 ? "Got it" : "Next"}
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
