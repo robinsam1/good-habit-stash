@@ -62,18 +62,30 @@ interface Rect {
 const PADDING = 8;
 const RADIUS = 14;
 
-function readRect(target: string, padding: number = PADDING): Rect | null {
+function readRect(target: string, padding: number = PADDING, square = false): Rect | null {
   const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
   if (!el) return null;
   const r = el.getBoundingClientRect();
+  let width = r.width;
+  let height = r.height;
+  let left = r.left;
+  let top = r.top;
+  if (square) {
+    const size = Math.max(width, height);
+    left = left + width / 2 - size / 2;
+    top = top + height / 2 - size / 2;
+    width = size;
+    height = size;
+  }
   // Viewport-relative — the overlay is position: fixed, so do NOT add scroll offsets.
   return {
-    top: r.top - padding,
-    left: r.left - padding,
-    width: r.width + padding * 2,
-    height: r.height + padding * 2,
+    top: top - padding,
+    left: left - padding,
+    width: width + padding * 2,
+    height: height + padding * 2,
   };
 }
+
 
 
 
