@@ -187,6 +187,46 @@ export function OnboardingTour({
     setStep((s) => s + 1);
   };
 
+  // Baselines captured the moment an interactive step becomes active.
+  // Auto-advance when the relevant counter moves past its baseline.
+  const unpaidBaselineRef = useRef<number | null>(null);
+  const paidBaselineRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!active || !currentStep) return;
+    if (currentStep.interactive === "log") {
+      unpaidBaselineRef.current = unpaidCount;
+    } else {
+      unpaidBaselineRef.current = null;
+    }
+    if (currentStep.interactive === "paid") {
+      paidBaselineRef.current = paidCount;
+    } else {
+      paidBaselineRef.current = null;
+    }
+    // We intentionally only re-run when step changes, not when counts move.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, step]);
+
+  useEffect(() => {
+    if (!active || !currentStep) return;
+    if (
+      currentStep.interactive === "log" &&
+      unpaidBaselineRef.current !== null &&
+      unpaidCount > unpaidBaselineRef.current
+    ) {
+      next();
+    }
+    if (
+      currentStep.interactive === "paid" &&
+      paidBaselineRef.current !== null &&
+      paidCount > paidBaselineRef.current
+    ) {
+      next();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unpaidCount, paidCount, active, currentStep]);
+
   const tooltipPos = useMemo(() => {
     if (!rect) {
       return {
