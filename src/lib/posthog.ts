@@ -7,10 +7,15 @@ const POSTHOG_HOST = (import.meta.env.VITE_POSTHOG_HOST as string | undefined) ?
 
 let initialized = false;
 
+const PROD_HOSTS = new Set(["habitvisor.com", "www.habitvisor.com"]);
+
 export function initPostHog() {
   if (initialized) return;
   if (typeof window === "undefined") return;
   if (!POSTHOG_KEY) return;
+  // Only record analytics & session replays on the live custom domain.
+  // Skips Lovable editor preview, *.lovable.app, and localhost.
+  if (!PROD_HOSTS.has(window.location.hostname)) return;
 
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
