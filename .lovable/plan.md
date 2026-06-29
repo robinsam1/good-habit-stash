@@ -1,20 +1,41 @@
-## Goal
-Stop PostHog from recording events and session replays from the Lovable preview/editor and the `*.lovable.app` published staging URL. Only the live custom domain should report.
+# Simplify country/currency selection
 
-## Change
+Trim the country picker down to a short, opinionated list and add a single "Europe (€)" option for the Eurozone.
 
-**`src/lib/posthog.ts`** — add an environment guard in `initPostHog()` before `posthog.init(...)`:
+## New list (in display order)
 
-- Read `window.location.hostname`.
-- Allow only the production hosts: `habitvisor.com` and `www.habitvisor.com`.
-- Bail early (no init, no autocapture, no session recording) on anything else — including `localhost`, `*.lovable.app` preview URLs, and the `good-habit-stash.lovable.app` published staging URL.
+1. United States — USD ($)
+2. United Kingdom — GBP (£)
+3. Canada — CAD ($)
+4. Australia — AUD ($)
+5. Europe — EUR (€)  *(generic Eurozone entry)*
+6. Poland — PLN (zł)  *(non-Euro EU)*
+7. Sweden — SEK (kr)  *(non-Euro EU, new)*
+8. Denmark — DKK (kr)  *(non-Euro EU, new)*
+9. Czechia — CZK (Kč)  *(non-Euro EU, new)*
+10. Hungary — HUF (Ft)  *(non-Euro EU, new)*
+11. Romania — RON (lei)  *(non-Euro EU, new)*
+12. Bulgaria — BGN (лв)  *(non-Euro EU, new)*
+13. India — INR (₹)
+14. China — CNY (¥)
+15. Japan — JPY (¥)
+16. Brazil — BRL (R$)
 
-Resulting behavior:
-- Preview iframe inside Lovable editor → no PostHog.
-- Direct preview URL → no PostHog.
-- `habitvisor.com` / `www.habitvisor.com` → full PostHog (autocapture + session replay), unchanged from today.
+If you'd rather collapse the non-Euro EU countries into a single line too, say the word — but each has its own currency so they can't share one entry the way Eurozone members can.
 
-No other files change. `.env` keys stay as-is so production keeps working.
+## Changes
 
-## Technical note
-Hostname allowlist is preferred over `import.meta.env.PROD` because the Lovable `.lovable.app` published build is also a "prod" Vite build, and you want that excluded too. Hostname is the only reliable signal that separates the live custom domain from previews/staging.
+### `src/lib/regions.ts`
+- Replace `REGIONS` array with just the entries above.
+- Add a generic `EU` region: `{ code: "EU", name: "Europe", currencyCode: "EUR", currencySymbol: "€", locale: "en-IE", minorUnitDigits: 2 }`.
+- Add the missing non-Euro EU regions (SE, DK, CZ, HU, RO, BG) with sensible locales.
+- Replace `REGION_GROUPS` with a single flat ordered list matching the order above (no group headers — `GetStarted.tsx` already flattens them, so a single group works fine).
+- Keep `getRegion` and `unitAmountForRegion` unchanged.
+
+### No other code changes required
+- `GetStarted.tsx` already does `REGION_GROUPS.flatMap(...)` so the new flat list renders correctly.
+- `useAuth.signUp` / `signInAnonymously` pass region fields through generically — works for the new `EU` entry.
+- `handle_new_user` trigger reads `currency_symbol` from metadata, so `€` flows through to seeded activities for the Europe option.
+
+## Notes
+- Existing users whose `profiles.region_code` points to a now-removed country (e.g. `DE`, `FR`, `IT`, `ES`) keep working — `profiles` stores the resolved currency fields directly, so `useMoney()` is unaffected. Only the picker shrinks; no data migration needed.
