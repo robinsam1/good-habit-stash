@@ -135,35 +135,21 @@ const Index = () => {
       <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 relative">
-          {/* Save (guests only) — top-left, mirroring the sign-out CTA */}
-          {isAnonymous && (
-            <div className="absolute left-0 top-0 flex items-center gap-1">
-              <SaveProgressButton data-tour="save" />
-              <Link to="/streaks">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-foreground"
-                  title="Streaks"
-                >
-                  <Flame className="h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          )}
+          {/* Left cluster: Save (guests) + Streaks */}
+          <div className="absolute left-0 top-0 flex items-center gap-1">
+            {isAnonymous && <SaveProgressButton data-tour="save" />}
+            <Link to="/streaks">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+                title="Streaks"
+              >
+                <Flame className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
           <div className="absolute right-0 top-0 flex items-center gap-1">
-            {!isAnonymous && (
-              <Link to="/streaks">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-foreground"
-                  title="Streaks"
-                >
-                  <Flame className="h-4 w-4" />
-                </Button>
-              </Link>
-            )}
             <Link to="/tasks" data-tour="tasks">
               <Button
                 variant="ghost"
