@@ -1,14 +1,25 @@
 import { Link } from "react-router-dom";
 import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 
 /**
  * Floppy-disk save CTA shown to guest (anonymous) users on the homepage.
  * Red badge draws attention to the call-to-action to save progress.
  */
 export function SaveProgressButton({ "data-tour": dataTour }: { "data-tour"?: string }) {
+  const stampFlags = () => {
+    // Once the user commits to converting, suppress any future FRE confetti
+    // even if they haven't hit the milestones yet.
+    try {
+      localStorage.setItem(CONFETTI_FLAGS.task, "1");
+      localStorage.setItem(CONFETTI_FLAGS.paid, "1");
+    } catch {
+      // ignore storage failures
+    }
+  };
   return (
-    <Link to="/signup" data-tour={dataTour}>
+    <Link to="/signup" data-tour={dataTour} onClick={stampFlags}>
       <Button
         variant="ghost"
         size="icon"

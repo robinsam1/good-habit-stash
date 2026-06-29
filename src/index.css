@@ -281,3 +281,18 @@
 #lovable-badge {
   display: none !important;
 }
+
+@keyframes emoji-burst {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(calc(var(--r) * 0.15));
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.85) rotate(var(--r));
+    opacity: 0;
+  }
+}

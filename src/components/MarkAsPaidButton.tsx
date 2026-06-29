@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
 import { useMoney } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { toast } from "sonner";
 
 export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: boolean }) {
