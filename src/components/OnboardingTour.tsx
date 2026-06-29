@@ -10,7 +10,9 @@ interface Step {
   body: string;
   interactive?: "log" | "paid";
   hint?: string;
+  padding?: number; // override default highlight padding
 }
+
 
 const STEPS: Step[] = [
   {
