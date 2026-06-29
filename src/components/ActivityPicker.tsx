@@ -92,7 +92,7 @@ export function ActivityPicker({ onSelect, isLogging }: ActivityPickerProps) {
           <DrawerTrigger asChild>
             {triggerButton}
           </DrawerTrigger>
-          <DrawerContent className="px-4 pb-6">
+          <DrawerContent className="px-4 pb-6 z-[110]">
             <div className="mt-4">
               {commandContent}
             </div>
@@ -103,7 +103,7 @@ export function ActivityPicker({ onSelect, isLogging }: ActivityPickerProps) {
           <PopoverTrigger asChild>
             {triggerButton}
           </PopoverTrigger>
-          <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start" side="bottom" sideOffset={4}>
+          <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-[110]" align="start" side="bottom" sideOffset={4}>
             {commandContent}
           </PopoverContent>
         </Popover>
