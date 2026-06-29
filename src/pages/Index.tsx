@@ -9,7 +9,7 @@ import { FloatingDecor } from "@/components/FloatingDecor";
 import { SaveProgressButton } from "@/components/SaveProgressButton";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
-import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
+import { useLogActivity, usePaidLog, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { useAnonymousLifecycle } from "@/hooks/useAnonymousLifecycle";
