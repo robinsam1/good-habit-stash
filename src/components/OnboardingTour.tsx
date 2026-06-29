@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { ONBOARDING_PENDING_KEY } from "@/hooks/useAnonymousLifecycle";
@@ -8,6 +8,8 @@ interface Step {
   target: string; // data-tour attribute value
   title: string;
   body: string;
+  interactive?: "log" | "paid";
+  hint?: string;
 }
 
 const STEPS: Step[] = [
@@ -18,13 +20,17 @@ const STEPS: Step[] = [
   },
   {
     target: "picker",
-    title: "Log a habit in one tap",
-    body: "Pick a habit from the dropdown the moment you complete it.",
+    title: "What have you done for yourself today?",
+    body: "Pick any habit from the dropdown that you've already completed today — go on, give yourself credit.",
+    interactive: "log",
+    hint: "Pick a habit to continue",
   },
   {
     target: "mark-paid",
-    title: "Pay yourself out",
-    body: "At the end of the day, move what you earned into your savings.",
+    title: "Reward yourself",
+    body: "Open your banking app, set up a savings pot, and transfer the amount above into it. Then tap the pay-out button to mark it done — a job well done deserves a real reward.",
+    interactive: "paid",
+    hint: "Tap pay-out to continue",
   },
   {
     target: "tasks",
@@ -65,9 +71,13 @@ function readRect(target: string): Rect | null {
 export function OnboardingTour({
   enabled,
   onTargetChange,
+  unpaidCount = 0,
+  paidCount = 0,
 }: {
   enabled: boolean;
   onTargetChange?: (target: string | null) => void;
+  unpaidCount?: number;
+  paidCount?: number;
 }) {
   // Initialise synchronously from localStorage so the overlay can paint on
   // the same frame as the dashboard — no auth roundtrip, no setTimeout.
@@ -177,6 +187,46 @@ export function OnboardingTour({
     setStep((s) => s + 1);
   };
 
+  // Baselines captured the moment an interactive step becomes active.
+  // Auto-advance when the relevant counter moves past its baseline.
+  const unpaidBaselineRef = useRef<number | null>(null);
+  const paidBaselineRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!active || !currentStep) return;
+    if (currentStep.interactive === "log") {
+      unpaidBaselineRef.current = unpaidCount;
+    } else {
+      unpaidBaselineRef.current = null;
+    }
+    if (currentStep.interactive === "paid") {
+      paidBaselineRef.current = paidCount;
+    } else {
+      paidBaselineRef.current = null;
+    }
+    // We intentionally only re-run when step changes, not when counts move.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, step]);
+
+  useEffect(() => {
+    if (!active || !currentStep) return;
+    if (
+      currentStep.interactive === "log" &&
+      unpaidBaselineRef.current !== null &&
+      unpaidCount > unpaidBaselineRef.current
+    ) {
+      next();
+    }
+    if (
+      currentStep.interactive === "paid" &&
+      paidBaselineRef.current !== null &&
+      paidCount > paidBaselineRef.current
+    ) {
+      next();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unpaidCount, paidCount, active, currentStep]);
+
   const tooltipPos = useMemo(() => {
     if (!rect) {
       return {
@@ -214,7 +264,7 @@ export function OnboardingTour({
       {/* SVG mask overlay with a cutout for the highlighted element */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-auto"
-        onClick={next}
+        onClick={currentStep.interactive ? undefined : next}
         aria-hidden
       >
         <defs>
@@ -299,14 +349,20 @@ export function OnboardingTour({
             <Button variant="ghost" size="sm" onClick={finish} className="text-muted-foreground">
               Skip tour
             </Button>
-            <Button
-              size="sm"
-              onClick={next}
-              className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
-            >
-              {step === STEPS.length - 1 ? "Got it" : "Next"}
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Button>
+            {currentStep.interactive ? (
+              <span className="text-xs italic text-muted-foreground pr-1">
+                {currentStep.hint ?? "Try it to continue"}
+              </span>
+            ) : (
+              <Button
+                size="sm"
+                onClick={next}
+                className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              >
+                {step === STEPS.length - 1 ? "Got it" : "Next"}
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

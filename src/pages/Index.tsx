@@ -9,7 +9,7 @@ import { FloatingDecor } from "@/components/FloatingDecor";
 import { SaveProgressButton } from "@/components/SaveProgressButton";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
-import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
+import { useLogActivity, usePaidLog, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { useAnonymousLifecycle } from "@/hooks/useAnonymousLifecycle";
@@ -49,7 +49,8 @@ const Index = () => {
   // Guest-account lifecycle (1h nudge → /signup, 24h purge → /welcome)
   useAnonymousLifecycle();
 
-  const { isLoading: isLoadingLog } = useUnpaidLog();
+  const { data: unpaidLog, isLoading: isLoadingLog } = useUnpaidLog();
+  const { data: paidLog } = usePaidLog();
   const total = useRunningTotal();
   const { mutate: logActivity, isPending } = useLogActivity();
 
@@ -224,7 +225,12 @@ const Index = () => {
       </div>
 
       {/* Guided tour for new guest users */}
-      <OnboardingTour enabled={isAnonymous} onTargetChange={setTourTarget} />
+      <OnboardingTour
+        enabled={isAnonymous}
+        onTargetChange={setTourTarget}
+        unpaidCount={unpaidLog?.length ?? 0}
+        paidCount={paidLog?.length ?? 0}
+      />
 
       {/* Confirm sign-out for guest accounts (destructive) */}
       <AlertDialog open={confirmSignOut} onOpenChange={setConfirmSignOut}>
