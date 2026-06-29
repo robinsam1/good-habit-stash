@@ -2,7 +2,7 @@ import posthog from "posthog-js";
 
 // PostHog project API key is a public client-side key, safe to ship in the bundle.
 // Replace with your project key from https://eu.posthog.com/project/settings.
-const POSTHOG_KEY = "__REPLACE_WITH_PHC_KEY__";
+const POSTHOG_KEY = "phc_IvpFfQ5yMDWsGCR3gqWxJG8c3c2VeGrQyXgFSyyUEMq";
 const POSTHOG_HOST = "https://eu.i.posthog.com";
 
 let initialized = false;
