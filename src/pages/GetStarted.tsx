@@ -24,6 +24,7 @@ import {
   ONBOARDING_PENDING_KEY,
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
+import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 
 const GetStarted = () => {
   const navigate = useNavigate();
@@ -44,6 +45,9 @@ const GetStarted = () => {
     if (!region) return;
 
     setSubmitting(true);
+    // Fresh guest FRE — let confetti fire again for this session.
+    localStorage.removeItem(CONFETTI_FLAGS.task);
+    localStorage.removeItem(CONFETTI_FLAGS.paid);
     const { error } = await signInAnonymously(goal, region);
     setSubmitting(false);
 
