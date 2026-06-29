@@ -1,16 +1,16 @@
 import posthog from "posthog-js";
 
 // PostHog project API key is a public client-side key, safe to ship in the bundle.
-// Replace with your project key from https://eu.posthog.com/project/settings.
-const POSTHOG_KEY = "phc_IvpFfQ5yMDWsGCR3gqWxJG8c3c2VeGrQyXgFSyyUEMq";
-const POSTHOG_HOST = "https://eu.i.posthog.com";
+// Configured via VITE_POSTHOG_KEY / VITE_POSTHOG_HOST in .env.
+const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY as string | undefined;
+const POSTHOG_HOST = (import.meta.env.VITE_POSTHOG_HOST as string | undefined) ?? "https://eu.i.posthog.com";
 
 let initialized = false;
 
 export function initPostHog() {
   if (initialized) return;
   if (typeof window === "undefined") return;
-  if (!POSTHOG_KEY || POSTHOG_KEY.startsWith("__REPLACE")) return;
+  if (!POSTHOG_KEY) return;
 
   posthog.init(POSTHOG_KEY, {
     api_host: POSTHOG_HOST,
