@@ -43,8 +43,10 @@ const STEPS: Step[] = [
     target: "save",
     title: "Don't lose your progress!",
     body: "Save your account to keep everything you've built. You can do this any time.",
+    padding: 14,
   },
 ];
+
 
 interface Rect {
   top: number;
