@@ -142,7 +142,7 @@ export function OnboardingTour({
       el?.scrollIntoView({ block: "center", inline: "nearest" });
     }
     const update = () => {
-      setRect(readRect(currentStep.target, currentStep.padding));
+      setRect(readRect(currentStep.target, currentStep.padding, currentStep.square));
       setViewport({ w: window.innerWidth, h: window.innerHeight });
     };
     // Measure now, next frame, and once more after a short settle to catch
