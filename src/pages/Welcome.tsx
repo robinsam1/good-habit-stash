@@ -8,26 +8,33 @@ import {
   CarouselItem,
   CarouselApi,
 } from "@/components/ui/carousel";
-import { Brain, Sparkles, Coins, ArrowRight, Star, Zap, Trophy, Target } from "lucide-react";
+import { Sparkles, ArrowRight, Star, Zap, Trophy, Target, Brain, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
+import slide1 from "@/assets/welcome-slide-1.jpg";
+import slide2 from "@/assets/welcome-slide-2.jpg";
+import slide3 from "@/assets/welcome-slide-3.jpg";
 
 const SLIDES = [
   {
-    icon: Brain,
+    image: slide1,
+    alt: "Exhausted person slumped at desk next to alarm clock",
     title: "I was struggling with my habits — until I built this app",
     body: "I'd wake up 5 minutes before my first meeting. Years of gym memberships without a single visit. My life wasn't going anywhere.",
   },
   {
-    icon: Sparkles,
+    image: slide2,
+    alt: "Stressed worker on an early morning video call lit by laptop glow",
     title: "Money dictates our life",
     body: "We give 50 years of our best effort to whoever's paying. 7am Zoom calls, managers yelling at us, the stress — but we do it because it earns us money.",
   },
   {
-    icon: Coins,
+    image: slide3,
+    alt: "Joyful person on a sunlit tropical beach at golden hour",
     title: "What if you worked for yourself instead?",
     body: "Set a selfish goal — a holiday, a gaming PC. Then every day you do something positive for yourself, use this app to put money toward it. When you give your goals that kind of care, they're so much easier to reach.",
   },
 ];
+
 
 const FLOATERS = [
   { Icon: Star, className: "top-16 left-8 text-primary/20 animate-float", size: 28, delay: "0s" },
