@@ -14,13 +14,13 @@ import { cn } from "@/lib/utils";
 const SLIDES = [
   {
     icon: Brain,
-    title: "I was struggling with my habits — until I built this app.",
+    title: "I was struggling with my habits — until I built this app",
     body: "I'd wake up 5 minutes before my first meeting. Years of gym memberships without a single visit. My life wasn't going anywhere.",
   },
   {
     icon: Sparkles,
-    title: "Money dictates our life. We give 50 years of our best effort to whoever's paying.",
-    body: "7am Zoom calls. Managers yelling at us. The stress. It's never good — but we do it because it earns us money.",
+    title: "Money dictates our life",
+    body: "We give 50 years of our best effort to whoever's paying. 7am Zoom calls, managers yelling at us, the stress — but we do it because it earns us money.",
   },
   {
     icon: Coins,
