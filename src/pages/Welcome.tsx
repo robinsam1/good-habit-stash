@@ -10,26 +10,26 @@ import {
 } from "@/components/ui/carousel";
 import { Sparkles, ArrowRight, Star, Zap, Trophy, Target, Brain, Coins } from "lucide-react";
 import { cn } from "@/lib/utils";
-import slide1 from "@/assets/welcome-slide-1.jpg";
-import slide2 from "@/assets/welcome-slide-2.jpg";
-import slide3 from "@/assets/welcome-slide-3.jpg";
+import slide1Asset from "@/assets/welcome-1.jpg.asset.json";
+import slide2Asset from "@/assets/welcome-2.jpg.asset.json";
+import slide3Asset from "@/assets/welcome-3.jpg.asset.json";
 
 const SLIDES = [
   {
-    image: slide1,
-    alt: "Exhausted person slumped at desk next to alarm clock",
+    image: slide1Asset.url,
+    alt: "Person lying on couch scrolling phone",
     title: "I was struggling with my habits — until I built this app",
     body: "I'd wake up 5 minutes before my first meeting. Years of gym memberships without a single visit. My life wasn't going anywhere.",
   },
   {
-    image: slide2,
-    alt: "Stressed worker on an early morning video call lit by laptop glow",
+    image: slide2Asset.url,
+    alt: "Stressed worker in a tense meeting",
     title: "Money dictates our life",
     body: "We give 50 years of our best effort to whoever's paying. 7am Zoom calls, managers yelling at us, the stress — but we do it because it earns us money.",
   },
   {
-    image: slide3,
-    alt: "Joyful person on a sunlit tropical beach at golden hour",
+    image: slide3Asset.url,
+    alt: "Three friends laughing together on steps",
     title: "What if you worked for yourself instead?",
     body: "Set a selfish goal — a holiday, a gaming PC. Then every day you do something positive for yourself, use this app to put money toward it. When you give your goals that kind of care, they're so much easier to reach.",
   },
@@ -111,15 +111,13 @@ const Welcome = () => {
                   <div className="text-center px-2 py-4 space-y-5">
                     <div
                       className={cn(
-                        "mx-auto w-40 h-40 sm:w-48 sm:h-48 rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
+                        "w-full aspect-[16/10] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
                         active && "animate-scale-bounce"
                       )}
                     >
                       <img
                         src={slide.image}
                         alt={slide.alt}
-                        width={1024}
-                        height={768}
                         loading={i === 0 ? "eager" : "lazy"}
                         className="w-full h-full object-cover"
                       />
