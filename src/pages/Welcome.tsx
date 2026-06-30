@@ -14,18 +14,18 @@ import { cn } from "@/lib/utils";
 const SLIDES = [
   {
     icon: Brain,
-    title: "Small habits, big results",
-    body: "Tiny daily actions beat willpower. Lower the bar, show up consistently, and watch habits build themselves.",
+    title: "I was struggling with my habits — until I built this app.",
+    body: "I'd wake up 5 minutes before my first meeting. Years of gym memberships without a single visit. My life wasn't going anywhere.",
   },
   {
     icon: Sparkles,
-    title: "Reward the effort",
-    body: "Pairing a habit with an instant reward trains your brain to crave the next win. Close the loop, repeat.",
+    title: "Money dictates our life. We give 50 years of our best effort to whoever's paying.",
+    body: "7am Zoom calls. Managers yelling at us. The stress. It's never good — but we do it because it earns us money.",
   },
   {
     icon: Coins,
-    title: "How it works",
-    body: "Log a habit → grow your pot → move it to savings anytime. Real money, in your own savings pot — you transfer it yourself.",
+    title: "What if you worked for yourself instead?",
+    body: "Set a selfish goal — a holiday, a gaming PC. Then every day you do something positive for yourself, use this app to put money toward it. When you give your goals that kind of care, they're so much easier to reach.",
   },
 ];
 
