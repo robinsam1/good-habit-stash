@@ -14,13 +14,13 @@ import { cn } from "@/lib/utils";
 const SLIDES = [
   {
     icon: Brain,
-    title: "I was struggling with my habits — until I built this app.",
+    title: "I was struggling with my habits — until I built this app",
     body: "I'd wake up 5 minutes before my first meeting. Years of gym memberships without a single visit. My life wasn't going anywhere.",
   },
   {
     icon: Sparkles,
-    title: "Money dictates our life. We give 50 years of our best effort to whoever's paying.",
-    body: "7am Zoom calls. Managers yelling at us. The stress. It's never good — but we do it because it earns us money.",
+    title: "Money dictates our life",
+    body: "We give 50 years of our best effort to whoever's paying. 7am Zoom calls, managers yelling at us, the stress — but we do it because it earns us money.",
   },
   {
     icon: Coins,
@@ -102,19 +102,19 @@ const Welcome = () => {
               const active = current === i && isAnimating;
               return (
                 <CarouselItem key={i}>
-                  <div className="text-center px-2 py-6 space-y-6">
+                  <div className="text-center px-2 py-4 space-y-5">
                     <div
                       className={cn(
-                        "mx-auto w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl shadow-primary/25 animate-glow-pulse",
+                        "mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl shadow-primary/25 animate-glow-pulse",
                         active && "animate-scale-bounce"
                       )}
                       style={{ animationDelay: active ? undefined : "0s" }}
                     >
-                      <Icon className="h-12 w-12 text-primary-foreground" />
+                      <Icon className="h-10 w-10 text-primary-foreground" />
                     </div>
                     <h2
                       className={cn(
-                        "font-display text-2xl sm:text-3xl font-bold text-foreground leading-tight",
+                        "font-display text-xl sm:text-2xl font-bold text-foreground leading-snug tracking-tight max-w-md mx-auto text-balance",
                         active && "animate-slide-up"
                       )}
                       style={{ animationDelay: active ? "0.1s" : "0s", opacity: active ? undefined : 1 }}
@@ -123,7 +123,7 @@ const Welcome = () => {
                     </h2>
                     <p
                       className={cn(
-                        "text-muted-foreground text-base sm:text-lg leading-relaxed max-w-md mx-auto",
+                        "text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-md mx-auto text-pretty",
                         active && "animate-slide-up"
                       )}
                       style={{ animationDelay: active ? "0.2s" : "0s", opacity: active ? undefined : 1 }}
