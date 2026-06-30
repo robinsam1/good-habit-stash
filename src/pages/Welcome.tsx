@@ -105,20 +105,27 @@ const Welcome = () => {
         <Carousel setApi={setApi} className="flex-1 flex items-center">
           <CarouselContent>
             {SLIDES.map((slide, i) => {
-              const Icon = slide.icon;
               const active = current === i && isAnimating;
               return (
                 <CarouselItem key={i}>
                   <div className="text-center px-2 py-4 space-y-5">
                     <div
                       className={cn(
-                        "mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl shadow-primary/25 animate-glow-pulse",
+                        "mx-auto w-40 h-40 sm:w-48 sm:h-48 rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
                         active && "animate-scale-bounce"
                       )}
-                      style={{ animationDelay: active ? undefined : "0s" }}
                     >
-                      <Icon className="h-10 w-10 text-primary-foreground" />
+                      <img
+                        src={slide.image}
+                        alt={slide.alt}
+                        width={1024}
+                        height={768}
+                        loading={i === 0 ? "eager" : "lazy"}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
                     </div>
+
                     <h2
                       className={cn(
                         "font-display text-xl sm:text-2xl font-bold text-foreground leading-snug tracking-tight max-w-md mx-auto text-balance",
