@@ -111,15 +111,13 @@ const Welcome = () => {
                   <div className="text-center px-2 py-4 space-y-5">
                     <div
                       className={cn(
-                        "mx-auto w-40 h-40 sm:w-48 sm:h-48 rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
+                        "w-full aspect-[16/10] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
                         active && "animate-scale-bounce"
                       )}
                     >
                       <img
                         src={slide.image}
                         alt={slide.alt}
-                        width={1024}
-                        height={768}
                         loading={i === 0 ? "eager" : "lazy"}
                         className="w-full h-full object-cover"
                       />
