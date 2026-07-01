@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon, ListChecks } from "lucide-react";
 import { TotalDisplay } from "@/components/TotalDisplay";
 import { ActivityPicker } from "@/components/ActivityPicker";
+import { MobileActivityGrid } from "@/components/MobileActivityGrid";
 import { ActivityLog } from "@/components/ActivityLog";
 import { MarkAsPaidButton } from "@/components/MarkAsPaidButton";
 import { FloatingDecor } from "@/components/FloatingDecor";
@@ -11,11 +12,13 @@ import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useMoney } from "@/hooks/useProfile";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { isAuthenticated, isLoading: authLoading, signOut } = useAuth();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [animateTotal, setAnimateTotal] = useState(false);
@@ -145,12 +148,19 @@ const Index = () => {
           </div>
         </Card>
 
-        {/* Activity Picker */}
+        {/* Activity Picker — grid on mobile, dropdown on desktop */}
         <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
-          <ActivityPicker
-            onSelect={handleSelectActivity}
-            isLogging={isPending}
-          />
+          {isMobile ? (
+            <MobileActivityGrid
+              onSelect={handleSelectActivity}
+              isLogging={isPending}
+            />
+          ) : (
+            <ActivityPicker
+              onSelect={handleSelectActivity}
+              isLogging={isPending}
+            />
+          )}
         </div>
 
         {/* Mark as Paid Button */}
