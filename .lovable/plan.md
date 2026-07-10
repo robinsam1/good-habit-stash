@@ -1,37 +1,22 @@
-# Interactive Onboarding Tour
+## Problem
 
-Turn passive tour steps 2 ("Log a habit") and 3 ("Pay yourself out") into hands-on actions the user must complete to advance. Steps 1, 4, 5 remain click-to-advance.
+After the revert, `src/lib/posthog.ts` still imports `posthog-js`, but the package is no longer in `node_modules`. Vite fails with:
 
-## Behaviour
+```
+Failed to resolve import "posthog-js" from "src/lib/posthog.ts"
+```
 
-**Step 2 — "What have you done for yourself today?"**
-- Tooltip copy changes to prompt the user to pick any habit from the dropdown.
-- "Next" button is removed; tour advances automatically when a new log entry is created.
-- "Skip tour" remains.
+This crashes the dev server response inside the preview iframe (blank/error), while a separate browser tab may still show a stale cached render.
 
-**Step 3 — "Reward yourself"**
-- Tooltip copy: prompt the user to open their banking app, set up a savings pot, and transfer the value shown — then tap the pay-out CTA to confirm.
-- "Next" button removed; tour advances automatically when the user taps Mark as Paid (i.e. pending balance drops to 0 / log marked paid).
-- "Skip tour" remains.
-- Mark-as-paid CTA stays force-visible during this step (already wired via `onTargetChange`).
+## Fix
 
-Steps 1, 4, 5 keep the existing "Next" button behaviour.
+Install the missing dependency:
 
-## Implementation (technical)
+- `bun add posthog-js`
 
-**`src/components/OnboardingTour.tsx`**
-- Extend `Step` with `interactive?: "log" | "paid"`.
-- Update STEPS[1] and STEPS[2] copy + set `interactive`.
-- Hide the Next button when `currentStep.interactive` is set; show a small italic hint ("Pick a habit to continue" / "Tap pay-out to continue") instead. Keep "Skip tour".
-- Advancement signal: parent (`Index.tsx`) passes counters/flags via new props `logCount` and `paidCount` (or `lastLogAt` / `lastPaidAt` timestamps). When on step 2 and `logCount` increments, auto-advance. Same for step 3 / `paidCount`.
+That's the only change needed — `src/lib/posthog.ts` and its usage in `src/App.tsx` (the `PostHogPageviews` component) are already written to no-op safely until initialized, so once the import resolves the preview will render again.
 
-**`src/pages/Index.tsx`**
-- Read pending log count and paid-out count from existing hooks (`useHabits` / running total / log list already in scope).
-- Pass change-detection values to `<OnboardingTour>`.
-- No business-logic changes — purely observation.
+## Verification
 
-No DB or RPC changes. No copy changes elsewhere.
-
-## Out of scope
-- Confetti behaviour (already wired for first log / first paid).
-- Tour persistence rules — unchanged.
+- Confirm Vite recompiles without the "Failed to resolve import" error.
+- Confirm `/welcome` renders inside the preview frame.
