@@ -14,6 +14,7 @@ import Settings from "./pages/Settings";
 import Tasks from "./pages/Tasks";
 import GetStarted from "./pages/GetStarted";
 import NotFound from "./pages/NotFound";
+import { PrototypeNotice } from "./components/PrototypeNotice";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <PrototypeNotice />
       <BrowserRouter>
         <PostHogPageviews />
         <Routes>
