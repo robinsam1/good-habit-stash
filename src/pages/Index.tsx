@@ -6,41 +6,60 @@ import { ActivityPicker } from "@/components/ActivityPicker";
 import { ActivityLog } from "@/components/ActivityLog";
 import { MarkAsPaidButton } from "@/components/MarkAsPaidButton";
 import { FloatingDecor } from "@/components/FloatingDecor";
-import { useLogActivity, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
+import { SaveProgressButton } from "@/components/SaveProgressButton";
+import { OnboardingTour } from "@/components/OnboardingTour";
+import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
+import { useLogActivity, usePaidLog, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnonymousLifecycle } from "@/hooks/useAnonymousLifecycle";
 import { toast } from "sonner";
 import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading: authLoading, signOut } = useAuth();
+  const { isAuthenticated, isAnonymous, isLoading: authLoading, signOut } = useAuth();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [animateTotal, setAnimateTotal] = useState(false);
+  const [tourTarget, setTourTarget] = useState<string | null>(null);
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
   const { formatMoneySigned } = useMoney();
-  
+
   // Redirect to welcome if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       navigate('/welcome', { replace: true });
     }
   }, [isAuthenticated, authLoading, navigate]);
-  
+
   // Enable cross-device realtime sync
   useRealtimeSync();
-  
-  const { isLoading: isLoadingLog } = useUnpaidLog();
+  // Guest-account lifecycle (1h nudge → /signup, 24h purge → /welcome)
+  useAnonymousLifecycle();
+
+  const { data: unpaidLog, isLoading: isLoadingLog } = useUnpaidLog();
+  const { data: paidLog } = usePaidLog();
   const total = useRunningTotal();
   const { mutate: logActivity, isPending } = useLogActivity();
-  
+
   const handleSelectActivity = useCallback((activityId: number) => {
     logActivity(activityId, {
       onSuccess: (entry) => {
         setNewEntryId(entry.id);
         setAnimateTotal(true);
-        
+
         const isPositive = entry.value >= 0;
         toast.success(
           isPositive ? "Great job! 🎉" : "Logged",
@@ -48,7 +67,19 @@ const Index = () => {
             description: `${entry.activity?.name}: ${formatMoneySigned(entry.value)}`,
           }
         );
-        
+
+        // First-task confetti for guest users only, once per browser.
+        if (isAnonymous) {
+          try {
+            if (!localStorage.getItem(CONFETTI_FLAGS.task)) {
+              fireConfetti(["🌟", "🏅", "🏆"]);
+              localStorage.setItem(CONFETTI_FLAGS.task, "1");
+            }
+          } catch {
+            /* ignore */
+          }
+        }
+
         // Reset animation states after a delay
         setTimeout(() => {
           setNewEntryId(undefined);
@@ -65,9 +96,21 @@ const Index = () => {
 
   const handleSignOut = useCallback(async () => {
     await signOut();
-    toast.success('Signed out');
-  }, [signOut]);
-  
+    // Clear guest-session markers so the lifecycle hook doesn't fire again.
+    localStorage.removeItem('hv_anon_started_at');
+    localStorage.removeItem('hv_anon_nudged_save');
+    localStorage.removeItem('hv_onboarding_pending');
+    toast.success(isAnonymous ? 'Signed out — guest data cleared' : 'Signed out');
+  }, [signOut, isAnonymous]);
+
+  const handleSignOutClick = useCallback(() => {
+    if (isAnonymous) {
+      setConfirmSignOut(true);
+    } else {
+      void handleSignOut();
+    }
+  }, [isAnonymous, handleSignOut]);
+
   // Show loading while checking auth
   if (authLoading) {
     return (
@@ -76,12 +119,12 @@ const Index = () => {
       </div>
     );
   }
-  
+
   // Don't render content if not authenticated (will redirect)
   if (!isAuthenticated) {
     return null;
   }
-  
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <FloatingDecor />
@@ -93,8 +136,14 @@ const Index = () => {
       <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 relative">
+          {/* Save (guests only) — top-left, mirroring the sign-out CTA */}
+          {isAnonymous && (
+            <div className="absolute left-0 top-0">
+              <SaveProgressButton data-tour="save" />
+            </div>
+          )}
           <div className="absolute right-0 top-0 flex items-center gap-1">
-            <Link to="/tasks">
+            <Link to="/tasks" data-tour="tasks">
               <Button
                 variant="ghost"
                 size="icon"
@@ -117,9 +166,9 @@ const Index = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleSignOut}
+              onClick={handleSignOutClick}
               className="text-muted-foreground hover:text-foreground"
-              title="Sign out"
+              title={isAnonymous ? "Sign out and clear guest data" : "Sign out"}
             >
               <LogOut className="h-4 w-4" />
             </Button>
@@ -138,7 +187,7 @@ const Index = () => {
         </header>
 
         {/* Total Display */}
-        <Card className="mb-10 border-border/50 shadow-xl overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
+        <Card data-tour="total" className="mb-10 border-border/50 shadow-xl overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
           <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
           <div className="py-8 px-4">
             <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
@@ -146,7 +195,7 @@ const Index = () => {
         </Card>
 
         {/* Activity Picker */}
-        <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+        <div data-tour="picker" className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
           <ActivityPicker
             onSelect={handleSelectActivity}
             isLogging={isPending}
@@ -154,8 +203,8 @@ const Index = () => {
         </div>
 
         {/* Mark as Paid Button */}
-        <div className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
-          <MarkAsPaidButton />
+        <div data-tour="mark-paid" className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+          <MarkAsPaidButton forceVisible={tourTarget === "mark-paid"} />
         </div>
 
         {/* Activity Log */}
@@ -174,6 +223,41 @@ const Index = () => {
           <ActivityLog newEntryId={newEntryId} />
         </div>
       </div>
+
+      {/* Guided tour for new guest users */}
+      <OnboardingTour
+        enabled={isAnonymous}
+        onTargetChange={setTourTarget}
+        unpaidCount={unpaidLog?.length ?? 0}
+        paidCount={paidLog?.length ?? 0}
+      />
+
+      {/* Confirm sign-out for guest accounts (destructive) */}
+      <AlertDialog open={confirmSignOut} onOpenChange={setConfirmSignOut}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display text-2xl">
+              Sign out and clear guest data?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              You're using a guest account. Signing out will permanently delete your
+              habits, log entries and balance. Save your progress first to keep them.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel className="font-medium">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConfirmSignOut(false);
+                void handleSignOut();
+              }}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold"
+            >
+              Sign out & delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

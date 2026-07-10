@@ -1,24 +1,37 @@
-## Goal
-Pull task management out of Settings into a dedicated page with its own route and entry point.
+# Interactive Onboarding Tour
 
-## Changes
+Turn passive tour steps 2 ("Log a habit") and 3 ("Pay yourself out") into hands-on actions the user must complete to advance. Steps 1, 4, 5 remain click-to-advance.
 
-**New page `src/pages/Tasks.tsx`**
-- Mirrors the Settings page layout (max-w-lg, back button to `/`, page title "Edit Tasks").
-- Auth-guarded the same way (`useAuth` → redirect `/welcome` if signed out).
-- Renders `<ManageActivities />` for Pro users and `<ProInterestCard />` for everyone else, using `useIsPro` with the loading skeleton already in Settings.
+## Behaviour
 
-**Routing — `src/App.tsx`**
-- Register `<Route path="/tasks" element={<Tasks />} />` above the catch-all.
+**Step 2 — "What have you done for yourself today?"**
+- Tooltip copy changes to prompt the user to pick any habit from the dropdown.
+- "Next" button is removed; tour advances automatically when a new log entry is created.
+- "Skip tour" remains.
 
-**Settings — `src/pages/Settings.tsx`**
-- Remove the Pro/ManageActivities/ProInterestCard block and unused imports (`useIsPro`, `ManageActivities`, `ProInterestCard`).
-- Settings becomes password-only.
+**Step 3 — "Reward yourself"**
+- Tooltip copy: prompt the user to open their banking app, set up a savings pot, and transfer the value shown — then tap the pay-out CTA to confirm.
+- "Next" button removed; tour advances automatically when the user taps Mark as Paid (i.e. pending balance drops to 0 / log marked paid).
+- "Skip tour" remains.
+- Mark-as-paid CTA stays force-visible during this step (already wired via `onTargetChange`).
 
-**Entry point — `src/pages/Index.tsx` header**
-- Add a `ListChecks` (lucide) icon button linking to `/tasks`, placed next to the Settings gear in the top-right action cluster, with `title="Edit tasks"`.
+Steps 1, 4, 5 keep the existing "Next" button behaviour.
+
+## Implementation (technical)
+
+**`src/components/OnboardingTour.tsx`**
+- Extend `Step` with `interactive?: "log" | "paid"`.
+- Update STEPS[1] and STEPS[2] copy + set `interactive`.
+- Hide the Next button when `currentStep.interactive` is set; show a small italic hint ("Pick a habit to continue" / "Tap pay-out to continue") instead. Keep "Skip tour".
+- Advancement signal: parent (`Index.tsx`) passes counters/flags via new props `logCount` and `paidCount` (or `lastLogAt` / `lastPaidAt` timestamps). When on step 2 and `logCount` increments, auto-advance. Same for step 3 / `paidCount`.
+
+**`src/pages/Index.tsx`**
+- Read pending log count and paid-out count from existing hooks (`useHabits` / running total / log list already in scope).
+- Pass change-detection values to `<OnboardingTour>`.
+- No business-logic changes — purely observation.
+
+No DB or RPC changes. No copy changes elsewhere.
 
 ## Out of scope
-- No business logic / RPC / data-model changes.
-- No change to Pro gating, interest tracking, or `is_pro` rules — same components are reused on the new route.
-- No nav redesign beyond adding the single icon button.
+- Confetti behaviour (already wired for first log / first paid).
+- Tour persistence rules — unchanged.

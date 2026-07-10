@@ -281,3 +281,32 @@
 #lovable-badge {
   display: none !important;
 }
+
+@keyframes emoji-burst {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(calc(var(--r) * 0.1));
+  }
+  45% {
+    /* apex — rises quickly then decelerates */
+    opacity: 1;
+    transform: translate(
+      calc(-50% + var(--tx) * 0.55),
+      calc(-50% + var(--apex))
+    ) scale(1) rotate(calc(var(--r) * 0.5));
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1);
+  }
+  100% {
+    /* gravity pulls down past viewport, accelerating */
+    transform: translate(
+      calc(-50% + var(--tx)),
+      calc(-50% + var(--fall))
+    ) scale(0.9) rotate(var(--r));
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.2);
+  }
+}

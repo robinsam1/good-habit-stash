@@ -14,14 +14,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
 import { useMoney } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { toast } from "sonner";
 
-export function MarkAsPaidButton() {
+export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: boolean }) {
   const [open, setOpen] = useState(false);
   const total = useRunningTotal();
   const { mutate: markAsPaid, isPending } = useMarkAsPaid();
   const { formatMoney } = useMoney();
-  
+  const { isAnonymous } = useAuth();
+
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
       onSuccess: () => {
@@ -29,6 +32,17 @@ export function MarkAsPaidButton() {
           description: `${formatMoney(total)} moved to your savings`,
           icon: <CheckCircle className="h-5 w-5" />,
         });
+        // First mark-as-paid confetti for guest users only, once per browser.
+        if (isAnonymous) {
+          try {
+            if (!localStorage.getItem(CONFETTI_FLAGS.paid)) {
+              fireConfetti(["💸"]);
+              localStorage.setItem(CONFETTI_FLAGS.paid, "1");
+            }
+          } catch {
+            /* ignore */
+          }
+        }
         setOpen(false);
       },
       onError: () => {
@@ -38,23 +52,28 @@ export function MarkAsPaidButton() {
       },
     });
   };
-  
-  if (total === 0) {
+
+  // Normally hidden when there's nothing to pay out, but the onboarding tour
+  // forces it visible (disabled) so the user can see the CTA being explained.
+  if (total === 0 && !forceVisible) {
     return null;
   }
+
+  const disabled = total === 0;
   
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button
           size="lg"
-          className="w-full h-14 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/25 transition-all hover:shadow-xl hover:shadow-accent/30"
+          disabled={disabled}
+          className="w-full h-14 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/25 transition-all hover:shadow-xl hover:shadow-accent/30 disabled:opacity-70"
         >
           <Banknote className="h-5 w-5 mr-2" />
           Move to savings
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="sm:max-w-md">
+      <AlertDialogContent className="sm:max-w-md z-[110]">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-display text-2xl">
             Move {formatMoney(total)} to your savings?

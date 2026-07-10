@@ -233,9 +233,10 @@ export function LogEntry({ id, activityId, activityName, value, date, notes, isN
         <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
           <Textarea
             value={noteText}
-            onChange={(e) => setNoteText(e.target.value)}
+            onChange={(e) => setNoteText(e.target.value.slice(0, 2000))}
             placeholder="Add a note..."
             className="min-h-[60px] resize-none"
+            maxLength={2000}
             autoFocus
           />
           <div className="flex justify-end gap-2">
