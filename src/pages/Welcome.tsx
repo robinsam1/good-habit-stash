@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -41,6 +42,7 @@ const FLOATERS = [
 const Welcome = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useAuth();
+  const isMobile = useIsMobile();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -51,6 +53,14 @@ const Welcome = () => {
       navigate("/", { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);
+
+  // On mobile, skip the onboarding carousel (FRE) and send unauthenticated
+  // visitors straight to sign up.
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && isMobile) {
+      navigate("/signup", { replace: true });
+    }
+  }, [isMobile, isAuthenticated, isLoading, navigate]);
 
   useEffect(() => {
     if (!api) return;
