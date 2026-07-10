@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { ONBOARDING_PENDING_KEY } from "@/hooks/useAnonymousLifecycle";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 interface Step {
@@ -50,6 +51,23 @@ const STEPS: Step[] = [
   },
 
 ];
+
+/**
+ * On mobile the picker is an icon grid rather than a dropdown, so the copy for
+ * the "picker" step is adapted. Every other step is identical to desktop.
+ */
+function getSteps(isMobile: boolean): Step[] {
+  if (!isMobile) return STEPS;
+  return STEPS.map((s) =>
+    s.target === "picker"
+      ? {
+          ...s,
+          body: "Tap any habit in the grid below that you've already completed today — go on, give yourself credit.",
+          hint: "Tap a habit to continue",
+        }
+      : s
+  );
+}
 
 
 interface Rect {
@@ -106,6 +124,8 @@ export function OnboardingTour({
     if (typeof window === "undefined") return false;
     return localStorage.getItem(ONBOARDING_PENDING_KEY) === "1";
   });
+  const isMobile = useIsMobile();
+  const steps = useMemo(() => getSteps(isMobile), [isMobile]);
   const [step, setStep] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const [viewport, setViewport] = useState({
@@ -125,7 +145,7 @@ export function OnboardingTour({
     if (!enabled && active) setActive(false);
   }, [enabled, active]);
 
-  const currentStep = STEPS[step];
+  const currentStep = steps[step];
 
   // Recompute rect whenever step changes or the layout shifts.
   useLayoutEffect(() => {
@@ -207,7 +227,7 @@ export function OnboardingTour({
   };
 
   const next = () => {
-    if (step >= STEPS.length - 1) {
+    if (step >= steps.length - 1) {
       finish();
       return;
     }
@@ -282,6 +302,87 @@ export function OnboardingTour({
   }, [rect, viewport]);
 
   if (!active || !currentStep) return null;
+
+  // ── Mobile presentation ──────────────────────────────────────────────
+  // No heavy SVG spotlight: a lightweight pulsing ring guides the eye while a
+  // bottom-anchored coach mark explains each step and keeps the screen usable.
+  if (isMobile) {
+    // Skip the ring for targets that are taller than the viewport (e.g. the
+    // full activity grid) — a ring around it would spill off-screen.
+    const showRing = !!rect && rect.height <= viewport.h * 0.6;
+    return (
+      <div className="fixed inset-0 z-[100] pointer-events-none">
+        {showRing && rect && (
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
+              borderRadius: RADIUS,
+              boxShadow:
+                "0 0 0 2px hsl(var(--primary)), 0 0 0 6px hsl(var(--primary) / 0.22)",
+              animation: "glow-pulse 2s ease-in-out infinite",
+            }}
+          />
+        )}
+
+        {/* Bottom-anchored coach mark */}
+        <div
+          key={step}
+          className="pointer-events-auto fixed inset-x-3 bottom-3 rounded-2xl border bg-card text-card-foreground shadow-2xl p-4 animate-slide-up"
+          style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="text-xs font-medium text-muted-foreground">
+              Step {step + 1} of {steps.length}
+            </span>
+          </div>
+          <h3 className="font-display font-semibold text-lg mb-1">{currentStep.title}</h3>
+          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{currentStep.body}</p>
+
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex gap-1.5">
+              {steps.map((_, i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all",
+                    i === step
+                      ? "w-6 bg-gradient-to-r from-primary to-accent"
+                      : "w-1.5 bg-muted-foreground/30"
+                  )}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={finish} className="text-muted-foreground">
+                Skip
+              </Button>
+              {currentStep.interactive ? (
+                <span className="text-xs italic text-muted-foreground pr-1">
+                  {currentStep.hint ?? "Try it to continue"}
+                </span>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={next}
+                  className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+                >
+                  {step === steps.length - 1 ? "Got it" : "Next"}
+                  <ArrowRight className="h-4 w-4 ml-1" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const maskRect = rect ?? {
     top: -100,

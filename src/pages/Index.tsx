@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon, ListChecks } from "lucide-react";
 import { TotalDisplay } from "@/components/TotalDisplay";
 import { ActivityPicker } from "@/components/ActivityPicker";
+import { MobileActivityGrid } from "@/components/MobileActivityGrid";
 import { ActivityLog } from "@/components/ActivityLog";
 import { MarkAsPaidButton } from "@/components/MarkAsPaidButton";
 import { FloatingDecor } from "@/components/FloatingDecor";
@@ -13,6 +14,7 @@ import { useLogActivity, usePaidLog, useRunningTotal, useUnpaidLog } from "@/hoo
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { useAnonymousLifecycle } from "@/hooks/useAnonymousLifecycle";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
@@ -36,6 +38,7 @@ const Index = () => {
   const [tourTarget, setTourTarget] = useState<string | null>(null);
   const [confirmSignOut, setConfirmSignOut] = useState(false);
   const { formatMoneySigned } = useMoney();
+  const isMobile = useIsMobile();
 
   // Redirect to welcome if not authenticated
   useEffect(() => {
@@ -194,12 +197,25 @@ const Index = () => {
           </div>
         </Card>
 
-        {/* Activity Picker */}
-        <div data-tour="picker" className="mb-8 animate-slide-up" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
-          <ActivityPicker
-            onSelect={handleSelectActivity}
-            isLogging={isPending}
-          />
+        {/* Activity Picker — dropdown on desktop, icon grid on mobile.
+            The mobile grid carries its own data-tour="picker"; the desktop
+            wrapper keeps it here so the tour highlights the dropdown box. */}
+        <div
+          data-tour={isMobile ? undefined : "picker"}
+          className="mb-8 animate-slide-up"
+          style={{ animationDelay: "0.1s", animationFillMode: "both" }}
+        >
+          {isMobile ? (
+            <MobileActivityGrid
+              onSelect={handleSelectActivity}
+              isLogging={isPending}
+            />
+          ) : (
+            <ActivityPicker
+              onSelect={handleSelectActivity}
+              isLogging={isPending}
+            />
+          )}
         </div>
 
         {/* Mark as Paid Button */}
