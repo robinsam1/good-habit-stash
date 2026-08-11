@@ -77,6 +77,23 @@ export function useUnpaidLog() {
   });
 }
 
+// Fetch every log entry (paid + unpaid, excluding deleted) — used by the report view
+export function useAllLog() {
+  return useQuery({
+    queryKey: ["allLog"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("log")
+        .select("id, date, activity_id")
+        .is("deleted_at", null)
+        .order("date", { ascending: true });
+
+      if (error) throw error;
+      return data as { id: number; date: string; activity_id: number }[];
+    },
+  });
+}
+
 // Calculate running total from unpaid entries
 export function useRunningTotal() {
   const { data: unpaidLog } = useUnpaidLog();
