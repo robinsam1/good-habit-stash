@@ -51,22 +51,25 @@ export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelinePro
       if (!days.length || totalDays <= 0) return;
 
       const step = width / totalDays;
-      // Minimum visual width so isolated days stay visible on long ranges.
-      const minW = Math.max(2, Math.min(step, 3));
+      // Minimum width of a single day so isolated points stay visible on long ranges.
+      const dayMin = Math.max(2, Math.min(step, 3));
+      // Natural width of one logged day, never smaller than the visibility floor.
+      const dayW = Math.max(dayMin, step);
 
       ctx.fillStyle = primary;
       let runStart = days[0];
       let prev = days[0];
       const flush = (start: number, end: number) => {
         const x = start * step;
-        const w = Math.max(minW, (end - start + 1) * step);
+        const runLength = end - start + 1;
+        const w = runLength * dayW;
         roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, radius);
         ctx.fill();
       };
       for (let i = 1; i < days.length; i++) {
         const d = days[i];
         // Merge runs that are consecutive, or that collapse into the same pixel.
-        if (d - prev <= 1 || (d - prev) * step < minW) {
+        if (d - prev <= 1 || (d - prev) * step < dayW) {
           prev = d;
           continue;
         }
