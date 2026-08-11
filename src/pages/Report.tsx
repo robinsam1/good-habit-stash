@@ -93,6 +93,16 @@ const Report = () => {
           <p className="text-muted-foreground mt-1">
             Every day you logged each habit, since you started
           </p>
+          {emptyCount > 0 && (
+            <label className="inline-flex items-center gap-2 mt-4 text-sm text-foreground cursor-pointer select-none">
+              <Checkbox
+                id="hide-empty-habits"
+                checked={hideEmpty}
+                onCheckedChange={(checked) => setHideEmpty(checked === true)}
+              />
+              <span>Hide habits with no entries ({emptyCount})</span>
+            </label>
+          )}
         </header>
 
         <Card className="p-4 sm:p-5 border-border/50 shadow-lg overflow-hidden">
@@ -104,7 +114,9 @@ const Report = () => {
             </div>
           ) : !rows.length ? (
             <p className="text-sm text-muted-foreground py-8 text-center">
-              No habits to report on yet.
+              {hideEmpty
+                ? "All your habits are currently empty. Log something to see them here."
+                : "No habits to report on yet."}
             </p>
           ) : (
             <div className="grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center">
