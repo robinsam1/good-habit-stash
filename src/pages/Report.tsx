@@ -17,6 +17,7 @@ const Report = () => {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const [hideEmpty, setHideEmpty] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -26,7 +27,7 @@ const Report = () => {
 
   const isLoading = activitiesLoading || logsLoading || profileLoading;
 
-  const { startDate, today, totalDays, rows } = useMemo(() => {
+  const { startDate, today, totalDays, rows, emptyCount } = useMemo(() => {
     const today = startOfDay(new Date());
 
     const candidates: Date[] = [];
