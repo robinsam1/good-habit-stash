@@ -62,8 +62,11 @@ const Report = () => {
         days: Array.from(byActivity.get(activity.id) ?? []).sort((a, b) => a - b),
       }));
 
-    return { startDate, today, totalDays, rows };
-  }, [activities, logs, profile?.created_at, user?.created_at]);
+    const emptyCount = rows.filter((row) => row.days.length === 0).length;
+    const visibleRows = hideEmpty ? rows.filter((row) => row.days.length > 0) : rows;
+
+    return { startDate, today, totalDays, rows: visibleRows, emptyCount };
+  }, [activities, logs, profile?.created_at, user?.created_at, hideEmpty]);
 
   if (authLoading) {
     return (
