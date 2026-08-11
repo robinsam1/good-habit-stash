@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import Settings from "./pages/Settings";
 import Tasks from "./pages/Tasks";
 import GetStarted from "./pages/GetStarted";
+import Report from "./pages/Report";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
         <Route path="/signup" element={<Signup />} />
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/history" element={<History />} />
+        <Route path="/report" element={<Report />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/auth" element={<Auth />} />
