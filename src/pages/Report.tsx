@@ -1,9 +1,10 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { format, parseISO, differenceInCalendarDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HabitTimeline } from "@/components/HabitTimeline";
 import { useActivities, useAllLog } from "@/hooks/useHabits";
@@ -16,6 +17,7 @@ const Report = () => {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const [hideEmpty, setHideEmpty] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -25,7 +27,7 @@ const Report = () => {
 
   const isLoading = activitiesLoading || logsLoading || profileLoading;
 
-  const { startDate, today, totalDays, rows } = useMemo(() => {
+  const { startDate, today, totalDays, rows, emptyCount } = useMemo(() => {
     const today = startOfDay(new Date());
 
     const candidates: Date[] = [];
@@ -60,8 +62,11 @@ const Report = () => {
         days: Array.from(byActivity.get(activity.id) ?? []).sort((a, b) => a - b),
       }));
 
-    return { startDate, today, totalDays, rows };
-  }, [activities, logs, profile?.created_at, user?.created_at]);
+    const emptyCount = rows.filter((row) => row.days.length === 0).length;
+    const visibleRows = hideEmpty ? rows.filter((row) => row.days.length > 0) : rows;
+
+    return { startDate, today, totalDays, rows: visibleRows, emptyCount };
+  }, [activities, logs, profile?.created_at, user?.created_at, hideEmpty]);
 
   if (authLoading) {
     return (
@@ -88,6 +93,16 @@ const Report = () => {
           <p className="text-muted-foreground mt-1">
             Every day you logged each habit, since you started
           </p>
+          {emptyCount > 0 && (
+            <label className="inline-flex items-center gap-2 mt-4 text-sm text-foreground cursor-pointer select-none">
+              <Checkbox
+                id="hide-empty-habits"
+                checked={hideEmpty}
+                onCheckedChange={(checked) => setHideEmpty(checked === true)}
+              />
+              <span>Hide habits with no entries ({emptyCount})</span>
+            </label>
+          )}
         </header>
 
         <Card className="p-4 sm:p-5 border-border/50 shadow-lg overflow-hidden">
@@ -99,7 +114,9 @@ const Report = () => {
             </div>
           ) : !rows.length ? (
             <p className="text-sm text-muted-foreground py-8 text-center">
-              No habits to report on yet.
+              {hideEmpty
+                ? "All your habits are currently empty. Log something to see them here."
+                : "No habits to report on yet."}
             </p>
           ) : (
             <div className="grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center">
