@@ -45,7 +45,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       const trackY = Math.round((height - trackH) / 2);
 
       // Empty track — always draw, even when there are no logged days.
-      ctx.fillStyle = muted;
+      ctx.fillStyle = trackColor ?? muted;
       roundRect(ctx, 0, trackY, width, trackH, trackH / 2);
       ctx.fill();
 
