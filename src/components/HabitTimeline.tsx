@@ -98,6 +98,23 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
   );
 }
 
+function resolveTrackColor(trackColor: string | undefined, fallback: string): string {
+  if (!trackColor) return fallback;
+  if (trackColor === "transparent") return "transparent";
+
+  const styles = getComputedStyle(document.documentElement);
+  const hslParts = (varName: string) =>
+    styles.getPropertyValue(varName).trim().split(/\s+/).join(", ");
+
+  if (trackColor === "muted-40") {
+    return `hsla(${hslParts("--muted")}, 0.4)`;
+  }
+  if (trackColor === "card") {
+    return `hsl(${hslParts("--card")})`;
+  }
+  return trackColor;
+}
+
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,
