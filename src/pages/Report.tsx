@@ -133,7 +133,7 @@ const Report = () => {
                 <div
                   key={row.id}
                   className={`col-span-2 grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 ${
-                    index % 2 === 1 ? "bg-muted/40" : "bg-transparent"
+                    index % 2 === 1 ? "bg-secondary/70" : "bg-transparent"
                   }`}
                 >
                   <div
