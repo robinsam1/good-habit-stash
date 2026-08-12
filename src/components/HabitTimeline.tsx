@@ -41,11 +41,13 @@ export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelinePro
 
       const trackH = Math.max(6, Math.round(height * 0.55));
       const trackY = Math.round((height - trackH) / 2);
-      const radius = trackH / 2;
+      // Base radius for a single point: half the day width, capped by track height.
+      // Multi-day runs use the same radius so their ends match an isolated point.
+      const pointRadius = Math.min(trackH / 2, dayW / 2);
 
       // Empty track
       ctx.fillStyle = muted;
-      roundRect(ctx, 0, trackY, width, trackH, radius);
+      roundRect(ctx, 0, trackY, width, trackH, pointRadius);
       ctx.fill();
 
       if (!days.length || totalDays <= 0) return;
