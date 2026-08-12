@@ -143,7 +143,11 @@ const Report = () => {
                     {row.name}
                   </div>
                   <div className="py-1">
-                    <HabitTimeline days={row.days} totalDays={totalDays} />
+                    <HabitTimeline
+                      days={row.days}
+                      totalDays={totalDays}
+                      trackColor={index % 2 === 1 ? "transparent" : undefined}
+                    />
                   </div>
                 </div>
               ))}

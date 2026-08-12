@@ -6,13 +6,15 @@ interface HabitTimelineProps {
   /** Total number of days on the track (inclusive of first and today). */
   totalDays: number;
   height?: number;
+  /** Optional color for the empty track. Defaults to the theme's muted color. */
+  trackColor?: string;
 }
 
 /**
  * A single one-line-tall adherence track drawn on canvas so it scales to
  * thousands of days without creating a DOM node per day.
  */
-export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelineProps) {
+export function HabitTimeline({ days, totalDays, height = 20, trackColor }: HabitTimelineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +45,7 @@ export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelinePro
       const trackY = Math.round((height - trackH) / 2);
 
       // Empty track — always draw, even when there are no logged days.
-      ctx.fillStyle = muted;
+      ctx.fillStyle = trackColor ?? muted;
       roundRect(ctx, 0, trackY, width, trackH, trackH / 2);
       ctx.fill();
 
