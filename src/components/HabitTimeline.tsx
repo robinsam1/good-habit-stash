@@ -41,12 +41,6 @@ export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelinePro
 
       const trackH = Math.max(6, Math.round(height * 0.55));
       const trackY = Math.round((height - trackH) / 2);
-      const radius = trackH / 2;
-
-      // Empty track
-      ctx.fillStyle = muted;
-      roundRect(ctx, 0, trackY, width, trackH, radius);
-      ctx.fill();
 
       if (!days.length || totalDays <= 0) return;
 
@@ -56,6 +50,15 @@ export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelinePro
       // Natural width of one logged day, never smaller than the visibility floor.
       const dayW = Math.max(dayMin, step);
 
+      // Base radius for a single point: half the day width, capped by track height.
+      // Multi-day runs use the same radius so their ends match an isolated point.
+      const pointRadius = Math.min(trackH / 2, dayW / 2);
+
+      // Empty track
+      ctx.fillStyle = muted;
+      roundRect(ctx, 0, trackY, width, trackH, pointRadius);
+      ctx.fill();
+
       ctx.fillStyle = primary;
       let runStart = days[0];
       let prev = days[0];
@@ -63,7 +66,7 @@ export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelinePro
         const x = start * step;
         const runLength = end - start + 1;
         const w = runLength * dayW;
-        roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, radius);
+        roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, pointRadius);
         ctx.fill();
       };
       for (let i = 1; i < days.length; i++) {
