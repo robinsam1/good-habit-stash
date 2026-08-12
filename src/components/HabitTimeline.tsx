@@ -6,6 +6,8 @@ interface HabitTimelineProps {
   /** Total number of days on the track (inclusive of first and today). */
   totalDays: number;
   height?: number;
+  /** Optional color for the empty track. Defaults to the theme's muted color. */
+  trackColor?: string;
 }
 
 /**
