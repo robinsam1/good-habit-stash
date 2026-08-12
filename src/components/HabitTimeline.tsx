@@ -44,22 +44,22 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       const trackH = Math.max(6, Math.round(height * 0.55));
       const trackY = Math.round((height - trackH) / 2);
 
-      // Empty track — always draw, even when there are no logged days.
-      ctx.fillStyle = resolveTrackColor(trackColor, muted);
-      roundRect(ctx, 0, trackY, width, trackH, trackH / 2);
-      ctx.fill();
-
-      if (!days.length || totalDays <= 0) return;
-
-      const step = width / totalDays;
+      const step = width / Math.max(1, totalDays);
       // Minimum width of a single day so isolated points stay visible on long ranges.
       const dayMin = Math.max(2, Math.min(step, 3));
       // Natural width of one logged day, never smaller than the visibility floor.
       const dayW = Math.max(dayMin, step);
 
       // Base radius for a single point: half the day width, capped by track height.
-      // Multi-day runs use the same radius so their ends match an isolated point.
+      // Multi-day runs and the empty track use the same radius so their ends match.
       const pointRadius = Math.min(trackH / 2, dayW / 2);
+
+      // Empty track — always draw, even when there are no logged days.
+      ctx.fillStyle = resolveTrackColor(trackColor, muted);
+      roundRect(ctx, 0, trackY, width, trackH, pointRadius);
+      ctx.fill();
+
+      if (!days.length || totalDays <= 0) return;
 
       ctx.fillStyle = primary;
       let runStart = days[0];
