@@ -14,7 +14,7 @@ interface HabitTimelineProps {
  * A single one-line-tall adherence track drawn on canvas so it scales to
  * thousands of days without creating a DOM node per day.
  */
-export function HabitTimeline({ days, totalDays, height = 20 }: HabitTimelineProps) {
+export function HabitTimeline({ days, totalDays, height = 20, trackColor }: HabitTimelineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
