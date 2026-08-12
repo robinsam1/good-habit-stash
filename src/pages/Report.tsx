@@ -135,7 +135,7 @@ const Report = () => {
                   <div
                     key={row.id}
                     className={`col-span-2 grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 ${
-                      highlighted ? "bg-muted/40" : "bg-transparent"
+                      highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
                     <div
@@ -148,7 +148,7 @@ const Report = () => {
                       <HabitTimeline
                         days={row.days}
                         totalDays={totalDays}
-                        trackColor={highlighted ? "card" : "muted-40"}
+                        trackColor={highlighted ? "card" : "secondary-70"}
                       />
                     </div>
                   </div>
