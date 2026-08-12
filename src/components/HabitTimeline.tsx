@@ -106,8 +106,8 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
   const hslParts = (varName: string) =>
     styles.getPropertyValue(varName).trim().split(/\s+/).join(", ");
 
-  if (trackColor === "muted-40") {
-    return `hsla(${hslParts("--muted")}, 0.4)`;
+  if (trackColor === "secondary-70") {
+    return `hsla(${hslParts("--secondary")}, 0.7)`;
   }
   if (trackColor === "card") {
     return `hsl(${hslParts("--card")})`;
