@@ -129,28 +129,31 @@ const Report = () => {
                 <span>{format(today, "d MMM yyyy")}</span>
               </div>
 
-              {rows.map((row, index) => (
-                <div
-                  key={row.id}
-                  className={`col-span-2 grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 ${
-                    index % 2 === 1 ? "bg-accent/15" : "bg-transparent"
-                  }`}
-                >
+              {rows.map((row, index) => {
+                const highlighted = index % 2 === 1;
+                return (
                   <div
-                    className="text-sm text-foreground truncate py-1"
-                    title={row.name}
+                    key={row.id}
+                    className={`col-span-2 grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 ${
+                      highlighted ? "bg-muted/40" : "bg-transparent"
+                    }`}
                   >
-                    {row.name}
+                    <div
+                      className="text-sm text-foreground truncate py-1"
+                      title={row.name}
+                    >
+                      {row.name}
+                    </div>
+                    <div className="py-1">
+                      <HabitTimeline
+                        days={row.days}
+                        totalDays={totalDays}
+                        trackColor={highlighted ? "card" : "muted-40"}
+                      />
+                    </div>
                   </div>
-                  <div className="py-1">
-                    <HabitTimeline
-                      days={row.days}
-                      totalDays={totalDays}
-                      trackColor={index % 2 === 1 ? "transparent" : undefined}
-                    />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </Card>
