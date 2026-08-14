@@ -57,30 +57,33 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
 
       // Empty track — always draw, even when there are no logged days.
       ctx.fillStyle = resolveTrackColor(trackColor, muted);
-      roundRect(ctx, 0, trackY, width, trackH, pointRadius);
+      roundRect(ctx, 0, trackY, width, trackH, [pointRadius, pointRadius, pointRadius, pointRadius]);
       ctx.fill();
 
       if (!days.length || totalDays <= 0) return;
 
       // Identify the first day after each streak (the day the streak was broken).
       const daySet = new Set(days);
-      const brokenDays: number[] = [];
+      const brokenSet = new Set<number>();
       let streakEnd = days[0];
       for (let i = 1; i < days.length; i++) {
         const d = days[i];
         if (d - streakEnd > 1) {
           const broken = streakEnd + 1;
-          if (broken < totalDays && !daySet.has(broken)) brokenDays.push(broken);
+          if (broken < totalDays && !daySet.has(broken)) brokenSet.add(broken);
         }
         streakEnd = d;
       }
       const lastBroken = streakEnd + 1;
-      if (lastBroken < totalDays && !daySet.has(lastBroken)) brokenDays.push(lastBroken);
+      if (lastBroken < totalDays && !daySet.has(lastBroken)) brokenSet.add(lastBroken);
+      const brokenDays = Array.from(brokenSet);
 
       ctx.fillStyle = destructive;
       for (const d of brokenDays) {
         const x = d * step;
-        roundRect(ctx, x, trackY, Math.min(dayW, width - x), trackH, pointRadius);
+        const leftSquare = d > 0 && daySet.has(d - 1);
+        const rightSquare = d < totalDays - 1 && daySet.has(d + 1);
+        roundRect(ctx, x, trackY, Math.min(dayW, width - x), trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
         ctx.fill();
       }
 
@@ -91,7 +94,9 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
         const x = start * step;
         const runLength = end - start + 1;
         const w = runLength * dayW;
-        roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, pointRadius);
+        const leftSquare = start > 0 && brokenSet.has(start - 1);
+        const rightSquare = end < totalDays - 1 && brokenSet.has(end + 1);
+        roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
         ctx.fill();
       };
       for (let i = 1; i < days.length; i++) {
@@ -138,20 +143,29 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
   return trackColor;
 }
 
+function cornerRadii(r: number, leftSquare: boolean, rightSquare: boolean): [number, number, number, number] {
+  const left = leftSquare ? 0 : r;
+  const right = rightSquare ? 0 : r;
+  // Order: top-left, top-right, bottom-right, bottom-left.
+  return [left, right, right, left];
+}
+
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
   w: number,
   h: number,
-  r: number,
+  radii: [number, number, number, number],
 ) {
-  const rr = Math.min(r, w / 2, h / 2);
+  const maxR = Math.min(w / 2, h / 2);
+  const [tl, tr, br, bl] = radii.map((r) => Math.min(r, maxR));
   ctx.beginPath();
-  ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y, x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x, y + h, rr);
-  ctx.arcTo(x, y + h, x, y, rr);
-  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.moveTo(x + tl, y);
+  ctx.lineTo(x + w - tr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, tr);
+  ctx.arcTo(x + w, y + h, x, y + h, br);
+  ctx.arcTo(x, y + h, x, y, bl);
+  ctx.arcTo(x, y, x + w, y, tl);
   ctx.closePath();
 }
