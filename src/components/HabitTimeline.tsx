@@ -143,20 +143,29 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
   return trackColor;
 }
 
+function cornerRadii(r: number, leftSquare: boolean, rightSquare: boolean): [number, number, number, number] {
+  const left = leftSquare ? 0 : r;
+  const right = rightSquare ? 0 : r;
+  // Order: top-left, top-right, bottom-right, bottom-left.
+  return [left, right, right, left];
+}
+
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
   w: number,
   h: number,
-  r: number,
+  radii: [number, number, number, number],
 ) {
-  const rr = Math.min(r, w / 2, h / 2);
+  const maxR = Math.min(w / 2, h / 2);
+  const [tl, tr, br, bl] = radii.map((r) => Math.min(r, maxR));
   ctx.beginPath();
-  ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y, x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x, y + h, rr);
-  ctx.arcTo(x, y + h, x, y, rr);
-  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.moveTo(x + tl, y);
+  ctx.lineTo(x + w - tr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, tr);
+  ctx.arcTo(x + w, y + h, x, y + h, br);
+  ctx.arcTo(x, y + h, x, y, bl);
+  ctx.arcTo(x, y, x + w, y, tl);
   ctx.closePath();
 }
