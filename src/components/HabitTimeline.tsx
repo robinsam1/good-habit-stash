@@ -38,7 +38,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       ctx.clearRect(0, 0, width, height);
 
       const styles = getComputedStyle(document.documentElement);
-      const primary = `hsl(${styles.getPropertyValue("--primary").trim()})`;
+      // Streak days use a gold→gray ramp; broken days use the destructive token.
       const destructive = `hsl(${styles.getPropertyValue("--destructive").trim()})`;
       const muted = `hsl(${styles.getPropertyValue("--muted").trim()})`;
 
@@ -82,23 +82,24 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       for (const d of brokenDays) {
         const x = d * step;
         const brokenW = Math.min(dayW / 2, width - x);
-        const leftSquare = d > 0 && daySet.has(d - 1);
-        const rightSquare = d < totalDays - 1 && daySet.has(d + 1);
-        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
+        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, false, false));
         ctx.fill();
       }
 
-      ctx.fillStyle = primary;
       let runStart = days[0];
       let prev = days[0];
       const flush = (start: number, end: number) => {
-        const x = start * step;
         const runLength = end - start + 1;
-        const w = runLength * dayW;
-        const leftSquare = start > 0 && brokenSet.has(start - 1);
-        const rightSquare = end < totalDays - 1 && brokenSet.has(end + 1);
-        roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
-        ctx.fill();
+        for (let j = 0; j < runLength; j++) {
+          const x = start * step + j * dayW;
+          if (x >= width) break;
+          const isLast = j === runLength - 1;
+          // Slight overlap between neighbours avoids hairline seams.
+          const w = Math.min(isLast ? dayW : dayW + 0.5, width - x);
+          ctx.fillStyle = streakColor(j);
+          roundRect(ctx, x, trackY, w, trackH, cornerRadii(pointRadius, j !== 0, !isLast));
+          ctx.fill();
+        }
       };
       for (let i = 1; i < days.length; i++) {
         const d = days[i];
@@ -112,6 +113,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
         prev = d;
       }
       flush(runStart, prev);
+
     };
 
     draw();
@@ -144,7 +146,18 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
   return trackColor;
 }
 
+/**
+ * Colour for a day within a streak: gold on day 1, desaturating to a neutral
+ * gray of equal brightness by day 10 and beyond.
+ */
+function streakColor(indexInStreak: number): string {
+  const t = Math.min(1, indexInStreak / 9);
+  const saturation = 85 - t * 79; // 85% → 6%
+  return `hsl(45, ${saturation.toFixed(1)}%, 52%)`;
+}
+
 function cornerRadii(r: number, leftSquare: boolean, rightSquare: boolean): [number, number, number, number] {
+
   const left = leftSquare ? 0 : r;
   const right = rightSquare ? 0 : r;
   // Order: top-left, top-right, bottom-right, bottom-left.
