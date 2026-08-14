@@ -82,13 +82,16 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       for (const d of brokenDays) {
         const x = d * step;
         const brokenW = Math.min(dayW / 2, width - x);
-        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, false, false));
+        // Square off the side that touches a preceding streak; keep the side
+        // that leads into a new streak rounded.
+        const prevIsStreak = daySet.has(d - 1);
+        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, prevIsStreak, false));
         ctx.fill();
       }
 
       let runStart = days[0];
       let prev = days[0];
-      const flush = (start: number, end: number) => {
+      const flush = (start: number, end: number, nextIsBroken: boolean) => {
         const runLength = end - start + 1;
         for (let j = 0; j < runLength; j++) {
           const x = start * step + j * dayW;
@@ -97,7 +100,10 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
           // Slight overlap between neighbours avoids hairline seams.
           const w = Math.min(isLast ? dayW : dayW + 0.5, width - x);
           ctx.fillStyle = streakColor(j);
-          roundRect(ctx, x, trackY, w, trackH, cornerRadii(pointRadius, j !== 0, !isLast));
+          // Square the right edge of the final day when it leads into a
+          // broken-streak marker; keep it rounded when a new streak follows.
+          const rightSquare = !isLast || nextIsBroken;
+          roundRect(ctx, x, trackY, w, trackH, cornerRadii(pointRadius, j !== 0, rightSquare));
           ctx.fill();
         }
       };
@@ -108,11 +114,11 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
           prev = d;
           continue;
         }
-        flush(runStart, prev);
+        flush(runStart, prev, brokenSet.has(prev + 1));
         runStart = d;
         prev = d;
       }
-      flush(runStart, prev);
+      flush(runStart, prev, brokenSet.has(prev + 1));
 
     };
 
