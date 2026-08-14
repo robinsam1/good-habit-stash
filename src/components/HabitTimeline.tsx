@@ -146,7 +146,18 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
   return trackColor;
 }
 
+/**
+ * Colour for a day within a streak: gold on day 1, desaturating to a neutral
+ * gray of equal brightness by day 10 and beyond.
+ */
+function streakColor(indexInStreak: number): string {
+  const t = Math.min(1, indexInStreak / 9);
+  const saturation = 85 - t * 79; // 85% → 6%
+  return `hsl(45, ${saturation.toFixed(1)}%, 52%)`;
+}
+
 function cornerRadii(r: number, leftSquare: boolean, rightSquare: boolean): [number, number, number, number] {
+
   const left = leftSquare ? 0 : r;
   const right = rightSquare ? 0 : r;
   // Order: top-left, top-right, bottom-right, bottom-left.
