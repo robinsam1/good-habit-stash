@@ -38,7 +38,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       ctx.clearRect(0, 0, width, height);
 
       const styles = getComputedStyle(document.documentElement);
-      const destructiveVar = styles.getPropertyValue("--destructive").trim();
+      // Streak days use a gold→gray ramp; broken days use the destructive token.
       const destructive = `hsl(${styles.getPropertyValue("--destructive").trim()})`;
       const muted = `hsl(${styles.getPropertyValue("--muted").trim()})`;
 
