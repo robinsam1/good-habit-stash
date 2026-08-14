@@ -65,16 +65,16 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       // Identify the first day after each streak (the day the streak was broken).
       const daySet = new Set(days);
       const brokenDays: number[] = [];
-      let prev = days[0];
+      let streakEnd = days[0];
       for (let i = 1; i < days.length; i++) {
         const d = days[i];
-        if (d - prev > 1) {
-          const broken = prev + 1;
+        if (d - streakEnd > 1) {
+          const broken = streakEnd + 1;
           if (broken < totalDays && !daySet.has(broken)) brokenDays.push(broken);
         }
-        prev = d;
+        streakEnd = d;
       }
-      const lastBroken = prev + 1;
+      const lastBroken = streakEnd + 1;
       if (lastBroken < totalDays && !daySet.has(lastBroken)) brokenDays.push(lastBroken);
 
       ctx.fillStyle = destructive;
