@@ -82,23 +82,24 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       for (const d of brokenDays) {
         const x = d * step;
         const brokenW = Math.min(dayW / 2, width - x);
-        const leftSquare = d > 0 && daySet.has(d - 1);
-        const rightSquare = d < totalDays - 1 && daySet.has(d + 1);
-        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
+        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, false, false));
         ctx.fill();
       }
 
-      ctx.fillStyle = primary;
       let runStart = days[0];
       let prev = days[0];
       const flush = (start: number, end: number) => {
-        const x = start * step;
         const runLength = end - start + 1;
-        const w = runLength * dayW;
-        const leftSquare = start > 0 && brokenSet.has(start - 1);
-        const rightSquare = end < totalDays - 1 && brokenSet.has(end + 1);
-        roundRect(ctx, x, trackY, Math.min(w, width - x), trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
-        ctx.fill();
+        for (let j = 0; j < runLength; j++) {
+          const x = start * step + j * dayW;
+          if (x >= width) break;
+          const isLast = j === runLength - 1;
+          // Slight overlap between neighbours avoids hairline seams.
+          const w = Math.min(isLast ? dayW : dayW + 0.5, width - x);
+          ctx.fillStyle = streakColor(j);
+          roundRect(ctx, x, trackY, w, trackH, cornerRadii(pointRadius, j !== 0, !isLast));
+          ctx.fill();
+        }
       };
       for (let i = 1; i < days.length; i++) {
         const d = days[i];
@@ -112,6 +113,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
         prev = d;
       }
       flush(runStart, prev);
+
     };
 
     draw();
