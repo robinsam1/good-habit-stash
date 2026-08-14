@@ -80,10 +80,12 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
 
       ctx.fillStyle = destructive;
       for (const d of brokenDays) {
-        const x = d * step;
+        const rawX = d * step + dayW / 4;
+        const brokenW = Math.min(dayW / 2, width - rawX);
+        const x = rawX;
         const leftSquare = d > 0 && daySet.has(d - 1);
         const rightSquare = d < totalDays - 1 && daySet.has(d + 1);
-        roundRect(ctx, x, trackY, Math.min(dayW, width - x), trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
+        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, leftSquare, rightSquare));
         ctx.fill();
       }
 
