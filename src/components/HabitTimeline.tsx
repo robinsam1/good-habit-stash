@@ -82,7 +82,10 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       for (const d of brokenDays) {
         const x = d * step;
         const brokenW = Math.min(dayW / 2, width - x);
-        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, false, false));
+        // Square off the side that touches a preceding streak; keep the side
+        // that leads into a new streak rounded.
+        const prevIsStreak = daySet.has(d - 1);
+        roundRect(ctx, x, trackY, brokenW, trackH, cornerRadii(pointRadius, prevIsStreak, false));
         ctx.fill();
       }
 
