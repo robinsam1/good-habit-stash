@@ -38,7 +38,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       ctx.clearRect(0, 0, width, height);
 
       const styles = getComputedStyle(document.documentElement);
-      const primary = `hsl(${styles.getPropertyValue("--primary").trim()})`;
+      const destructiveVar = styles.getPropertyValue("--destructive").trim();
       const destructive = `hsl(${styles.getPropertyValue("--destructive").trim()})`;
       const muted = `hsl(${styles.getPropertyValue("--muted").trim()})`;
 
