@@ -39,6 +39,7 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
 
       const styles = getComputedStyle(document.documentElement);
       const primary = `hsl(${styles.getPropertyValue("--primary").trim()})`;
+      const destructive = `hsl(${styles.getPropertyValue("--destructive").trim()})`;
       const muted = `hsl(${styles.getPropertyValue("--muted").trim()})`;
 
       const trackH = Math.max(6, Math.round(height * 0.55));
@@ -60,6 +61,28 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
       ctx.fill();
 
       if (!days.length || totalDays <= 0) return;
+
+      // Identify the first day after each streak (the day the streak was broken).
+      const daySet = new Set(days);
+      const brokenDays: number[] = [];
+      let streakEnd = days[0];
+      for (let i = 1; i < days.length; i++) {
+        const d = days[i];
+        if (d - streakEnd > 1) {
+          const broken = streakEnd + 1;
+          if (broken < totalDays && !daySet.has(broken)) brokenDays.push(broken);
+        }
+        streakEnd = d;
+      }
+      const lastBroken = streakEnd + 1;
+      if (lastBroken < totalDays && !daySet.has(lastBroken)) brokenDays.push(lastBroken);
+
+      ctx.fillStyle = destructive;
+      for (const d of brokenDays) {
+        const x = d * step;
+        roundRect(ctx, x, trackY, Math.min(dayW, width - x), trackH, pointRadius);
+        ctx.fill();
+      }
 
       ctx.fillStyle = primary;
       let runStart = days[0];
