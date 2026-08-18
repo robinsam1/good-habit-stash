@@ -40,11 +40,15 @@ const GetStarted = () => {
   const [goal, setGoal] = useState<GoalCode | null>(null);
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-
+  const startingRef = useRef(false);
 
   useEffect(() => {
+    // Don't auto-redirect while the user is actively clicking Get started —
+    // handleSubmit needs to finish setting guest lifecycle markers first.
+    if (startingRef.current) return;
     if (!isLoading && isAuthenticated) navigate("/", { replace: true });
   }, [isAuthenticated, isLoading, navigate]);
+
 
   const canSubmit = !!goal && !!regionCode && !submitting;
 
