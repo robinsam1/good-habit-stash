@@ -146,17 +146,14 @@ export function OnboardingTour({
   // for an anonymous user kills the tour before the session resolves.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    console.log("[Tour debug] effect run", { enabled, isLoading, active, pending: localStorage.getItem(ONBOARDING_PENDING_KEY) });
     if (localStorage.getItem(ONBOARDING_PENDING_KEY) !== "1") {
       if (active) setActive(false);
       return;
     }
     // Flag is set: only show for anonymous sessions.
-    if (!isLoading && !enabled && active) {
-      console.log("[Tour debug] cancelling tour");
-      setActive(false);
-    }
+    if (!isLoading && !enabled && active) setActive(false);
   }, [enabled, active, isLoading]);
+
 
 
 
