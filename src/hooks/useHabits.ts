@@ -1,10 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export const ONBOARDING_STEP_LABELS: Record<string, string> = {
+  welcome_complete: "completing the welcome tour",
+  get_started_complete: "choosing your focus",
+  tour_total: "seeing your piggy bank",
+  tour_log_habit: "logging your first habit",
+  tour_mark_paid: "paying yourself out",
+  tour_tune_habits: "tuning your habits",
+  tour_save_progress: "saving your progress",
+};
+
+
 export interface Activity {
   id: number;
   name: string;
   active: boolean;
+  is_onboarding: boolean;
 }
 
 export interface ActivityValue {
@@ -25,7 +37,7 @@ export interface LogEntry {
   activity?: Activity;
 }
 
-// Fetch all active activities
+// Fetch all active, non-onboarding activities (the user's real habits)
 export function useActivities() {
   return useQuery({
     queryKey: ["activities"],
@@ -34,6 +46,7 @@ export function useActivities() {
         .from("activities")
         .select("*")
         .eq("active", true)
+        .eq("is_onboarding", false)
         .order("name");
       
       if (error) throw error;
@@ -128,6 +141,28 @@ export function useLogActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+    },
+  });
+}
+
+// Claim a one-time onboarding reward for completing a funnel step.
+// Returns null if the step has already been claimed.
+export function useClaimOnboardingReward() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (stepKey: string) => {
+      const { data, error } = await supabase.rpc("claim_onboarding_reward", {
+        p_step_key: stepKey,
+      });
+
+      if (error) throw error;
+      return data as LogEntry | null;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+      queryClient.invalidateQueries({ queryKey: ["allLog"] });
+      queryClient.invalidateQueries({ queryKey: ["paidLog"] });
     },
   });
 }

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,43 +26,82 @@ import {
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
 import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
+import {
+  useClaimOnboardingReward,
+  ONBOARDING_STEP_LABELS,
+} from "@/hooks/useHabits";
+import { useMoney } from "@/hooks/useProfile";
+
 
 const GetStarted = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, signInAnonymously } = useAuth();
+  const { mutateAsync: claimReward } = useClaimOnboardingReward();
+  const { formatMoney } = useMoney();
   const [goal, setGoal] = useState<GoalCode | null>(null);
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const startingRef = useRef(false);
 
   useEffect(() => {
+    // Don't auto-redirect while the user is actively clicking Get started —
+    // handleSubmit needs to finish setting guest lifecycle markers first.
+    if (startingRef.current) return;
     if (!isLoading && isAuthenticated) navigate("/", { replace: true });
   }, [isAuthenticated, isLoading, navigate]);
 
+
   const canSubmit = !!goal && !!regionCode && !submitting;
+
+  const showRewardToast = (reward: { value: number } | null, stepKey: string) => {
+    if (!reward || reward.value === 0) return;
+    const label = ONBOARDING_STEP_LABELS[stepKey] ?? "taking a step";
+    toast.success("Reward earned!", {
+      description: `You earned ${formatMoney(reward.value)} for ${label}.`,
+    });
+  };
 
   const handleSubmit = async () => {
     if (!goal || !regionCode) return;
     const region = getRegion(regionCode);
     if (!region) return;
 
+    startingRef.current = true;
     setSubmitting(true);
     // Fresh guest FRE — let confetti fire again for this session.
     localStorage.removeItem(CONFETTI_FLAGS.task);
     localStorage.removeItem(CONFETTI_FLAGS.paid);
     const { error } = await signInAnonymously(goal, region);
-    setSubmitting(false);
 
     if (error) {
+      startingRef.current = false;
+      setSubmitting(false);
       toast.error("Couldn't get started", { description: "Please try again." });
       return;
     }
 
-    // Reset lifecycle markers, mark onboarding tour pending.
+    // Mark onboarding tour pending and lifecycle markers BEFORE claiming
+    // rewards, so the home page tour sees the flag as soon as it mounts.
     localStorage.setItem(ANON_STARTED_KEY, String(Date.now()));
     localStorage.removeItem(ANON_NUDGED_KEY);
     localStorage.setItem(ONBOARDING_PENDING_KEY, "1");
+
+    // Claim onboarding rewards now that a session exists.
+    try {
+      const welcomeReward = await claimReward("welcome_complete");
+      showRewardToast(welcomeReward, "welcome_complete");
+      const startedReward = await claimReward("get_started_complete");
+      showRewardToast(startedReward, "get_started_complete");
+    } catch {
+      // Non-blocking: the user still proceeds to the app.
+    }
+
+    startingRef.current = false;
+    setSubmitting(false);
     navigate("/", { replace: true });
   };
+
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-3 sm:py-6 relative overflow-hidden">
