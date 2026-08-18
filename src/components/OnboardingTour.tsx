@@ -395,8 +395,9 @@ export function OnboardingTour({
       <div
         key={step}
         className={cn(
-          "absolute pointer-events-auto rounded-2xl border bg-card text-card-foreground shadow-2xl",
-          "p-5"
+          "absolute rounded-2xl border bg-card text-card-foreground shadow-2xl",
+          "p-5",
+          currentStep.interactive ? "pointer-events-none" : "pointer-events-auto"
         )}
         style={{
           top: tooltipPos.top,
@@ -405,6 +406,7 @@ export function OnboardingTour({
           
         }}
       >
+
         <div className="flex items-center gap-2 mb-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <Sparkles className="h-4 w-4 text-primary-foreground" />
