@@ -18,18 +18,21 @@ export type Database = {
         Row: {
           active: boolean
           id: number
+          is_onboarding: boolean
           name: string
           user_id: string
         }
         Insert: {
           active?: boolean
           id?: number
+          is_onboarding?: boolean
           name: string
           user_id: string
         }
         Update: {
           active?: boolean
           id?: number
+          is_onboarding?: boolean
           name?: string
           user_id?: string
         }
@@ -192,6 +195,27 @@ export type Database = {
           },
         ]
       }
+      onboarding_rewards: {
+        Row: {
+          claimed_at: string
+          id: string
+          step_key: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          id?: string
+          step_key: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          id?: string
+          step_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pro_interest: {
         Row: {
           created_at: string
@@ -287,6 +311,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_onboarding_reward: {
+        Args: { p_step_key: string }
+        Returns: {
+          activity_id: number
+          date: string
+          deleted_at: string | null
+          id: number
+          notes: string | null
+          paid_out: string | null
+          user_id: string
+          value: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "log"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       cleanup_anonymous_users: { Args: never; Returns: number }
       create_activity: {
         Args: { p_name: string; p_value: number }
@@ -335,6 +378,7 @@ export type Database = {
         }
         Returns: number
       }
+      onboarding_reward_amount: { Args: { _currency: string }; Returns: number }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {

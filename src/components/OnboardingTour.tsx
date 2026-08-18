@@ -1,8 +1,15 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { ONBOARDING_PENDING_KEY } from "@/hooks/useAnonymousLifecycle";
+import {
+  useClaimOnboardingReward,
+  ONBOARDING_STEP_LABELS,
+} from "@/hooks/useHabits";
+import { useMoney } from "@/hooks/useProfile";
 import { cn } from "@/lib/utils";
+
 
 interface Step {
   target: string; // data-tour attribute value
@@ -91,15 +98,18 @@ function readRect(target: string, padding: number = PADDING, square = false): Re
 
 export function OnboardingTour({
   enabled,
+  isLoading,
   onTargetChange,
   unpaidCount = 0,
   paidCount = 0,
 }: {
   enabled: boolean;
+  isLoading?: boolean;
   onTargetChange?: (target: string | null) => void;
   unpaidCount?: number;
   paidCount?: number;
 }) {
+
   // Initialise synchronously from localStorage so the overlay can paint on
   // the same frame as the dashboard — no auth roundtrip, no setTimeout.
   const [active, setActive] = useState(() => {
@@ -112,22 +122,61 @@ export function OnboardingTour({
     w: typeof window !== "undefined" ? window.innerWidth : 0,
     h: typeof window !== "undefined" ? window.innerHeight : 0,
   });
+  const { mutate: claimReward } = useClaimOnboardingReward();
+  const { formatMoney } = useMoney();
+  const claimedStepsRef = useRef<Set<string>>(new Set());
 
-  // `enabled` arrives once auth resolves. It's only used as a CANCEL signal —
-  // if the user turns out to be fully registered, tear the tour down.
+  const claimStep = (stepKey: string) => {
+    if (claimedStepsRef.current.has(stepKey)) return;
+    claimedStepsRef.current.add(stepKey);
+    claimReward(stepKey, {
+      onSuccess: (reward) => {
+        if (!reward || reward.value === 0) return;
+        const label = ONBOARDING_STEP_LABELS[stepKey] ?? "taking a step";
+        toast.success("Reward earned!", {
+          description: `You earned ${formatMoney(reward.value)} for ${label}.`,
+        });
+      },
+    });
+  };
+
+  // `enabled` is only used as a CANCEL signal — once auth resolves, if the user
+  // turns out to be fully registered, tear the tour down. While auth is still
+  // loading we must not cancel, otherwise the initial `enabled=false` state
+  // for an anonymous user kills the tour before the session resolves.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    console.log("[Tour debug] effect run", { enabled, isLoading, active, pending: localStorage.getItem(ONBOARDING_PENDING_KEY) });
     if (localStorage.getItem(ONBOARDING_PENDING_KEY) !== "1") {
       if (active) setActive(false);
       return;
     }
     // Flag is set: only show for anonymous sessions.
-    if (!enabled && active) setActive(false);
-  }, [enabled, active]);
+    if (!isLoading && !enabled && active) {
+      console.log("[Tour debug] cancelling tour");
+      setActive(false);
+    }
+  }, [enabled, active, isLoading]);
+
+
 
   const currentStep = STEPS[step];
 
+  // Claim rewards for non-interactive tour steps as soon as they are reached.
+  useEffect(() => {
+    if (!active || !currentStep || currentStep.interactive) return;
+    const keyByTarget: Record<string, string> = {
+      total: "tour_total",
+      tasks: "tour_tune_habits",
+      save: "tour_save_progress",
+    };
+    const key = keyByTarget[currentStep.target];
+    if (key) claimStep(key);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, step, currentStep]);
+
   // Recompute rect whenever step changes or the layout shifts.
+
   useLayoutEffect(() => {
     if (!active || !currentStep) return;
     let raf1 = 0;
@@ -242,6 +291,7 @@ export function OnboardingTour({
       unpaidBaselineRef.current !== null &&
       unpaidCount > unpaidBaselineRef.current
     ) {
+      claimStep("tour_log_habit");
       next();
     }
     if (
@@ -249,10 +299,12 @@ export function OnboardingTour({
       paidBaselineRef.current !== null &&
       paidCount > paidBaselineRef.current
     ) {
+      claimStep("tour_mark_paid");
       next();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unpaidCount, paidCount, active, currentStep]);
+
 
   const tooltipPos = useMemo(() => {
     if (!rect) {
