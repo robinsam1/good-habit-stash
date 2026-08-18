@@ -66,6 +66,7 @@ const GetStarted = () => {
     const region = getRegion(regionCode);
     if (!region) return;
 
+    startingRef.current = true;
     setSubmitting(true);
     // Fresh guest FRE — let confetti fire again for this session.
     localStorage.removeItem(CONFETTI_FLAGS.task);
@@ -73,10 +74,17 @@ const GetStarted = () => {
     const { error } = await signInAnonymously(goal, region);
 
     if (error) {
+      startingRef.current = false;
       setSubmitting(false);
       toast.error("Couldn't get started", { description: "Please try again." });
       return;
     }
+
+    // Mark onboarding tour pending and lifecycle markers BEFORE claiming
+    // rewards, so the home page tour sees the flag as soon as it mounts.
+    localStorage.setItem(ANON_STARTED_KEY, String(Date.now()));
+    localStorage.removeItem(ANON_NUDGED_KEY);
+    localStorage.setItem(ONBOARDING_PENDING_KEY, "1");
 
     // Claim onboarding rewards now that a session exists.
     try {
@@ -88,16 +96,11 @@ const GetStarted = () => {
       // Non-blocking: the user still proceeds to the app.
     }
 
+    startingRef.current = false;
     setSubmitting(false);
-
-    // Reset lifecycle markers, mark onboarding tour pending.
-    localStorage.setItem(ANON_STARTED_KEY, String(Date.now()));
-    localStorage.removeItem(ANON_NUDGED_KEY);
-    localStorage.setItem(ONBOARDING_PENDING_KEY, "1");
-    console.log("[GetStarted debug] set pending", localStorage.getItem(ONBOARDING_PENDING_KEY));
     navigate("/", { replace: true });
-
   };
+
 
 
   return (
