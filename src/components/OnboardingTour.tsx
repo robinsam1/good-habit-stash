@@ -431,9 +431,18 @@ export function OnboardingTour({
             ))}
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={finish} className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={finish}
+              className={cn(
+                "text-muted-foreground",
+                currentStep.interactive && "pointer-events-auto"
+              )}
+            >
               Skip tour
             </Button>
+
             {currentStep.interactive ? (
               <span className="text-xs italic text-muted-foreground pr-1">
                 {currentStep.hint ?? "Try it to continue"}
