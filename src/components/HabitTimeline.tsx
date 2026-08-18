@@ -153,12 +153,12 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
 }
 
 /**
- * Colour for a day within a streak: gold on day 1, desaturating to a neutral
- * gray of equal brightness by day 10 and beyond.
+ * Colour for a day within a streak: neutral gray on day 1, saturating toward
+ * gold by day 10 and beyond, while keeping the same brightness.
  */
 function streakColor(indexInStreak: number): string {
   const t = Math.min(1, indexInStreak / 9);
-  const saturation = 85 - t * 79; // 85% → 6%
+  const saturation = 6 + t * 79; // 6% → 85%
   return `hsl(45, ${saturation.toFixed(1)}%, 52%)`;
 }
 
