@@ -89,7 +89,9 @@ const GetStarted = () => {
     localStorage.setItem(ANON_STARTED_KEY, String(Date.now()));
     localStorage.removeItem(ANON_NUDGED_KEY);
     localStorage.setItem(ONBOARDING_PENDING_KEY, "1");
+    console.log("[GetStarted debug] set pending", localStorage.getItem(ONBOARDING_PENDING_KEY));
     navigate("/", { replace: true });
+
   };
 
 
