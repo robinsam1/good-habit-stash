@@ -26,18 +26,11 @@ import {
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
 import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
-import {
-  useClaimOnboardingReward,
-  ONBOARDING_STEP_LABELS,
-} from "@/hooks/useHabits";
-import { useMoney } from "@/hooks/useProfile";
 
 
 const GetStarted = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, signInAnonymously } = useAuth();
-  const { mutateAsync: claimReward } = useClaimOnboardingReward();
-  const { formatMoney } = useMoney();
   const [goal, setGoal] = useState<GoalCode | null>(null);
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
@@ -52,14 +45,6 @@ const GetStarted = () => {
 
 
   const canSubmit = !!goal && !!regionCode && !submitting;
-
-  const showRewardToast = (reward: { value: number } | null, stepKey: string) => {
-    if (!reward || reward.value === 0) return;
-    const label = ONBOARDING_STEP_LABELS[stepKey] ?? "taking a step";
-    toast.success("Reward earned!", {
-      description: `You earned ${formatMoney(reward.value)} for ${label}.`,
-    });
-  };
 
   const handleSubmit = async () => {
     if (!goal || !regionCode) return;
@@ -85,16 +70,6 @@ const GetStarted = () => {
     localStorage.setItem(ANON_STARTED_KEY, String(Date.now()));
     localStorage.removeItem(ANON_NUDGED_KEY);
     localStorage.setItem(ONBOARDING_PENDING_KEY, "1");
-
-    // Claim onboarding rewards now that a session exists.
-    try {
-      const welcomeReward = await claimReward("welcome_complete");
-      showRewardToast(welcomeReward, "welcome_complete");
-      const startedReward = await claimReward("get_started_complete");
-      showRewardToast(startedReward, "get_started_complete");
-    } catch {
-      // Non-blocking: the user still proceeds to the app.
-    }
 
     startingRef.current = false;
     setSubmitting(false);

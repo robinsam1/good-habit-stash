@@ -1,15 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export const ONBOARDING_STEP_LABELS: Record<string, string> = {
-  welcome_complete: "completing the welcome tour",
-  get_started_complete: "choosing your focus",
-  tour_total: "seeing your piggy bank",
-  tour_log_habit: "logging your first habit",
-  tour_mark_paid: "paying yourself out",
-  tour_tune_habits: "tuning your habits",
-  tour_save_progress: "saving your progress",
-};
+// Single onboarding reward, granted once the whole onboarding is complete.
+export const ONBOARDING_COMPLETE_STEP = "onboarding_complete";
+export const ONBOARDING_COMPLETE_LABEL = "completing your onboarding";
 
 
 export interface Activity {
