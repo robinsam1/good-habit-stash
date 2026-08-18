@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { ONBOARDING_PENDING_KEY } from "@/hooks/useAnonymousLifecycle";
 import {
   useClaimOnboardingReward,
-  ONBOARDING_STEP_LABELS,
+  ONBOARDING_COMPLETE_STEP,
+  ONBOARDING_COMPLETE_LABEL,
 } from "@/hooks/useHabits";
 import { useMoney } from "@/hooks/useProfile";
 import { cn } from "@/lib/utils";
@@ -124,17 +125,17 @@ export function OnboardingTour({
   });
   const { mutate: claimReward } = useClaimOnboardingReward();
   const { formatMoney } = useMoney();
-  const claimedStepsRef = useRef<Set<string>>(new Set());
 
-  const claimStep = (stepKey: string) => {
-    if (claimedStepsRef.current.has(stepKey)) return;
-    claimedStepsRef.current.add(stepKey);
-    claimReward(stepKey, {
+  const claimedRef = useRef(false);
+
+  const claimCompletion = () => {
+    if (claimedRef.current) return;
+    claimedRef.current = true;
+    claimReward(ONBOARDING_COMPLETE_STEP, {
       onSuccess: (reward) => {
         if (!reward || reward.value === 0) return;
-        const label = ONBOARDING_STEP_LABELS[stepKey] ?? "taking a step";
         toast.success("Reward earned!", {
-          description: `You earned ${formatMoney(reward.value)} for ${label}.`,
+          description: `You earned ${formatMoney(reward.value)} for ${ONBOARDING_COMPLETE_LABEL}.`,
         });
       },
     });
@@ -158,19 +159,6 @@ export function OnboardingTour({
 
 
   const currentStep = STEPS[step];
-
-  // Claim rewards for non-interactive tour steps as soon as they are reached.
-  useEffect(() => {
-    if (!active || !currentStep || currentStep.interactive) return;
-    const keyByTarget: Record<string, string> = {
-      total: "tour_total",
-      tasks: "tour_tune_habits",
-      save: "tour_save_progress",
-    };
-    const key = keyByTarget[currentStep.target];
-    if (key) claimStep(key);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, step, currentStep]);
 
   // Recompute rect whenever step changes or the layout shifts.
 
@@ -246,7 +234,8 @@ export function OnboardingTour({
     onTargetChange(active && currentStep ? currentStep.target : null);
   }, [active, currentStep, onTargetChange]);
 
-  const finish = () => {
+  const finish = (completed = false) => {
+    if (completed) claimCompletion();
     localStorage.removeItem(ONBOARDING_PENDING_KEY);
     setActive(false);
     onTargetChange?.(null);
@@ -254,7 +243,7 @@ export function OnboardingTour({
 
   const next = () => {
     if (step >= STEPS.length - 1) {
-      finish();
+      finish(true);
       return;
     }
     setStep((s) => s + 1);
@@ -288,7 +277,6 @@ export function OnboardingTour({
       unpaidBaselineRef.current !== null &&
       unpaidCount > unpaidBaselineRef.current
     ) {
-      claimStep("tour_log_habit");
       next();
     }
     if (
@@ -296,7 +284,6 @@ export function OnboardingTour({
       paidBaselineRef.current !== null &&
       paidCount > paidBaselineRef.current
     ) {
-      claimStep("tour_mark_paid");
       next();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -434,7 +421,7 @@ export function OnboardingTour({
             <Button
               variant="ghost"
               size="sm"
-              onClick={finish}
+              onClick={() => finish()}
               className={cn(
                 "text-muted-foreground",
                 currentStep.interactive && "pointer-events-auto"
