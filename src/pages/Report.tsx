@@ -17,7 +17,7 @@ const Report = () => {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const [hideEmpty, setHideEmpty] = useState(false);
+  const [hideEmpty, setHideEmpty] = useState(true);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
