@@ -144,7 +144,7 @@ const Report = () => {
                     >
                       {row.name}
                     </div>
-                    <div className="py-1">
+                    <div className="py-1 min-w-0">
                       <HabitTimeline
                         days={row.days}
                         totalDays={totalDays}
