@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { format, parseISO, differenceInCalendarDays, startOfDay } from "date-fns";
@@ -18,6 +18,8 @@ const Report = () => {
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const [hideEmpty, setHideEmpty] = useState(true);
+  const [maxLines, setMaxLines] = useState(1);
+  const habitHeaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -67,6 +69,36 @@ const Report = () => {
 
     return { startDate, today, totalDays, rows: visibleRows, emptyCount };
   }, [activities, logs, profile?.created_at, user?.created_at, hideEmpty]);
+
+  useEffect(() => {
+    const header = habitHeaderRef.current;
+    if (!header || !rows.length) return;
+
+    const compute = () => {
+      const width = header.clientWidth;
+      if (!width) return;
+      const measure = document.createElement("div");
+      measure.className =
+        "text-sm leading-snug py-1 absolute left-0 top-0 -z-10 opacity-0 pointer-events-none whitespace-normal break-words";
+      measure.style.width = `${width}px`;
+      document.body.appendChild(measure);
+
+      let max = 1;
+      for (const row of rows) {
+        measure.textContent = row.name;
+        const lineHeight =
+          parseFloat(getComputedStyle(measure).lineHeight) || 19;
+        max = Math.max(max, Math.round(measure.scrollHeight / lineHeight));
+      }
+      document.body.removeChild(measure);
+      setMaxLines(Math.min(6, max));
+    };
+
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, [rows]);
 
   if (authLoading) {
     return (
@@ -119,9 +151,12 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-start min-w-0">
+            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
               {/* Header */}
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2">
+              <div
+                ref={habitHeaderRef}
+                className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2"
+              >
                 Habit
               </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
@@ -134,12 +169,19 @@ const Report = () => {
                 return (
                   <div
                     key={row.id}
-                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-start px-2 -mx-2 rounded-[3px] ${
+                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
                       highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
                     <div
-                      className="text-sm text-foreground line-clamp-2 py-1 leading-snug"
+                      className="text-sm text-foreground py-1 leading-snug break-words"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: maxLines,
+                        overflow: "hidden",
+                        minHeight: `${maxLines * 1.375}em`,
+                      }}
                       title={row.name}
                     >
                       {row.name}
