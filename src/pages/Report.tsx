@@ -125,8 +125,8 @@ const Report = () => {
                 Habit
               </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
-                <span>{format(startDate, "d MMM yyyy")}</span>
-                <span>{format(today, "d MMM yyyy")}</span>
+                <span className="truncate">{format(startDate, "d MMM yy")}</span>
+                <span className="truncate">{format(today, "d MMM yy")}</span>
               </div>
 
               {rows.map((row, index) => {
