@@ -76,6 +76,11 @@ const Report = () => {
     if (!header || !rows.length) return;
 
     const compute = () => {
+      if (singleLine) {
+        setMaxLines(1);
+        return;
+      }
+
       const width = header.clientWidth;
       if (!width) return;
       const measure = document.createElement("div");
