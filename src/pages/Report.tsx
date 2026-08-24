@@ -151,9 +151,12 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-start min-w-0">
+            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
               {/* Header */}
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2">
+              <div
+                ref={habitHeaderRef}
+                className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2"
+              >
                 Habit
               </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
@@ -166,12 +169,19 @@ const Report = () => {
                 return (
                   <div
                     key={row.id}
-                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-start px-2 -mx-2 rounded-[3px] ${
+                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
                       highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
                     <div
-                      className="text-sm text-foreground line-clamp-2 py-1 leading-snug"
+                      className="text-sm text-foreground py-1 leading-snug break-words"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: maxLines,
+                        overflow: "hidden",
+                        minHeight: `${maxLines * 1.375}em`,
+                      }}
                       title={row.name}
                     >
                       {row.name}
