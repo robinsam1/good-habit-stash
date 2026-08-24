@@ -104,7 +104,7 @@ const Report = () => {
     const ro = new ResizeObserver(compute);
     ro.observe(header);
     return () => ro.disconnect();
-  }, [rows]);
+  }, [rows, singleLine]);
 
   if (authLoading) {
     return (
