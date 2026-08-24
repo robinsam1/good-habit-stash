@@ -18,7 +18,7 @@ const Report = () => {
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const [hideEmpty, setHideEmpty] = useState(true);
-  const [singleLine, setSingleLine] = useState(false);
+  const [singleLine, setSingleLine] = useState(true);
   const [maxLines, setMaxLines] = useState(1);
   const habitHeaderRef = useRef<HTMLDivElement>(null);
 
