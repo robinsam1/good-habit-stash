@@ -119,7 +119,7 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center">
+            <div className="grid grid-cols-[minmax(5rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
               {/* Header */}
               <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2">
                 Habit
