@@ -174,17 +174,21 @@ const Report = () => {
                     }`}
                   >
                     <div
-                      className="text-sm text-foreground py-1 leading-snug break-words"
-                      style={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: maxLines,
-                        overflow: "hidden",
-                        minHeight: `${maxLines * 1.375}em`,
-                      }}
+                      className="flex items-center text-sm text-foreground py-1 leading-snug"
+                      style={{ minHeight: `${maxLines * 1.375}em` }}
                       title={row.name}
                     >
-                      {row.name}
+                      <span
+                        className="break-words"
+                        style={{
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: maxLines,
+                          overflow: "hidden",
+                        }}
+                      >
+                        {row.name}
+                      </span>
                     </div>
                     <div className="py-1 min-w-0">
                       <HabitTimeline
