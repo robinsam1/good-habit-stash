@@ -131,16 +131,26 @@ const Report = () => {
           <p className="text-muted-foreground mt-1">
             Every day you logged each habit, since you started
           </p>
-          {emptyCount > 0 && (
-            <label className="inline-flex items-center gap-2 mt-4 text-sm text-foreground cursor-pointer select-none">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4">
+            {emptyCount > 0 && (
+              <label className="inline-flex items-center gap-2 text-sm text-foreground cursor-pointer select-none">
+                <Checkbox
+                  id="hide-empty-habits"
+                  checked={hideEmpty}
+                  onCheckedChange={(checked) => setHideEmpty(checked === true)}
+                />
+                <span>Hide habits with no entries ({emptyCount})</span>
+              </label>
+            )}
+            <label className="inline-flex items-center gap-2 text-sm text-foreground cursor-pointer select-none">
               <Checkbox
-                id="hide-empty-habits"
-                checked={hideEmpty}
-                onCheckedChange={(checked) => setHideEmpty(checked === true)}
+                id="single-line-names"
+                checked={singleLine}
+                onCheckedChange={(checked) => setSingleLine(checked === true)}
               />
-              <span>Hide habits with no entries ({emptyCount})</span>
+              <span>Show names on one line</span>
             </label>
-          )}
+          </div>
         </header>
 
         <Card className="p-4 sm:p-5 border-border/50 shadow-lg overflow-hidden">
