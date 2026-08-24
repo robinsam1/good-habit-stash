@@ -119,7 +119,7 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(5rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
+            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-start min-w-0">
               {/* Header */}
               <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2">
                 Habit
@@ -134,12 +134,12 @@ const Report = () => {
                 return (
                   <div
                     key={row.id}
-                    className={`col-span-2 grid grid-cols-[minmax(5rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
+                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-start px-2 -mx-2 rounded-[3px] ${
                       highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
                     <div
-                      className="text-sm text-foreground truncate py-1"
+                      className="text-sm text-foreground line-clamp-2 py-1 leading-snug"
                       title={row.name}
                     >
                       {row.name}
