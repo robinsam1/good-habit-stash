@@ -129,8 +129,8 @@ export function HabitTimeline({ days, totalDays, height = 20, trackColor }: Habi
   }, [days, totalDays, height]);
 
   return (
-    <div ref={wrapRef} className="w-full" style={{ height }}>
-      <canvas ref={canvasRef} aria-hidden="true" />
+    <div ref={wrapRef} className="w-full min-w-0 overflow-hidden" style={{ height }}>
+      <canvas ref={canvasRef} aria-hidden="true" className="block max-w-full" />
     </div>
   );
 }

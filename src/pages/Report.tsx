@@ -119,14 +119,14 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center">
+            <div className="grid grid-cols-[minmax(5rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
               {/* Header */}
               <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2">
                 Habit
               </div>
-              <div className="flex items-center justify-between text-xs text-muted-foreground pb-2">
-                <span>{format(startDate, "d MMM yyyy")}</span>
-                <span>{format(today, "d MMM yyyy")}</span>
+              <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
+                <span className="truncate">{format(startDate, "d MMM yy")}</span>
+                <span className="truncate">{format(today, "d MMM yy")}</span>
               </div>
 
               {rows.map((row, index) => {
@@ -134,7 +134,7 @@ const Report = () => {
                 return (
                   <div
                     key={row.id}
-                    className={`col-span-2 grid grid-cols-[minmax(7rem,40%)_1fr] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
+                    className={`col-span-2 grid grid-cols-[minmax(5rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
                       highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
@@ -144,7 +144,7 @@ const Report = () => {
                     >
                       {row.name}
                     </div>
-                    <div className="py-1">
+                    <div className="py-1 min-w-0">
                       <HabitTimeline
                         days={row.days}
                         totalDays={totalDays}
