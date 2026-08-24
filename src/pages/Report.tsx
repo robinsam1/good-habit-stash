@@ -124,7 +124,7 @@ const Report = () => {
               <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2">
                 Habit
               </div>
-              <div className="flex items-center justify-between text-xs text-muted-foreground pb-2">
+              <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
                 <span>{format(startDate, "d MMM yyyy")}</span>
                 <span>{format(today, "d MMM yyyy")}</span>
               </div>
