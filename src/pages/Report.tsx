@@ -70,6 +70,36 @@ const Report = () => {
     return { startDate, today, totalDays, rows: visibleRows, emptyCount };
   }, [activities, logs, profile?.created_at, user?.created_at, hideEmpty]);
 
+  useEffect(() => {
+    const header = habitHeaderRef.current;
+    if (!header || !rows.length) return;
+
+    const compute = () => {
+      const width = header.clientWidth;
+      if (!width) return;
+      const measure = document.createElement("div");
+      measure.className =
+        "text-sm leading-snug py-1 absolute left-0 top-0 -z-10 opacity-0 pointer-events-none whitespace-normal break-words";
+      measure.style.width = `${width}px`;
+      document.body.appendChild(measure);
+
+      let max = 1;
+      for (const row of rows) {
+        measure.textContent = row.name;
+        const lineHeight =
+          parseFloat(getComputedStyle(measure).lineHeight) || 19;
+        max = Math.max(max, Math.round(measure.scrollHeight / lineHeight));
+      }
+      document.body.removeChild(measure);
+      setMaxLines(Math.min(6, max));
+    };
+
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, [rows]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
