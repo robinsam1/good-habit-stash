@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import slide1Asset from "@/assets/welcome-1.jpg.asset.json";
 import slide2Asset from "@/assets/welcome-2.jpg.asset.json";
 import slide3Asset from "@/assets/welcome-3.jpg.asset.json";
+import { WELCOME_LQIP } from "@/assets/welcome-lqip";
 
 const SLIDES = [
   {
@@ -48,6 +49,7 @@ const FLOATERS = [
 const BASE_GAP = 16;
 const MIN_GAP_FACTOR = 0.5;
 const MIN_IMAGE_FACTOR = 0.5;
+const IMAGE_ASPECT = 1.6;
 
 type Layout = {
   gap: number;
@@ -72,6 +74,18 @@ const Welcome = () => {
   const footerRef = useRef<HTMLDivElement>(null);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
+  const [loaded, setLoaded] = useState<Set<number>>(() => new Set());
+
+  const handleImageLoad = useCallback((index: number) => {
+    setLoaded((prev) => (prev.has(index) ? prev : new Set(prev).add(index)));
+    if (index === 0) {
+      // warm the remaining slides so tapping Next feels instant
+      SLIDES.slice(1).forEach((slide) => {
+        const img = new Image();
+        img.src = slide.image;
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -114,7 +128,10 @@ const Welcome = () => {
     );
 
     const fixed = headerH + dotsH + footerH + textH;
-    const idealImage = Math.max(140, Math.min(avail * 0.45, 420));
+    const contentWidth =
+      inner.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+    // default (uncropped) shape is the original ~1.6:1 landscape
+    const idealImage = Math.max(140, (contentWidth - 16) / IMAGE_ASPECT);
 
     let gap = BASE_GAP;
     let imageHeight = idealImage;
@@ -215,11 +232,30 @@ const Welcome = () => {
                         )}
                         style={{ height: layout.imageHeight, marginBottom: layout.gap }}
                       >
+                        <div
+                          aria-hidden
+                          className="absolute inset-0 scale-110 blur-lg"
+                          style={{
+                            backgroundImage: `url(${WELCOME_LQIP[i]})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        />
                         <img
                           src={slide.image}
                           alt={slide.alt}
+                          ref={(el) => {
+                            // covers cached images that finish before React attaches onLoad
+                            if (el?.complete && el.naturalWidth > 0) handleImageLoad(i);
+                          }}
                           loading={i === 0 ? "eager" : "lazy"}
-                          className="w-full h-full object-cover"
+                          fetchPriority={i === 0 ? "high" : "auto"}
+                          decoding="async"
+                          onLoad={() => handleImageLoad(i)}
+                          className={cn(
+                            "relative w-full h-full object-cover transition-opacity duration-500",
+                            loaded.has(i) ? "opacity-100" : "opacity-0"
+                          )}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
                       </div>
