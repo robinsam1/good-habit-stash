@@ -101,15 +101,15 @@ const Welcome = () => {
         </header>
 
         <Carousel setApi={setApi} className="flex-1 min-h-0">
-          <CarouselContent>
+          <CarouselContent className="h-full">
             {SLIDES.map((slide, i) => {
               const active = current === i && isAnimating;
               return (
-                <CarouselItem key={i}>
-                  <div className="text-center px-2 py-0 space-y-1 short:space-y-0.5">
+                <CarouselItem key={i} className="h-full">
+                  <div className="text-center px-2 py-0 space-y-1 short:space-y-0.5 h-full flex flex-col">
                     <div
                       className={cn(
-                        "w-full h-[24vh] short:h-[20vh] shorter:h-[16vh] max-h-[300px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
+                        "w-full flex-1 min-h-[140px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
                         active && "animate-scale-bounce"
                       )}
                     >
