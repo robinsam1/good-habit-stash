@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Banknote, Loader2, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Banknote, Loader2, CheckCircle, Copy, Check, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -13,17 +14,46 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useMarkAsPaid, useRunningTotal } from "@/hooks/useHabits";
-import { useMoney } from "@/hooks/useProfile";
+import { useMoney, useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
+import { getBank, openBank } from "@/lib/banks";
 import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { toast } from "sonner";
 
 export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: boolean }) {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const total = useRunningTotal();
   const { mutate: markAsPaid, isPending } = useMarkAsPaid();
-  const { formatMoney } = useMoney();
+  const { formatMoney, formatAmountPlain } = useMoney();
   const { isAnonymous } = useAuth();
+  const { data: profile } = useProfile();
+  const bank = getBank(profile?.bank_id);
+
+  const plainAmount = formatAmountPlain(total);
+
+  const handleCopy = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(plainAmount);
+      } else {
+        // Fallback for older mobile Safari / non-secure contexts.
+        const el = document.createElement("textarea");
+        el.value = plainAmount;
+        el.setAttribute("readonly", "");
+        el.style.position = "fixed";
+        el.style.opacity = "0";
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+      }
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy", { description: `Amount: ${plainAmount}` });
+    }
+  };
 
   const handleMarkAsPaid = () => {
     markAsPaid(undefined, {
@@ -60,7 +90,7 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
   }
 
   const disabled = total === 0;
-  
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
@@ -76,14 +106,65 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
       <AlertDialogContent className="sm:max-w-md z-[110]">
         <AlertDialogHeader>
           <AlertDialogTitle className="font-display text-2xl">
-            Move {formatMoney(total)} to your savings?
+            Move {formatMoney(total)} to your savings
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
-            You've earned {formatMoney(total)}. Move this into your savings pot in your own
-            banking app, then confirm here to reset your balance. Habit Visor never touches
-            your money — you're in control.
+            Copy the amount, transfer it into your savings pot, then confirm here to reset
+            your balance. Habit Visor never touches your money — you're in control.
           </AlertDialogDescription>
         </AlertDialogHeader>
+
+        <div className="space-y-3">
+          {/* Step 1 — copy the amount */}
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="w-full flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/40 px-4 py-3 text-left transition-colors hover:bg-muted"
+          >
+            <div className="min-w-0">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Amount to transfer
+              </p>
+              <p className="font-display text-2xl font-bold tabular-nums">{plainAmount}</p>
+            </div>
+            <span className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary">
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Copied" : "Copy"}
+            </span>
+          </button>
+
+          {/* Step 2 — jump into the banking app */}
+          {bank && bank.id !== "other" ? (
+            <div className="space-y-1.5">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-12 font-medium"
+                onClick={() => openBank(bank)}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Open {bank.label}
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                We can't pre-fill the amount — paste it in your banking app.
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground text-center">
+              {bank?.id === "other" ? (
+                "Transfer the amount in your banking app, then confirm below."
+              ) : (
+                <>
+                  <Link to="/settings" className="text-primary underline underline-offset-2">
+                    Set your bank
+                  </Link>{" "}
+                  to jump straight to your banking app next time.
+                </>
+              )}
+            </p>
+          )}
+        </div>
+
         <AlertDialogFooter className="gap-2 sm:gap-0">
           <AlertDialogCancel className="font-medium">Cancel</AlertDialogCancel>
           <AlertDialogAction

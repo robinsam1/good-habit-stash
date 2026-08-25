@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, KeyRound } from "lucide-react";
+import { ArrowLeft, Loader2, KeyRound, PiggyBank } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile, useUpdateBank } from "@/hooks/useProfile";
+import { BANKS } from "@/lib/banks";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -15,6 +25,16 @@ const Settings = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
+  const { data: profile } = useProfile();
+  const { mutate: updateBank, isPending: savingBank } = useUpdateBank();
+
+  const handleBankChange = (bankId: string) => {
+    updateBank(bankId, {
+      onSuccess: () => toast.success("Banking app saved"),
+      onError: () => toast.error("Couldn't save your banking app"),
+    });
+  };
+
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -100,7 +120,38 @@ const Settings = () => {
             </Button>
           </form>
         </Card>
+
+        <Card className="p-6 border-border/50 shadow-xl mt-6">
+          <div className="flex items-center gap-2 mb-1">
+            <PiggyBank className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-lg font-semibold">Savings</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Pick your banking app and we'll add a shortcut to it when you move money to
+            savings. We never touch your money — you make the transfer yourself.
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="bank">Banking app</Label>
+            <Select
+              value={profile?.bank_id ?? undefined}
+              onValueChange={handleBankChange}
+              disabled={savingBank}
+            >
+              <SelectTrigger id="bank" className="h-12 text-base">
+                <SelectValue placeholder="Choose your bank" />
+              </SelectTrigger>
+              <SelectContent>
+                {BANKS.map((bank) => (
+                  <SelectItem key={bank.id} value={bank.id} className="text-base">
+                    {bank.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Card>
       </div>
+
     </div>
   );
 };

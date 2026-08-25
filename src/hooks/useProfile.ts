@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
@@ -8,6 +8,7 @@ export interface Profile {
   currency_code: string;
   locale: string;
   minor_unit_digits: number;
+  bank_id: string | null;
   created_at: string;
 }
 
@@ -28,6 +29,27 @@ export function useProfile() {
     },
   });
 }
+
+/** Saves the user's preferred banking app for the "move to savings" hand-off. */
+export function useUpdateBank() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (bankId: string | null) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ bank_id: bankId })
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return bankId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+    },
+  });
+}
+
 
 /**
  * Hook returning currency-aware money formatters.
@@ -59,5 +81,17 @@ export function useMoney() {
     return minorUnits >= 0 ? `+${formatted}` : `-${formatted}`;
   };
 
-  return { currency, locale, minorUnitDigits: digits, formatMoney, formatMoneySigned };
+  /** Bare number, no currency symbol or grouping — safe to paste into a bank app. */
+  const formatAmountPlain = (minorUnits: number): string =>
+    (minorUnits / factor).toFixed(digits);
+
+  return {
+    currency,
+    locale,
+    minorUnitDigits: digits,
+    formatMoney,
+    formatMoneySigned,
+    formatAmountPlain,
+  };
 }
+
