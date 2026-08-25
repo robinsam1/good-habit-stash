@@ -170,7 +170,7 @@ const Welcome = () => {
           {!isLast ? (
             <Button
               size="lg"
-              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full h-14 short:h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => api?.scrollNext()}
             >
               Next
@@ -179,7 +179,7 @@ const Welcome = () => {
           ) : (
             <Button
               size="lg"
-              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-success"
+              className="w-full h-14 short:h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-success"
               onClick={() => navigate("/get-started")}
             >
               <Sparkles className="h-5 w-5 mr-2" />
@@ -188,10 +188,11 @@ const Welcome = () => {
             </Button>
           )}
           <Link to="/auth" className="block">
-            <Button variant="ghost" className="w-full h-12 text-muted-foreground hover:text-foreground transition-colors">
+            <Button variant="ghost" className="w-full h-12 short:h-10 text-muted-foreground hover:text-foreground transition-colors">
               I already have an account
             </Button>
           </Link>
+
         </div>
       </div>
     </div>
