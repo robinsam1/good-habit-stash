@@ -257,6 +257,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          bank_id: string | null
           created_at: string
           currency_code: string
           locale: string
@@ -265,6 +266,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          bank_id?: string | null
           created_at?: string
           currency_code: string
           locale: string
@@ -273,6 +275,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          bank_id?: string | null
           created_at?: string
           currency_code?: string
           locale?: string
