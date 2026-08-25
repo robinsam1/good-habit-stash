@@ -218,11 +218,26 @@ const Welcome = () => {
                         )}
                         style={{ height: layout.imageHeight, marginBottom: layout.gap }}
                       >
+                        <div
+                          aria-hidden
+                          className="absolute inset-0 scale-110 blur-lg"
+                          style={{
+                            backgroundImage: `url(${WELCOME_LQIP[i]})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        />
                         <img
                           src={slide.image}
                           alt={slide.alt}
                           loading={i === 0 ? "eager" : "lazy"}
-                          className="w-full h-full object-cover"
+                          fetchPriority={i === 0 ? "high" : "auto"}
+                          decoding="async"
+                          onLoad={() => handleImageLoad(i)}
+                          className={cn(
+                            "relative w-full h-full object-cover transition-opacity duration-500",
+                            loaded.has(i) ? "opacity-100" : "opacity-0"
+                          )}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
                       </div>
