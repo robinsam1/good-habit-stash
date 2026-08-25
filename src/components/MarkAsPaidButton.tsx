@@ -125,7 +125,7 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Amount to transfer
               </p>
-              <p className="font-display text-2xl font-bold tabular-nums">{plainAmount}</p>
+              <p className="text-2xl font-semibold tabular-nums">{plainAmount}</p>
             </div>
             <span className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary">
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}

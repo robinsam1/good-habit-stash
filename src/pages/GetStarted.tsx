@@ -93,22 +93,22 @@ const GetStarted = () => {
         </Link>
 
         <header className="text-center mb-3">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-2 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient shadow-glow mb-2 animate-pop-in">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <div className="font-display text-sm font-semibold tracking-widest uppercase text-muted-foreground mb-1">
+          <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1">
             Habit Visor
           </div>
           <h1 className="font-display text-2xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
+            <span className="text-brand-gradient animate-shimmer">
               What matters most?
             </span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Pick a focus — we'll build your starter habits.</p>
         </header>
 
-        <Card className="border-border/50 shadow-xl overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
+        <Card className="border-border/50 shadow-elevated overflow-hidden">
+          <div className="h-1 bg-brand-gradient w-full opacity-90" />
           <CardContent className="pt-4 pb-4 space-y-4">
             <div className="grid grid-cols-2 gap-2.5">
               {GOALS.map((g, i) => {
@@ -122,7 +122,7 @@ const GetStarted = () => {
                       "group relative rounded-2xl border-2 p-3 text-left transition-all animate-slide-up",
                       "hover:border-primary/60 hover:shadow-md",
                       selected
-                        ? "border-primary bg-gradient-to-br from-primary/10 to-accent/10 shadow-lg scale-[1.02]"
+                        ? "border-primary bg-primary/5 shadow-glow scale-[1.02]"
                         : "border-border bg-card"
                     )}
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
@@ -133,7 +133,7 @@ const GetStarted = () => {
                     )}>
                       {g.emoji}
                     </div>
-                    <div className="font-display font-semibold text-sm leading-tight">{g.label}</div>
+                    <div className="font-semibold text-sm leading-tight">{g.label}</div>
                   </button>
                 );
               })}
@@ -159,7 +159,7 @@ const GetStarted = () => {
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="w-full h-11 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+              className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
             >
               {submitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

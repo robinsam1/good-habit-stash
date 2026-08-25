@@ -153,13 +153,17 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
 }
 
 /**
- * Colour for a day within a streak: neutral gray on day 1, saturating toward
- * gold by day 10 and beyond, while keeping the same brightness.
+ * Colour for a day within a streak: cool, desaturated indigo-grey on day 1,
+ * warming and saturating toward gold by day 10 and beyond. Deliberately kept
+ * off the red/magenta range so broken-streak markers stay unmistakable.
  */
 function streakColor(indexInStreak: number): string {
   const t = Math.min(1, indexInStreak / 9);
-  const saturation = 6 + t * 79; // 6% → 85%
-  return `hsl(45, ${saturation.toFixed(1)}%, 52%)`;
+  // Cool → warm without passing through magenta: hold indigo-grey, then gold.
+  const hue = t < 0.3 ? 232 : 45;
+  const saturation = t < 0.3 ? 12 : 20 + ((t - 0.3) / 0.7) * 68; // 20% → 88%
+  const lightness = t < 0.3 ? 66 : 62 - ((t - 0.3) / 0.7) * 10; // 62% → 52%
+  return `hsl(${hue}, ${saturation.toFixed(1)}%, ${lightness.toFixed(1)}%)`;
 }
 
 function cornerRadii(r: number, leftSquare: boolean, rightSquare: boolean): [number, number, number, number] {

@@ -182,11 +182,11 @@ const Index = () => {
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient shadow-glow mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2 tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
+            <span className="text-brand-gradient animate-shimmer">
               Habit Visor
             </span>
           </h1>
@@ -196,8 +196,8 @@ const Index = () => {
         </header>
 
         {/* Total Display */}
-        <Card data-tour="total" className="mb-10 border-border/50 shadow-xl overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
-          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
+        <Card data-tour="total" className="mb-10 border-border/50 shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
+          <div className="h-1 bg-brand-gradient w-full opacity-90" />
           <div className="py-8 px-4">
             <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
           </div>

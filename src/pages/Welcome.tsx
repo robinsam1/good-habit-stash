@@ -96,7 +96,7 @@ const Welcome = () => {
       <div className="max-w-lg mx-auto w-full px-6 py-10 flex-1 flex flex-col relative z-10">
         <header className="text-center mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
+            <span className="text-brand-gradient animate-shimmer">
               Habit Visor
             </span>
           </h1>
@@ -159,7 +159,7 @@ const Welcome = () => {
               className={cn(
                 "h-2.5 rounded-full transition-all duration-300",
                 current === i
-                  ? "w-10 bg-gradient-to-r from-primary to-accent"
+                  ? "w-10 bg-brand-gradient"
                   : "w-2.5 bg-muted-foreground/25 hover:bg-muted-foreground/40"
               )}
             />
@@ -170,7 +170,7 @@ const Welcome = () => {
           {!isLast ? (
             <Button
               size="lg"
-              className="w-full h-14 text-base font-semibold bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all shadow-lg shadow-primary/20"
+              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
               onClick={() => api?.scrollNext()}
             >
               Next
@@ -179,7 +179,7 @@ const Welcome = () => {
           ) : (
             <Button
               size="lg"
-              className="w-full h-14 text-base font-semibold bg-gradient-to-r from-primary via-primary to-accent hover:opacity-90 transition-all shadow-lg shadow-primary/25 animate-pulse-success"
+              className="w-full h-14 text-base font-semibold bg-brand-gradient text-primary-foreground hover:opacity-95 shadow-glow animate-pulse-success"
               onClick={() => navigate("/get-started")}
             >
               <Sparkles className="h-5 w-5 mr-2" />
