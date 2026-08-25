@@ -153,13 +153,15 @@ function resolveTrackColor(trackColor: string | undefined, fallback: string): st
 }
 
 /**
- * Colour for a day within a streak: neutral gray on day 1, saturating toward
- * gold by day 10 and beyond, while keeping the same brightness.
+ * Colour for a day within a streak: cool, desaturated indigo on day 1, heating
+ * through magenta toward the ember accent by day 10 and beyond.
  */
 function streakColor(indexInStreak: number): string {
   const t = Math.min(1, indexInStreak / 9);
-  const saturation = 6 + t * 79; // 6% → 85%
-  return `hsl(45, ${saturation.toFixed(1)}%, 52%)`;
+  const hue = 239 + t * 137; // 239° indigo → 376° (16°) ember
+  const saturation = 18 + t * 72; // 18% → 90%
+  const lightness = 60 - t * 4;
+  return `hsl(${(hue % 360).toFixed(1)}, ${saturation.toFixed(1)}%, ${lightness.toFixed(1)}%)`;
 }
 
 function cornerRadii(r: number, leftSquare: boolean, rightSquare: boolean): [number, number, number, number] {
