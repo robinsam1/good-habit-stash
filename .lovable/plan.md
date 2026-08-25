@@ -1,66 +1,68 @@
-# Aesthetic Reset: One Coherent System
+# Aesthetic Reset: Playful, Consistent System
 
-The current look mixes eras — a 90s-flavoured serif wordmark, a gradient that belongs to a different decade, a neutral sans that matches neither, pill buttons next to heavy-bordered option tiles. The fix is to throw the whole visual language out and rebuild it from one reference point, applied to every screen without touching layout, copy, images or UX.
+Rebuild the visual language from one reference point so every screen evokes the same feeling. Layout, element positions, copy, images and UX stay exactly as they are.
 
 ## The reference
 
-**Swiss-precision product design in the Linear / Vercel / Stripe-dashboard lineage**, with a ledger-paper twist so it reads as a money app rather than a dev tool. Tasteful variation, not a copy: warm paper instead of cold white, a single deep-green signal colour instead of their blues/violets, and typographic emphasis carried by weight and size rather than colour.
+**Duolingo, with a dash of Headspace** — the most consistently themed playful consumer products around. What makes them work isn't randomness; it's rigid rules applied cheerfully: one chunky rounded typeface, flat saturated colour, "3D" buttons with a solid bottom lip you can press, fat radii everywhere, and bouncy but short motion.
 
-Principles, applied everywhere with no exceptions:
+Tasteful variation so it isn't a copy: a warm cream canvas instead of Duolingo's white, a saffron/teal-led palette rather than their green-and-blue, and geometric confetti-free chrome (our emoji confetti stays as a moment, not a texture).
 
-- One type family. No serif anywhere.
-- One accent colour. Everything else is a neutral ink ramp.
-- No gradients, no shimmer, no glow, no floating blobs.
-- Hairline borders and flat surfaces; shadow used only for true overlays.
-- Small, uniform radii. Nothing is a pill, nothing is a 20px bubble.
-- Fast, linear-ish motion. No bounce or spring.
+Rules applied with no exceptions:
+
+- One type family for everything, rounded and friendly.
+- Flat colour only — no gradients, no glow, no blur blobs.
+- Every raised control has the same solid bottom-lip shadow and the same press behaviour.
+- One radius language: fat and consistent.
+- Short, springy motion on interaction; nothing ambient or looping.
 
 ## Colour
 
-A single warm-neutral ink ramp plus one signal green.
+Flat, saturated, high-contrast — cheerful without being neon.
 
-- Paper canvas `#FAFAF9`, surfaces pure `#FFFFFF`, sunken rows `#F4F4F2`
-- Ink `#111110` primary text, `#57564F` secondary, `#8A8880` tertiary
-- Hairlines `#E6E5E1`
-- Signal green `#0E7A54` — the only saturated colour; used for primary buttons, selection, focus rings, positive balance
-- Negative `#B3261E`, kept muted so it reads as data, not alarm
-- Dark theme: ink canvas `#141413`, surfaces `#1C1C1A`, hairlines `#2E2E2B`, signal `#2FB37F`
+- Canvas cream `#FFF9F0`, surfaces `#FFFFFF`, sunken rows `#FFF3E4`
+- Ink `#2B2A33` primary, `#6B6875` secondary, `#A19DAC` tertiary
+- Borders are visible, not hairline: `#E6DFD3` at 2px
+- Primary **teal** `#14B8A6` (buttons, selection, focus)
+- Accent **saffron** `#FFB627` (streaks, highlights, badges)
+- Positive `#34C759`, negative `#FF5A5F`, info violet `#7C5CFF` for tour/onboarding chrome
+- Dark theme: canvas `#1B1A22`, surfaces `#25232E`, borders `#37343F`, teal `#2DD4BF`, saffron `#FFC44D`
 
-The blue→orange gradient is removed entirely, including from the wordmark and balance figure. The wordmark becomes plain ink with tight tracking.
+The blue→orange gradient is removed everywhere, including the wordmark and balance figure. The wordmark becomes solid ink with a saffron dot/accent mark.
 
 ## Type
 
-**Inter Tight** for absolutely everything — wordmark, headings, body, numerals — with `font-feature-settings: "tnum", "cv05"` so money columns align. Instrument Serif and Geist are dropped.
+**Nunito** for absolutely everything — wordmark, headings, body, numerals — at weights 600/700/800 only, with tabular numerals for money. Rounded terminals carry the playfulness so no second family is needed. Instrument Serif and Geist are dropped.
 
-Fixed scale: 32/24/20/16/14/13/11, weights limited to 400, 500 and 600. Headings sit at 600 with `-0.02em` tracking. The balance figure is 56px/600 tabular, not a display serif.
+Scale: 34/26/20/16/15/13/11. Headings 800 with `-0.01em` tracking; body 600 (Nunito reads light at 400). Balance figure is 60px/800 tabular.
 
 ## Shape, depth, motion
 
-- Radii: 8px cards and inputs, 8px buttons, 6px small chips, 4px on the smallest controls. `--radius` becomes `0.5rem`.
-- Buttons are solid rectangles with 8px corners; secondary is a hairline outline, ghost is text-only.
-- Depth: hairline border is the default separator. Only dialogs, drawers, popovers and toasts get a shadow, and it's a neutral `0 12px 32px -12px rgb(17 17 16 / 0.18)`.
-- Motion: 120ms/180ms with `cubic-bezier(0.2, 0, 0, 1)`. Hover shifts background one step; press is a 1px translate, not a scale. Spring easing, `animate-pulse-success`, shimmer and blob animations are removed.
-- Icons: Lucide at a uniform 1.5 stroke and 16/20px sizes only.
+- Radii: 20px cards and sheets, 16px buttons and inputs, 12px chips, 999px only on true avatars/toggles. `--radius` = 1.25rem with consistent steps.
+- **The signature move:** every raised control (primary/secondary buttons, option tiles, activity picker trigger, Move-to-savings CTA) sits on a 4px solid bottom lip in a darker shade of its own colour. Press translates it down 4px and collapses the lip — the same physical rule everywhere.
+- Cards use a 2px border and no shadow; only dialogs, drawers and popovers float, with one soft neutral shadow.
+- Motion: 140ms press, 220ms entrances, `cubic-bezier(0.34, 1.4, 0.5, 1)` — one springy curve, used everywhere. Shimmer, blob, and glow-pulse animations are removed.
+- Icons: Lucide at 2px stroke (matching the type weight), sizes 18/22 only.
 
 ## Screens touched
 
-Token-driven, so all surfaces update with no structural change: `/welcome`, `/get-started`, `/signup`, `/auth`, `/` home (balance, activity picker, log entries, move-to-savings dialog), `/tasks`, `/history`, `/report`, `/settings`, the onboarding tour, toasts, skeletons and empty states.
+Token-driven, so everything updates without structural change: `/welcome`, `/get-started`, `/signup`, `/auth`, `/` home (balance, activity picker, log entries, move-to-savings dialog), `/tasks`, `/history`, `/report`, `/settings`, onboarding tour, toasts, skeletons, empty states.
 
 Specific inconsistencies resolved:
 
-- The four "what matters most" tiles lose the 2px coloured border and rounded-bubble look. They become flat surface cards with a hairline border; selection is a 1.5px green border plus a faint green tint — same treatment as every other selectable control in the app.
-- Card top-edge gradient strips are removed.
-- Decorative blurred blobs behind auth/get-started are removed.
-- The adherence timeline's indigo→ember ramp is replaced with a neutral-to-green intensity ramp; broken-streak markers use the muted negative red.
-- Confetti stays, since it's content rather than chrome.
+- The four "what matters most" tiles adopt the exact button language: 2px border, 20px radius, solid bottom lip, press-down on tap. Selected state is a teal border plus teal-tinted surface and a saffron check — the same selection treatment used by every other selectable control.
+- Card top-edge gradient strips and blurred background blobs are removed.
+- The adherence timeline ramp becomes muted teal → saffron for streaks, with negative red markers for broken streaks.
+- Emoji confetti stays as-is.
 
 ## Technical notes
 
-- All values are HSL custom properties in `src/index.css` (`:root` and `.dark`); `tailwind.config.ts` gains the new font stack, the 4/6/8px radius steps, neutral shadows and the new easing, and drops the spring/pill/glow tokens.
+- All values become HSL custom properties in `src/index.css` (`:root` and `.dark`); `tailwind.config.ts` gains the Nunito stack, the new radius steps, the lip/shadow tokens, and the single spring easing, and drops pill/glow/gradient tokens.
+- A `.lip` / raised-control utility is defined once in `index.css` and reused by button variants and option tiles so the press physics can't drift.
 - Every shadcn primitive (`button`, `input`, `textarea`, `select`, `card`, `dialog`, `drawer`, `sheet`, `popover`, `badge`, `switch`, `tabs`, `skeleton`, `toast`) is updated to the new radii, borders and motion.
-- Components carrying hardcoded gradient/glow/pill classes are swept and moved onto tokens.
-- `HabitTimeline.tsx` reads its colours from CSS variables at render time so it tracks theme changes.
-- Google Fonts import switches to Inter Tight only.
+- Components with hardcoded gradient/glow/pill classes are swept onto tokens.
+- `HabitTimeline.tsx` reads colours from CSS variables at render time so it tracks theme changes.
+- Google Fonts import switches to Nunito only.
 - No changes to hooks, RPCs, schema, routes, copy or images.
 
 ## Out of scope
