@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,19 @@ const FLOATERS = [
   { Icon: Sparkles, className: "top-1/3 left-4 text-accent/10 animate-float-slow", size: 22, delay: "0.3s" },
 ];
 
+const BASE_GAP = 16;
+const MIN_GAP_FACTOR = 0.5;
+const MIN_IMAGE_FACTOR = 0.5;
+
+type Layout = {
+  gap: number;
+  imageHeight: number;
+  showImage: boolean;
+  overflow: boolean;
+};
+
+const DEFAULT_LAYOUT: Layout = { gap: BASE_GAP, imageHeight: 0, showImage: true, overflow: false };
+
 const Welcome = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useAuth();
@@ -52,6 +65,13 @@ const Welcome = () => {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
   const prevCurrent = useRef(0);
+
+  const innerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const dotsRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const textRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -75,6 +95,78 @@ const Welcome = () => {
     });
   }, [api]);
 
+  const measure = useCallback(() => {
+    const inner = innerRef.current;
+    if (!inner) return;
+
+    const styles = window.getComputedStyle(inner);
+    const avail =
+      inner.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
+    if (avail <= 0) return;
+
+    const headerH = headerRef.current?.offsetHeight ?? 0;
+    const dotsH = dotsRef.current?.offsetHeight ?? 0;
+    const footerH = footerRef.current?.offsetHeight ?? 0;
+    // tallest slide drives the layout so it never jumps between slides
+    const textH = textRefs.current.reduce(
+      (max, el) => Math.max(max, el?.offsetHeight ?? 0),
+      0
+    );
+
+    const fixed = headerH + dotsH + footerH + textH;
+    const idealImage = Math.max(140, Math.min(avail * 0.45, 420));
+
+    let gap = BASE_GAP;
+    let imageHeight = idealImage;
+    let showImage = true;
+    let overflow = false;
+
+    if (fixed + 4 * BASE_GAP + idealImage > avail) {
+      // stage 3: shrink every gap by up to 50%
+      const perGap = (avail - fixed - idealImage) / 4;
+      if (perGap >= BASE_GAP * MIN_GAP_FACTOR) {
+        gap = Math.min(BASE_GAP, perGap);
+      } else {
+        gap = BASE_GAP * MIN_GAP_FACTOR;
+        // stage 4: crop the image by up to 50%
+        const imageSpace = avail - fixed - 4 * gap;
+        if (imageSpace >= idealImage * MIN_IMAGE_FACTOR) {
+          imageHeight = imageSpace;
+        } else {
+          // stage 5: drop the image entirely
+          showImage = false;
+          imageHeight = 0;
+          // stage 6: accept scrolling
+          overflow = fixed + 3 * gap > avail;
+        }
+      }
+    }
+
+    setLayout((prev) =>
+      Math.abs(prev.gap - gap) < 0.5 &&
+      Math.abs(prev.imageHeight - imageHeight) < 0.5 &&
+      prev.showImage === showImage &&
+      prev.overflow === overflow
+        ? prev
+        : { gap, imageHeight, showImage, overflow }
+    );
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+    const inner = innerRef.current;
+    const ro = new ResizeObserver(() => measure());
+    if (inner) ro.observe(inner);
+    window.addEventListener("resize", measure);
+    if (typeof document !== "undefined" && "fonts" in document) {
+      (document as Document & { fonts: FontFaceSet }).fonts.ready.then(() => measure());
+    }
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
+
   const isLast = current === SLIDES.length - 1;
 
   return (
@@ -89,57 +181,78 @@ const Welcome = () => {
         />
       ))}
 
-      {/* Animated background blobs */}
-
-      <div className="max-w-lg sm:max-w-3xl mx-auto w-full px-6 py-6 short:py-3 flex-1 min-h-0 flex flex-col relative z-10">
-        <header className="text-center mb-4 short:mb-2 shrink-0">
-          <h1 className="font-display text-3xl sm:text-4xl short:text-2xl font-bold tracking-tight">
+      <div
+        ref={innerRef}
+        className="max-w-lg sm:max-w-3xl mx-auto w-full px-6 py-6 flex-1 min-h-0 flex flex-col relative z-10"
+      >
+        <header
+          ref={headerRef}
+          className="text-center shrink-0"
+          style={{ marginBottom: layout.gap }}
+        >
+          <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">
               Habit Visor
             </span>
           </h1>
         </header>
 
-        <Carousel setApi={setApi} className="flex-1 min-h-0">
+        <Carousel
+          setApi={setApi}
+          className={cn("flex-1 min-h-0", layout.overflow && "overflow-y-auto")}
+        >
           <CarouselContent className="h-full">
             {SLIDES.map((slide, i) => {
               const active = current === i && isAnimating;
               return (
                 <CarouselItem key={i} className="h-full">
-                  <div className="text-center px-2 py-0 space-y-1 short:space-y-0.5 h-full flex flex-col">
+                  <div className="text-center px-2 h-full flex flex-col">
+                    {layout.showImage && (
+                      <div
+                        className={cn(
+                          "w-full shrink-0 rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
+                          active && "animate-scale-bounce"
+                        )}
+                        style={{ height: layout.imageHeight, marginBottom: layout.gap }}
+                      >
+                        <img
+                          src={slide.image}
+                          alt={slide.alt}
+                          loading={i === 0 ? "eager" : "lazy"}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+                      </div>
+                    )}
+
                     <div
-                      className={cn(
-                        "w-full flex-1 min-h-[140px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
-                        active && "animate-scale-bounce"
-                      )}
+                      ref={(el) => {
+                        textRefs.current[i] = el;
+                      }}
+                      className="shrink-0 space-y-1"
                     >
-                      <img
-                        src={slide.image}
-                        alt={slide.alt}
-                        loading={i === 0 ? "eager" : "lazy"}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+                      <h2
+                        className={cn(
+                          "font-display text-xl sm:text-2xl font-bold text-foreground leading-snug tracking-tight text-balance",
+                          active && "animate-slide-up"
+                        )}
+                        style={{ animationDelay: active ? "0.1s" : "0s", opacity: active ? undefined : 1 }}
+                      >
+                        {slide.title}
+                      </h2>
+                      <p
+                        className={cn(
+                          "text-muted-foreground text-[15px] sm:text-base leading-relaxed text-pretty",
+                          active && "animate-slide-up"
+                        )}
+                        style={{ animationDelay: active ? "0.2s" : "0s", opacity: active ? undefined : 1 }}
+                      >
+                        {slide.body}
+                      </p>
                     </div>
 
-                    <h2
-                      className={cn(
-                        "font-display text-xl sm:text-2xl short:text-lg font-bold text-foreground leading-snug tracking-tight text-balance",
-                        active && "animate-slide-up"
-                      )}
-                      style={{ animationDelay: active ? "0.1s" : "0s", opacity: active ? undefined : 1 }}
-                    >
-                      {slide.title}
-                    </h2>
-                    <p
-                      className={cn(
-                        "text-muted-foreground text-[15px] sm:text-base short:text-[13px] leading-relaxed short:leading-snug text-pretty",
-                        active && "animate-slide-up"
-                      )}
-                      style={{ animationDelay: active ? "0.2s" : "0s", opacity: active ? undefined : 1 }}
-                    >
-                      {slide.body}
-                    </p>
+                    {/* slack collects here so the CTA stays bottom-justified */}
+                    <div className="flex-1 min-h-0" />
                   </div>
                 </CarouselItem>
               );
@@ -147,9 +260,12 @@ const Welcome = () => {
           </CarouselContent>
         </Carousel>
 
-
         {/* Dots */}
-        <div className="flex justify-center gap-2 mt-2 mb-2 short:mt-1 short:mb-1 shrink-0">
+        <div
+          ref={dotsRef}
+          className="flex justify-center gap-2 shrink-0"
+          style={{ marginTop: layout.gap, marginBottom: layout.gap }}
+        >
           {SLIDES.map((_, i) => (
             <button
               key={i}
@@ -165,12 +281,11 @@ const Welcome = () => {
           ))}
         </div>
 
-        <div className="space-y-2 shrink-0">
-
+        <div ref={footerRef} className="space-y-2 shrink-0">
           {!isLast ? (
             <Button
               size="lg"
-              className="w-full h-14 short:h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => api?.scrollNext()}
             >
               Next
@@ -179,7 +294,7 @@ const Welcome = () => {
           ) : (
             <Button
               size="lg"
-              className="w-full h-14 short:h-12 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-success"
+              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-success"
               onClick={() => navigate("/get-started")}
             >
               <Sparkles className="h-5 w-5 mr-2" />
@@ -188,11 +303,10 @@ const Welcome = () => {
             </Button>
           )}
           <Link to="/auth" className="block">
-            <Button variant="ghost" className="w-full h-12 short:h-10 text-muted-foreground hover:text-foreground transition-colors">
+            <Button variant="ghost" className="w-full h-12 text-muted-foreground hover:text-foreground transition-colors">
               I already have an account
             </Button>
           </Link>
-
         </div>
       </div>
     </div>
