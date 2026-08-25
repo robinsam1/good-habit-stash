@@ -120,7 +120,38 @@ const Settings = () => {
             </Button>
           </form>
         </Card>
+
+        <Card className="p-6 border-border/50 shadow-xl mt-6">
+          <div className="flex items-center gap-2 mb-1">
+            <PiggyBank className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-lg font-semibold">Savings</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Pick your banking app and we'll add a shortcut to it when you move money to
+            savings. We never touch your money — you make the transfer yourself.
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="bank">Banking app</Label>
+            <Select
+              value={profile?.bank_id ?? undefined}
+              onValueChange={handleBankChange}
+              disabled={savingBank}
+            >
+              <SelectTrigger id="bank" className="h-12 text-base">
+                <SelectValue placeholder="Choose your bank" />
+              </SelectTrigger>
+              <SelectContent>
+                {BANKS.map((bank) => (
+                  <SelectItem key={bank.id} value={bank.id} className="text-base">
+                    {bank.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Card>
       </div>
+
     </div>
   );
 };
