@@ -107,7 +107,7 @@ const GetStarted = () => {
 
         <Card className="shadow-elevated overflow-hidden">
           <CardContent className="pt-4 pb-4 space-y-4">
-            <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-col sm:gap-3">
+            <div className="flex flex-col gap-3">
               {GOALS.map((g, i) => {
                 const selected = goal === g.code;
                 return (
@@ -116,19 +116,19 @@ const GetStarted = () => {
                     type="button"
                     onClick={() => setGoal(g.code)}
                     className={cn(
-                      "pressable group relative rounded-lg border p-3 sm:px-4 sm:py-3.5 text-left animate-slide-up shadow-soft",
+                      "pressable group relative rounded-lg border p-3 text-left animate-slide-up shadow-soft",
                       "hover:border-primary/50",
-                      "flex items-center gap-3 sm:gap-4",
+                      "flex items-center gap-3",
                       selected
                         ? "border-primary bg-primary/5"
                         : "border-border bg-card"
                     )}
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
                   >
-                    <div className="text-3xl sm:text-4xl shrink-0">{g.emoji}</div>
+                    <div className="text-3xl shrink-0">{g.emoji}</div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm sm:text-base leading-tight">{g.label}</div>
-                      <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 leading-snug hidden sm:block">
+                      <div className="font-semibold text-sm leading-tight">{g.label}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5 leading-snug">
                         {g.blurb}
                       </div>
                     </div>
