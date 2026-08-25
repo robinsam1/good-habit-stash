@@ -105,7 +105,7 @@ const GetStarted = () => {
           <p className="text-sm text-muted-foreground mt-1">Pick a focus — we'll build your starter habits.</p>
         </header>
 
-        <Card className="border-border/50 shadow-elevated overflow-hidden">
+        <Card className="shadow-elevated overflow-hidden">
           <CardContent className="pt-4 pb-4 space-y-4">
             <div className="grid grid-cols-2 gap-2.5">
               {GOALS.map((g, i) => {
@@ -116,21 +116,19 @@ const GetStarted = () => {
                     type="button"
                     onClick={() => setGoal(g.code)}
                     className={cn(
-                      "group relative rounded-2xl border-2 p-3 text-left transition-all animate-slide-up",
-                      "hover:border-primary/60 hover:shadow-md",
+                      "pressable group relative rounded-lg border p-3 text-left animate-slide-up shadow-soft",
+                      "hover:border-primary/50",
                       selected
-                        ? "border-primary bg-primary/5 scale-[1.02]"
+                        ? "border-primary bg-primary/5"
                         : "border-border bg-card"
                     )}
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
                   >
-                    <div className={cn(
-                      "text-3xl mb-1 transition-transform",
-                      selected ? "scale-110" : "group-hover:scale-105"
-                    )}>
+                    <div className="text-3xl mb-1">
                       {g.emoji}
                     </div>
                     <div className="font-semibold text-sm leading-tight">{g.label}</div>
+
                   </button>
                 );
               })}
