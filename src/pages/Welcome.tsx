@@ -124,7 +124,7 @@ const Welcome = () => {
 
                     <h2
                       className={cn(
-                        "font-display text-xl sm:text-2xl font-bold text-foreground leading-snug tracking-tight max-w-md mx-auto text-balance",
+                        "font-display text-xl sm:text-2xl font-bold text-foreground leading-snug tracking-tight text-balance",
                         active && "animate-slide-up"
                       )}
                       style={{ animationDelay: active ? "0.1s" : "0s", opacity: active ? undefined : 1 }}
@@ -133,7 +133,7 @@ const Welcome = () => {
                     </h2>
                     <p
                       className={cn(
-                        "text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-md mx-auto text-pretty",
+                        "text-muted-foreground text-[15px] sm:text-base leading-relaxed text-pretty",
                         active && "animate-slide-up"
                       )}
                       style={{ animationDelay: active ? "0.2s" : "0s", opacity: active ? undefined : 1 }}
