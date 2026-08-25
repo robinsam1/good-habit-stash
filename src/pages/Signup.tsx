@@ -165,7 +165,7 @@ const Signup = () => {
           </p>
         </header>
 
-        <Card className="border-border shadow-elevated overflow-hidden">
+        <Card className="border-border shadow-elevated overflow-hidden w-full sm:max-w-md sm:mx-auto">
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
