@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import slide1Asset from "@/assets/welcome-1.jpg.asset.json";
 import slide2Asset from "@/assets/welcome-2.jpg.asset.json";
 import slide3Asset from "@/assets/welcome-3.jpg.asset.json";
+import { WELCOME_LQIP } from "@/assets/welcome-lqip";
 
 const SLIDES = [
   {
