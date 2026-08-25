@@ -79,35 +79,35 @@ const GetStarted = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-3 sm:py-6 relative overflow-hidden">
+    <div className="h-[100dvh] overflow-hidden flex flex-col items-center justify-center px-4 py-3 sm:py-6 short:py-2 relative">
       <FloatingDecor />
 
-      <div className="w-full max-w-lg sm:max-w-3xl relative z-10">
+      <div className="w-full max-w-lg sm:max-w-3xl relative z-10 max-h-full overflow-y-auto">
         <Link to="/welcome">
-          <Button variant="ghost" size="sm" className="mb-2 -ml-2 text-muted-foreground h-8">
+          <Button variant="ghost" size="sm" className="mb-2 short:mb-1 -ml-2 text-muted-foreground h-8">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </Link>
 
-        <header className="text-center mb-3">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient mb-2 animate-pop-in">
+        <header className="text-center mb-3 short:mb-2">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient mb-2 animate-pop-in short:hidden">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1">
             Habit Visor
           </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight">
+          <h1 className="font-display text-2xl short:text-xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">
               What matters most?
             </span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Pick a focus — we'll build your starter habits.</p>
+          <p className="text-sm text-muted-foreground mt-1 short:hidden">Pick a focus — we'll build your starter habits.</p>
         </header>
 
         <Card className="shadow-elevated overflow-hidden">
-          <CardContent className="pt-4 pb-4 space-y-4">
-            <div className="flex flex-col gap-3">
+          <CardContent className="pt-4 pb-4 short:pt-3 short:pb-3 space-y-4 short:space-y-3">
+            <div className="flex flex-col gap-3 short:gap-2">
               {GOALS.map((g, i) => {
                 const selected = goal === g.code;
                 return (
@@ -116,7 +116,7 @@ const GetStarted = () => {
                     type="button"
                     onClick={() => setGoal(g.code)}
                     className={cn(
-                      "pressable group relative rounded-lg border p-3 text-left animate-slide-up shadow-soft",
+                      "pressable group relative rounded-lg border p-3 short:p-2 text-left animate-slide-up shadow-soft",
                       "hover:border-primary/50",
                       "flex items-center gap-3",
                       selected
@@ -125,10 +125,10 @@ const GetStarted = () => {
                     )}
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
                   >
-                    <div className="text-3xl shrink-0">{g.emoji}</div>
+                    <div className="text-3xl short:text-2xl shrink-0">{g.emoji}</div>
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-sm leading-tight">{g.label}</div>
-                      <div className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                      <div className="text-xs text-muted-foreground mt-0.5 leading-snug short:hidden">
                         {g.blurb}
                       </div>
                     </div>
@@ -141,6 +141,7 @@ const GetStarted = () => {
                 );
               })}
             </div>
+
 
             <div className="space-y-1.5 animate-slide-up" style={{ animationDelay: "0.25s", animationFillMode: "both" }}>
               <label htmlFor="region" className="text-sm font-medium">Choose your country</label>
