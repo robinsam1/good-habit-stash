@@ -79,19 +79,19 @@ const Auth = () => {
         </Link>
 
         <header className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-4 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient shadow-glow mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
+            <span className="text-brand-gradient animate-shimmer">
               Welcome back
             </span>
           </h1>
           <p className="text-muted-foreground mt-2">Pick up where you left off.</p>
         </header>
 
-        <Card className="border-border/50 shadow-xl overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
+        <Card className="border-border/50 shadow-elevated overflow-hidden">
+          <div className="h-1 bg-brand-gradient w-full opacity-90" />
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
@@ -126,7 +126,7 @@ const Auth = () => {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity animate-slide-up"
+                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow animate-slide-up"
                 style={{ animationDelay: "0.15s", animationFillMode: "both" }}
                 disabled={submitting}
               >

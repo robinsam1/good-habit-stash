@@ -412,7 +412,7 @@ export function OnboardingTour({
                 key={i}
                 className={cn(
                   "h-1.5 rounded-full transition-all",
-                  i === step ? "w-6 bg-gradient-to-r from-primary to-accent" : "w-1.5 bg-muted-foreground/30"
+                  i === step ? "w-6 bg-brand-gradient" : "w-1.5 bg-muted-foreground/30"
                 )}
               />
             ))}
@@ -438,7 +438,7 @@ export function OnboardingTour({
               <Button
                 size="sm"
                 onClick={next}
-                className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
               >
                 {step === STEPS.length - 1 ? "Got it" : "Next"}
                 <ArrowRight className="h-4 w-4 ml-1" />

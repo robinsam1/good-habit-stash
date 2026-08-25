@@ -100,15 +100,15 @@ const GetStarted = () => {
             Habit Visor
           </div>
           <h1 className="font-display text-2xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-shimmer">
+            <span className="text-brand-gradient animate-shimmer">
               What matters most?
             </span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Pick a focus — we'll build your starter habits.</p>
         </header>
 
-        <Card className="border-border/50 shadow-xl overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary w-full" />
+        <Card className="border-border/50 shadow-elevated overflow-hidden">
+          <div className="h-1 bg-brand-gradient w-full opacity-90" />
           <CardContent className="pt-4 pb-4 space-y-4">
             <div className="grid grid-cols-2 gap-2.5">
               {GOALS.map((g, i) => {
@@ -159,7 +159,7 @@ const GetStarted = () => {
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="w-full h-11 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+              className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
             >
               {submitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
