@@ -63,33 +63,34 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden">
+    <div className="h-[100dvh] overflow-hidden flex items-center justify-center px-4 py-8 short:py-3 relative">
       <FloatingDecor />
 
       {/* Soft gradient blobs */}
 
-      <div className="w-full max-w-sm sm:max-w-3xl relative z-10">
+      <div className="w-full max-w-sm sm:max-w-3xl relative z-10 max-h-full overflow-y-auto">
         <Link to="/welcome">
-          <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
+          <Button variant="ghost" size="sm" className="mb-4 short:mb-1 -ml-2 text-muted-foreground">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </Link>
 
-        <header className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient mb-4 animate-pop-in">
+        <header className="text-center mb-6 short:mb-3">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient mb-4 animate-pop-in short:hidden">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
-          <h1 className="font-display text-3xl font-bold tracking-tight">
+          <h1 className="font-display text-3xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">
               Welcome back
             </span>
           </h1>
-          <p className="text-muted-foreground mt-2">Pick up where you left off.</p>
+          <p className="text-muted-foreground mt-2 short:hidden">Pick up where you left off.</p>
         </header>
 
         <Card className="border-border shadow-elevated overflow-hidden w-full sm:max-w-md sm:mx-auto">
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 short:pt-4 short:pb-4">
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
                 <Label htmlFor="email">Email</Label>
