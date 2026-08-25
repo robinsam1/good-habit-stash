@@ -40,7 +40,7 @@ const History = () => {
   
   return (
     <div className="min-h-screen">
-      <div className="max-w-lg mx-auto px-4 py-8 sm:py-12">
+      <div className="max-w-lg sm:max-w-3xl mx-auto px-4 py-8 sm:py-12">
         {/* Header */}
         <header className="mb-8">
           <Link to="/">
