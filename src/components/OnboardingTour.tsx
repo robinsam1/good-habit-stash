@@ -402,7 +402,7 @@ export function OnboardingTour({
             Step {step + 1} of {STEPS.length}
           </span>
         </div>
-        <h3 className="font-display font-semibold text-lg mb-1">{currentStep.title}</h3>
+        <h3 className="text-lg font-bold mb-1">{currentStep.title}</h3>
         <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{currentStep.body}</p>
 
         <div className="flex items-center justify-between gap-3">
@@ -438,7 +438,7 @@ export function OnboardingTour({
               <Button
                 size="sm"
                 onClick={next}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 {step === STEPS.length - 1 ? "Got it" : "Next"}
                 <ArrowRight className="h-4 w-4 ml-1" />

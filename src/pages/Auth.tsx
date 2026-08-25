@@ -67,8 +67,6 @@ const Auth = () => {
       <FloatingDecor />
 
       {/* Soft gradient blobs */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-72 h-72 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-1/4 w-56 h-56 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
 
       <div className="w-full max-w-sm relative z-10">
         <Link to="/welcome">
@@ -79,7 +77,7 @@ const Auth = () => {
         </Link>
 
         <header className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient shadow-glow mb-4 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
@@ -90,8 +88,7 @@ const Auth = () => {
           <p className="text-muted-foreground mt-2">Pick up where you left off.</p>
         </header>
 
-        <Card className="border-border/50 shadow-elevated overflow-hidden">
-          <div className="h-1 bg-brand-gradient w-full opacity-90" />
+        <Card className="border-border shadow-elevated overflow-hidden">
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
@@ -126,7 +123,7 @@ const Auth = () => {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow animate-slide-up"
+                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 animate-slide-up"
                 style={{ animationDelay: "0.15s", animationFillMode: "both" }}
                 disabled={submitting}
               >

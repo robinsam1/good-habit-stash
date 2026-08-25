@@ -131,7 +131,7 @@ export function LogEntry({ id, activityId, activityName, value, date, notes, isN
   return (
     <div
       className={cn(
-        "py-3 px-4 rounded-lg bg-card border border-border/50",
+        "py-3 px-4 rounded-lg bg-card border border-border",
         "transition-all duration-300",
         isNew && "animate-slide-up border-primary/30 shadow-sm"
       )}
@@ -223,14 +223,14 @@ export function LogEntry({ id, activityId, activityName, value, date, notes, isN
       
       {/* Note display (when not editing) */}
       {notes && !isEditingNote && (
-        <div className="mt-2 pt-2 border-t border-border/50">
+        <div className="mt-2 pt-2 border-t border-border">
           <p className="text-sm text-muted-foreground italic">{notes}</p>
         </div>
       )}
       
       {/* Note editing */}
       {isEditingNote && (
-        <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
+        <div className="mt-3 pt-3 border-t border-border space-y-2">
           <Textarea
             value={noteText}
             onChange={(e) => setNoteText(e.target.value.slice(0, 2000))}

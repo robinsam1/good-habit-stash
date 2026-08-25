@@ -42,7 +42,7 @@ const Tasks = () => {
         </div>
 
         {proLoading ? (
-          <Card className="p-6 border-border/50 shadow-xl">
+          <Card className="p-6 border-border shadow-xl">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </Card>
         ) : isPro ? (

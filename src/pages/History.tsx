@@ -80,8 +80,8 @@ const History = () => {
               const totalValue = entries.reduce((sum, e) => sum + e.value, 0);
               
               return (
-                <div key={dateKey} className="bg-card rounded-xl border border-border/50 overflow-hidden">
-                  <div className="px-4 py-3 bg-muted/50 border-b border-border/50 flex justify-between items-center">
+                <div key={dateKey} className="bg-card rounded-xl border border-border overflow-hidden">
+                  <div className="px-4 py-3 bg-muted/50 border-b border-border flex justify-between items-center">
                     <div>
                       <h3 className="font-semibold text-foreground">
                         Paid {paidOutDate ? format(parseISO(paidOutDate), "MMMM d, yyyy") : "Unknown"}

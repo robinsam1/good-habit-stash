@@ -130,8 +130,6 @@ const Index = () => {
       <FloatingDecor />
 
       {/* Soft gradient blobs */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
-      <div className="absolute bottom-40 right-1/4 w-56 h-56 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
 
       <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
@@ -182,7 +180,7 @@ const Index = () => {
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient shadow-glow mb-4 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient mb-4 animate-pop-in">
             <Sparkles className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2 tracking-tight">
@@ -196,8 +194,7 @@ const Index = () => {
         </header>
 
         {/* Total Display */}
-        <Card data-tour="total" className="mb-10 border-border/50 shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
-          <div className="h-1 bg-brand-gradient w-full opacity-90" />
+        <Card data-tour="total" className="mb-10 border-border shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
           <div className="py-8 px-4">
             <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
           </div>
@@ -219,7 +216,7 @@ const Index = () => {
         {/* Activity Log */}
         <div className="animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg font-semibold text-foreground">
+            <h2 className="text-lg font-bold text-foreground">
               Logged Today
             </h2>
             <Link to="/history">

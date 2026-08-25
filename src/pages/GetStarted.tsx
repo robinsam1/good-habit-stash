@@ -81,8 +81,6 @@ const GetStarted = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-3 sm:py-6 relative overflow-hidden">
       <FloatingDecor />
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
-      <div className="absolute bottom-40 right-1/4 w-56 h-56 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
 
       <div className="w-full max-w-lg relative z-10">
         <Link to="/welcome">
@@ -93,7 +91,7 @@ const GetStarted = () => {
         </Link>
 
         <header className="text-center mb-3">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient shadow-glow mb-2 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient mb-2 animate-pop-in">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1">
@@ -107,8 +105,7 @@ const GetStarted = () => {
           <p className="text-sm text-muted-foreground mt-1">Pick a focus — we'll build your starter habits.</p>
         </header>
 
-        <Card className="border-border/50 shadow-elevated overflow-hidden">
-          <div className="h-1 bg-brand-gradient w-full opacity-90" />
+        <Card className="shadow-elevated overflow-hidden">
           <CardContent className="pt-4 pb-4 space-y-4">
             <div className="grid grid-cols-2 gap-2.5">
               {GOALS.map((g, i) => {
@@ -119,21 +116,19 @@ const GetStarted = () => {
                     type="button"
                     onClick={() => setGoal(g.code)}
                     className={cn(
-                      "group relative rounded-2xl border-2 p-3 text-left transition-all animate-slide-up",
-                      "hover:border-primary/60 hover:shadow-md",
+                      "pressable group relative rounded-lg border p-3 text-left animate-slide-up shadow-soft",
+                      "hover:border-primary/50",
                       selected
-                        ? "border-primary bg-primary/5 shadow-glow scale-[1.02]"
+                        ? "border-primary bg-primary/5"
                         : "border-border bg-card"
                     )}
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
                   >
-                    <div className={cn(
-                      "text-3xl mb-1 transition-transform",
-                      selected ? "scale-110" : "group-hover:scale-105"
-                    )}>
+                    <div className="text-3xl mb-1">
                       {g.emoji}
                     </div>
                     <div className="font-semibold text-sm leading-tight">{g.label}</div>
+
                   </button>
                 );
               })}
@@ -159,7 +154,7 @@ const GetStarted = () => {
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
+              className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {submitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

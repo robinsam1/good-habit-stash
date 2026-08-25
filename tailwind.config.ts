@@ -14,10 +14,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Instrument Serif', 'Georgia', 'serif'],
-        serif: ['Instrument Serif', 'Georgia', 'serif'],
+        sans: ['Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Bricolage Grotesque', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        serif: ['Bricolage Grotesque', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -60,6 +61,10 @@ export default {
           DEFAULT: "hsl(var(--negative))",
           foreground: "hsl(var(--negative-foreground))",
         },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -76,9 +81,11 @@ export default {
         sm: "calc(var(--radius) - 10px)",
         md: "calc(var(--radius) - 6px)",
         lg: "var(--radius)",
-        xl: "calc(var(--radius) + 6px)",
-        "2xl": "calc(var(--radius) + 12px)",
+        xl: "var(--radius)",
+        "2xl": "var(--radius)",
+        "3xl": "var(--radius)",
       },
+
       boxShadow: {
         soft: "var(--shadow-sm)",
         elevated: "var(--shadow-md)",
@@ -86,8 +93,8 @@ export default {
         glow: "var(--shadow-glow)",
       },
       transitionTimingFunction: {
-        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-        "out-soft": "cubic-bezier(0.22, 1, 0.36, 1)",
+        spring: "cubic-bezier(0.32, 1.3, 0.5, 1)",
+        "out-soft": "cubic-bezier(0.32, 1.3, 0.5, 1)",
       },
       keyframes: {
         "accordion-down": {
@@ -141,11 +148,11 @@ export default {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s cubic-bezier(0.22, 1, 0.36, 1)",
-        "accordion-up": "accordion-up 0.2s cubic-bezier(0.22, 1, 0.36, 1)",
-        "pulse-success": "pulse-success 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-        "slide-up": "slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both",
-        "pop-in": "pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both",
+        "accordion-down": "accordion-down 0.2s cubic-bezier(0.32, 1.3, 0.5, 1)",
+        "accordion-up": "accordion-up 0.2s cubic-bezier(0.32, 1.3, 0.5, 1)",
+        "pulse-success": "pulse-success 0.3s cubic-bezier(0.32, 1.3, 0.5, 1)",
+        "slide-up": "slide-up 0.24s cubic-bezier(0.32, 1.3, 0.5, 1) both",
+        "pop-in": "pop-in 0.24s cubic-bezier(0.32, 1.3, 0.5, 1) both",
       },
     },
   },
