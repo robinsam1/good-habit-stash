@@ -100,16 +100,16 @@ const Welcome = () => {
           </h1>
         </header>
 
-        <Carousel setApi={setApi} className="flex-1 min-h-0 flex items-center">
+        <Carousel setApi={setApi} className="flex-1 min-h-0 flex items-start">
           <CarouselContent>
             {SLIDES.map((slide, i) => {
               const active = current === i && isAnimating;
               return (
                 <CarouselItem key={i}>
-                  <div className="text-center px-2 py-0 space-y-2 short:space-y-1">
+                  <div className="text-center px-2 py-0 space-y-1 short:space-y-0.5">
                     <div
                       className={cn(
-                        "w-full h-[30vh] short:h-[22vh] shorter:h-[18vh] max-h-[340px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
+                        "w-full h-[24vh] short:h-[20vh] shorter:h-[16vh] max-h-[300px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
                         active && "animate-scale-bounce"
                       )}
                     >
