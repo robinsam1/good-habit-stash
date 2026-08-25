@@ -100,7 +100,7 @@ const Welcome = () => {
           </h1>
         </header>
 
-        <Carousel setApi={setApi} className="flex-1 min-h-0 flex items-start">
+        <Carousel setApi={setApi} className="flex-1 min-h-0">
           <CarouselContent>
             {SLIDES.map((slide, i) => {
               const active = current === i && isAnimating;
