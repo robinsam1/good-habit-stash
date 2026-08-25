@@ -177,12 +177,13 @@ const GetStarted = () => {
           </CardContent>
         </Card>
 
-        <p className="text-sm text-center text-muted-foreground mt-3">
+        <p className="text-sm text-center text-muted-foreground mt-3 short:mt-2">
           Already have an account?{" "}
           <Link to="/auth" className="text-primary font-medium hover:underline">
             Sign in
           </Link>
         </p>
+
       </div>
     </div>
 
