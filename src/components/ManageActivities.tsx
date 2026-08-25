@@ -130,7 +130,7 @@ export function ManageActivities() {
   const inactive = (activities ?? []).filter((a) => !a.active);
 
   return (
-    <Card className="p-6 border-border/50 shadow-xl">
+    <Card className="p-6 border-border shadow-xl">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Settings2 className="h-5 w-5 text-primary" />

@@ -20,7 +20,7 @@ export function ProInterestCard() {
   };
 
   return (
-    <Card className="p-6 border-border/50 shadow-xl">
+    <Card className="p-6 border-border shadow-xl">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-5 w-5 text-secondary" />
         <h2 className="font-display text-lg font-semibold">Habit Rewards Pro</h2>

@@ -88,7 +88,7 @@ const Auth = () => {
           <p className="text-muted-foreground mt-2">Pick up where you left off.</p>
         </header>
 
-        <Card className="border-border/50 shadow-elevated overflow-hidden">
+        <Card className="border-border shadow-elevated overflow-hidden">
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>

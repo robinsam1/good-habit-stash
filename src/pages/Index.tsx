@@ -194,7 +194,7 @@ const Index = () => {
         </header>
 
         {/* Total Display */}
-        <Card data-tour="total" className="mb-10 border-border/50 shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
+        <Card data-tour="total" className="mb-10 border-border shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
           <div className="py-8 px-4">
             <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
           </div>

@@ -86,7 +86,7 @@ const Settings = () => {
           <h1 className="font-display text-2xl font-bold ml-2">Settings</h1>
         </div>
 
-        <Card className="p-6 border-border/50 shadow-xl">
+        <Card className="p-6 border-border shadow-xl">
           <div className="flex items-center gap-2 mb-4">
             <KeyRound className="h-5 w-5 text-primary" />
             <h2 className="font-display text-lg font-semibold">Change password</h2>
@@ -121,7 +121,7 @@ const Settings = () => {
           </form>
         </Card>
 
-        <Card className="p-6 border-border/50 shadow-xl mt-6">
+        <Card className="p-6 border-border shadow-xl mt-6">
           <div className="flex items-center gap-2 mb-1">
             <PiggyBank className="h-5 w-5 text-primary" />
             <h2 className="font-display text-lg font-semibold">Savings</h2>

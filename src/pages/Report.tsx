@@ -153,7 +153,7 @@ const Report = () => {
           </div>
         </header>
 
-        <Card className="p-4 sm:p-5 border-border/50 shadow-lg overflow-hidden">
+        <Card className="p-4 sm:p-5 border-border shadow-lg overflow-hidden">
           {isLoading ? (
             <div className="space-y-3">
               {[1, 2, 3, 4, 5].map((i) => (
