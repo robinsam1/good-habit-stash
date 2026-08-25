@@ -81,5 +81,17 @@ export function useMoney() {
     return minorUnits >= 0 ? `+${formatted}` : `-${formatted}`;
   };
 
-  return { currency, locale, minorUnitDigits: digits, formatMoney, formatMoneySigned };
+  /** Bare number, no currency symbol or grouping — safe to paste into a bank app. */
+  const formatAmountPlain = (minorUnits: number): string =>
+    (minorUnits / factor).toFixed(digits);
+
+  return {
+    currency,
+    locale,
+    minorUnitDigits: digits,
+    formatMoney,
+    formatMoneySigned,
+    formatAmountPlain,
+  };
 }
+
