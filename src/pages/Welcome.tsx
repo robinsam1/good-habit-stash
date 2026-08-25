@@ -114,7 +114,10 @@ const Welcome = () => {
     );
 
     const fixed = headerH + dotsH + footerH + textH;
-    const idealImage = Math.max(140, Math.min(avail * 0.45, 420));
+    const contentWidth =
+      inner.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+    // default (uncropped) shape is the original ~1.6:1 landscape
+    const idealImage = Math.max(140, (contentWidth - 16) / IMAGE_ASPECT);
 
     let gap = BASE_GAP;
     let imageHeight = idealImage;
