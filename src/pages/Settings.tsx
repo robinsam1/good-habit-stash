@@ -25,6 +25,16 @@ const Settings = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [saving, setSaving] = useState(false);
+  const { data: profile } = useProfile();
+  const { mutate: updateBank, isPending: savingBank } = useUpdateBank();
+
+  const handleBankChange = (bankId: string) => {
+    updateBank(bankId, {
+      onSuccess: () => toast.success("Banking app saved"),
+      onError: () => toast.error("Couldn't save your banking app"),
+    });
+  };
+
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
