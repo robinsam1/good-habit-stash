@@ -89,7 +89,7 @@ const Settings = () => {
         <Card className="p-6 border-border shadow-xl">
           <div className="flex items-center gap-2 mb-4">
             <KeyRound className="h-5 w-5 text-primary" />
-            <h2 className="font-display text-lg font-semibold">Change password</h2>
+            <h2 className="text-lg font-bold">Change password</h2>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -124,7 +124,7 @@ const Settings = () => {
         <Card className="p-6 border-border shadow-xl mt-6">
           <div className="flex items-center gap-2 mb-1">
             <PiggyBank className="h-5 w-5 text-primary" />
-            <h2 className="font-display text-lg font-semibold">Savings</h2>
+            <h2 className="text-lg font-bold">Savings</h2>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
             Pick your banking app and we'll add a shortcut to it when you move money to

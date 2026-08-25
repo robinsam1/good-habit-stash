@@ -216,7 +216,7 @@ const Index = () => {
         {/* Activity Log */}
         <div className="animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg font-semibold text-foreground">
+            <h2 className="text-lg font-bold text-foreground">
               Logged Today
             </h2>
             <Link to="/history">

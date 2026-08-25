@@ -23,7 +23,7 @@ export function ProInterestCard() {
     <Card className="p-6 border-border shadow-xl">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-5 w-5 text-secondary" />
-        <h2 className="font-display text-lg font-semibold">Habit Rewards Pro</h2>
+        <h2 className="text-lg font-bold">Habit Rewards Pro</h2>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
         Customise your activities — add your own habits, set custom rewards, and rename or
