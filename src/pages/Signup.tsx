@@ -141,7 +141,7 @@ const Signup = () => {
       <FloatingIcon Icon={Sparkles} className="top-[45%] left-[5%] w-5 h-5 text-accent/10" delay={2} />
       <FloatingIcon Icon={Star} className="top-[8%] right-[20%] w-4 h-4 text-primary/10" delay={2.5} slow />
 
-      <div className="w-full max-w-sm relative z-10">
+      <div className="w-full max-w-sm sm:max-w-3xl relative z-10">
         <Link to={saveMode ? "/" : "/welcome"}>
           <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
             <ArrowLeft className="h-4 w-4 mr-2" />
