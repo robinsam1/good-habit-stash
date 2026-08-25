@@ -61,6 +61,10 @@ export default {
           DEFAULT: "hsl(var(--negative))",
           foreground: "hsl(var(--negative-foreground))",
         },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -77,9 +81,11 @@ export default {
         sm: "calc(var(--radius) - 10px)",
         md: "calc(var(--radius) - 6px)",
         lg: "var(--radius)",
-        xl: "calc(var(--radius) + 6px)",
-        "2xl": "calc(var(--radius) + 12px)",
+        xl: "var(--radius)",
+        "2xl": "var(--radius)",
+        "3xl": "var(--radius)",
       },
+
       boxShadow: {
         soft: "var(--shadow-sm)",
         elevated: "var(--shadow-md)",
