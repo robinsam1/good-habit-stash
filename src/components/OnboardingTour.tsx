@@ -395,7 +395,7 @@ export function OnboardingTour({
       >
 
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-brand-gradient flex items-center justify-center">
             <Sparkles className="h-4 w-4 text-primary-foreground" />
           </div>
           <span className="text-xs font-medium text-muted-foreground">

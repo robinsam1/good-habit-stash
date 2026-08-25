@@ -93,7 +93,7 @@ const GetStarted = () => {
         </Link>
 
         <header className="text-center mb-3">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 mb-2 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient shadow-glow mb-2 animate-pop-in">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="font-display text-sm font-semibold tracking-widest uppercase text-muted-foreground mb-1">
@@ -122,7 +122,7 @@ const GetStarted = () => {
                       "group relative rounded-2xl border-2 p-3 text-left transition-all animate-slide-up",
                       "hover:border-primary/60 hover:shadow-md",
                       selected
-                        ? "border-primary bg-gradient-to-br from-primary/10 to-accent/10 shadow-lg scale-[1.02]"
+                        ? "border-primary bg-primary/5 shadow-glow scale-[1.02]"
                         : "border-border bg-card"
                     )}
                     style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
