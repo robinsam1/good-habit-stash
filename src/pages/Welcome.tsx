@@ -91,7 +91,7 @@ const Welcome = () => {
 
       {/* Animated background blobs */}
 
-      <div className="max-w-lg mx-auto w-full px-6 py-10 flex-1 flex flex-col relative z-10">
+      <div className="max-w-lg sm:max-w-3xl mx-auto w-full px-6 py-10 flex-1 flex flex-col relative z-10">
         <header className="text-center mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">

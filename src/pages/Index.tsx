@@ -131,7 +131,7 @@ const Index = () => {
 
       {/* Soft gradient blobs */}
 
-      <div className="max-w-lg mx-auto px-4 py-8 sm:py-12 relative z-10">
+      <div className="max-w-lg sm:max-w-3xl mx-auto px-4 py-8 sm:py-12 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 relative">
           {/* Reporting + Save (guests only) — top-left, mirroring the right-hand controls */}

@@ -68,7 +68,7 @@ const Auth = () => {
 
       {/* Soft gradient blobs */}
 
-      <div className="w-full max-w-sm relative z-10">
+      <div className="w-full max-w-sm sm:max-w-3xl relative z-10">
         <Link to="/welcome">
           <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -88,7 +88,7 @@ const Auth = () => {
           <p className="text-muted-foreground mt-2">Pick up where you left off.</p>
         </header>
 
-        <Card className="border-border shadow-elevated overflow-hidden">
+        <Card className="border-border shadow-elevated overflow-hidden w-full sm:max-w-md sm:mx-auto">
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
