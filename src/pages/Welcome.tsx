@@ -244,6 +244,10 @@ const Welcome = () => {
                         <img
                           src={slide.image}
                           alt={slide.alt}
+                          ref={(el) => {
+                            // covers cached images that finish before React attaches onLoad
+                            if (el?.complete && el.naturalWidth > 0) handleImageLoad(i);
+                          }}
                           loading={i === 0 ? "eager" : "lazy"}
                           fetchPriority={i === 0 ? "high" : "auto"}
                           decoding="async"
