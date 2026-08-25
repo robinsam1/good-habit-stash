@@ -90,7 +90,7 @@ const History = () => {
                         {paidOutDate && format(parseISO(paidOutDate), "h:mm a")}
                       </p>
                     </div>
-                    <span className="font-display font-bold text-lg text-primary">
+                    <span className="font-semibold text-lg tabular-nums text-primary">
                       {formatMoney(totalValue)}
                     </span>
                   </div>

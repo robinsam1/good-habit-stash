@@ -96,7 +96,7 @@ const GetStarted = () => {
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient shadow-glow mb-2 animate-pop-in">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <div className="font-display text-sm font-semibold tracking-widest uppercase text-muted-foreground mb-1">
+          <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1">
             Habit Visor
           </div>
           <h1 className="font-display text-2xl font-bold tracking-tight">
@@ -133,7 +133,7 @@ const GetStarted = () => {
                     )}>
                       {g.emoji}
                     </div>
-                    <div className="font-display font-semibold text-sm leading-tight">{g.label}</div>
+                    <div className="font-semibold text-sm leading-tight">{g.label}</div>
                   </button>
                 );
               })}
