@@ -149,7 +149,7 @@ const Welcome = () => {
 
 
         {/* Dots */}
-        <div className="flex justify-center gap-2 mt-6 mb-8">
+        <div className="flex justify-center gap-2 mt-4 mb-4 short:mt-2 short:mb-2 shrink-0">
           {SLIDES.map((_, i) => (
             <button
               key={i}
@@ -165,7 +165,8 @@ const Welcome = () => {
           ))}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2 shrink-0">
+
           {!isLast ? (
             <Button
               size="lg"
