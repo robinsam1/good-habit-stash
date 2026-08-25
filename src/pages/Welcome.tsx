@@ -90,8 +90,6 @@ const Welcome = () => {
       ))}
 
       {/* Animated background blobs */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/5 rounded-full animate-blob blur-3xl pointer-events-none" />
-      <div className="absolute bottom-32 left-1/4 w-48 h-48 bg-accent/5 rounded-full animate-blob blur-3xl pointer-events-none" style={{ animationDelay: "2s" }} />
 
       <div className="max-w-lg mx-auto w-full px-6 py-10 flex-1 flex flex-col relative z-10">
         <header className="text-center mb-8">
@@ -170,7 +168,7 @@ const Welcome = () => {
           {!isLast ? (
             <Button
               size="lg"
-              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
+              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
               onClick={() => api?.scrollNext()}
             >
               Next
@@ -179,7 +177,7 @@ const Welcome = () => {
           ) : (
             <Button
               size="lg"
-              className="w-full h-14 text-base font-semibold bg-brand-gradient text-primary-foreground hover:opacity-95 shadow-glow animate-pulse-success"
+              className="w-full h-14 text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse-success"
               onClick={() => navigate("/get-started")}
             >
               <Sparkles className="h-5 w-5 mr-2" />

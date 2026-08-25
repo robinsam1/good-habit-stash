@@ -150,7 +150,7 @@ const Signup = () => {
         </Link>
 
         <header className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient shadow-glow mb-4 animate-pop-in">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-gradient mb-4 animate-pop-in">
             <Icon className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight">
@@ -166,7 +166,6 @@ const Signup = () => {
         </header>
 
         <Card className="border-border/50 shadow-elevated overflow-hidden">
-          <div className="h-1 bg-brand-gradient w-full opacity-90" />
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
@@ -223,7 +222,7 @@ const Signup = () => {
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow animate-slide-up"
+                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 animate-slide-up"
                 style={{ animationDelay: "0.2s", animationFillMode: "both" }}
                 disabled={submitting}
               >

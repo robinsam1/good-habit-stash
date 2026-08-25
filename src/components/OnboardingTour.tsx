@@ -438,7 +438,7 @@ export function OnboardingTour({
               <Button
                 size="sm"
                 onClick={next}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 {step === STEPS.length - 1 ? "Got it" : "Next"}
                 <ArrowRight className="h-4 w-4 ml-1" />
