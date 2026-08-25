@@ -49,6 +49,7 @@ const FLOATERS = [
 const BASE_GAP = 16;
 const MIN_GAP_FACTOR = 0.5;
 const MIN_IMAGE_FACTOR = 0.5;
+const IMAGE_ASPECT = 1.6;
 
 type Layout = {
   gap: number;
