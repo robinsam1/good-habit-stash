@@ -92,7 +92,7 @@ const Welcome = () => {
       {/* Animated background blobs */}
 
       <div className="max-w-lg sm:max-w-3xl mx-auto w-full px-6 py-6 short:py-3 flex-1 min-h-0 flex flex-col relative z-10">
-        <header className="text-center mb-6 short:mb-2 shrink-0">
+        <header className="text-center mb-4 short:mb-2 shrink-0">
           <h1 className="font-display text-3xl sm:text-4xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">
               Habit Visor
@@ -106,7 +106,7 @@ const Welcome = () => {
               const active = current === i && isAnimating;
               return (
                 <CarouselItem key={i}>
-                  <div className="text-center px-2 py-2 space-y-4 short:space-y-2">
+                  <div className="text-center px-2 py-0 space-y-2 short:space-y-1">
                     <div
                       className={cn(
                         "w-full h-[30vh] short:h-[22vh] shorter:h-[18vh] max-h-[340px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
@@ -149,7 +149,7 @@ const Welcome = () => {
 
 
         {/* Dots */}
-        <div className="flex justify-center gap-2 mt-4 mb-4 short:mt-2 short:mb-2 shrink-0">
+        <div className="flex justify-center gap-2 mt-2 mb-2 short:mt-1 short:mb-1 shrink-0">
           {SLIDES.map((_, i) => (
             <button
               key={i}
