@@ -78,7 +78,7 @@ const Welcome = () => {
   const isLast = current === SLIDES.length - 1;
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
+    <div className="h-[100dvh] overflow-hidden flex flex-col relative">
       {/* Floating background icons */}
       {FLOATERS.map((f, i) => (
         <f.Icon
@@ -91,25 +91,25 @@ const Welcome = () => {
 
       {/* Animated background blobs */}
 
-      <div className="max-w-lg sm:max-w-3xl mx-auto w-full px-6 py-10 flex-1 flex flex-col relative z-10">
-        <header className="text-center mb-8">
-          <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
+      <div className="max-w-lg sm:max-w-3xl mx-auto w-full px-6 py-6 short:py-3 flex-1 min-h-0 flex flex-col relative z-10">
+        <header className="text-center mb-6 short:mb-2 shrink-0">
+          <h1 className="font-display text-3xl sm:text-4xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">
               Habit Visor
             </span>
           </h1>
         </header>
 
-        <Carousel setApi={setApi} className="flex-1 flex items-center">
+        <Carousel setApi={setApi} className="flex-1 min-h-0 flex items-center">
           <CarouselContent>
             {SLIDES.map((slide, i) => {
               const active = current === i && isAnimating;
               return (
                 <CarouselItem key={i}>
-                  <div className="text-center px-2 py-4 space-y-5">
+                  <div className="text-center px-2 py-2 space-y-4 short:space-y-2">
                     <div
                       className={cn(
-                        "w-full aspect-[16/10] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
+                        "w-full h-[30vh] short:h-[22vh] shorter:h-[18vh] max-h-[340px] rounded-3xl overflow-hidden shadow-xl shadow-primary/20 ring-1 ring-border/50 relative",
                         active && "animate-scale-bounce"
                       )}
                     >
@@ -124,7 +124,7 @@ const Welcome = () => {
 
                     <h2
                       className={cn(
-                        "font-display text-xl sm:text-2xl font-bold text-foreground leading-snug tracking-tight text-balance",
+                        "font-display text-xl sm:text-2xl short:text-lg font-bold text-foreground leading-snug tracking-tight text-balance",
                         active && "animate-slide-up"
                       )}
                       style={{ animationDelay: active ? "0.1s" : "0s", opacity: active ? undefined : 1 }}
@@ -133,7 +133,7 @@ const Welcome = () => {
                     </h2>
                     <p
                       className={cn(
-                        "text-muted-foreground text-[15px] sm:text-base leading-relaxed text-pretty",
+                        "text-muted-foreground text-[15px] sm:text-base short:text-[13px] leading-relaxed short:leading-snug text-pretty",
                         active && "animate-slide-up"
                       )}
                       style={{ animationDelay: active ? "0.2s" : "0s", opacity: active ? undefined : 1 }}
@@ -146,6 +146,7 @@ const Welcome = () => {
             })}
           </CarouselContent>
         </Carousel>
+
 
         {/* Dots */}
         <div className="flex justify-center gap-2 mt-6 mb-8">
