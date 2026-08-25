@@ -68,7 +68,7 @@ const Auth = () => {
 
       {/* Soft gradient blobs */}
 
-      <div className="w-full max-w-sm relative z-10">
+      <div className="w-full max-w-sm sm:max-w-3xl relative z-10">
         <Link to="/welcome">
           <Button variant="ghost" size="sm" className="mb-4 -ml-2 text-muted-foreground">
             <ArrowLeft className="h-4 w-4 mr-2" />
