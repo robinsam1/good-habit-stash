@@ -73,6 +73,18 @@ const Welcome = () => {
   const footerRef = useRef<HTMLDivElement>(null);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
+  const [loaded, setLoaded] = useState<Set<number>>(() => new Set());
+
+  const handleImageLoad = useCallback((index: number) => {
+    setLoaded((prev) => (prev.has(index) ? prev : new Set(prev).add(index)));
+    if (index === 0) {
+      // warm the remaining slides so tapping Next feels instant
+      SLIDES.slice(1).forEach((slide) => {
+        const img = new Image();
+        img.src = slide.image;
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
