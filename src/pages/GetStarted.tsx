@@ -173,7 +173,7 @@ const GetStarted = () => {
           <h1 className="font-display text-3xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">Habit Visor</span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
+          <p className="text-lg italic text-foreground/80 mt-1.5 max-w-md mx-auto">
             A better you, one habit at a time
           </p>
         </header>
