@@ -1,34 +1,34 @@
-# Adherence: same habit, different streak on mobile vs desktop
+# Adherence: timezone-aware day bucketing with a late-night grace rule
 
 ## What's actually happening
 
-The two devices disagree because the day each log entry belongs to is decided by the *device's* timezone, not a fixed one.
+Days are bucketed by the device's timezone. Your dehumidifier log has an entry on 25 Aug at **23:44 UTC**, which is 25 Aug on a UTC device (desktop, unbroken streak) but 26 Aug on a UTC+1 device (phone, 25 Aug looks empty and 26 Aug has two entries). That matches the mobile pattern you described exactly.
 
-Your dehumidifier log has one entry on 25 Aug at **23:44 UTC**. That is:
+## What to change
 
-- 25 Aug on a device set to UTC (your desktop) — the streak is unbroken.
-- 26 Aug on a device set to UTC+1 / BST (your phone) — so 25 Aug has no entry and 26 Aug has two.
+Keep device-local bucketing, and add a leniency rule so post-midnight logging doesn't break a streak.
 
-The mobile pattern you described, from the right: empty (today), filled, filled, empty, then a long filled run — matches that shift exactly. Desktop is showing the truthful picture; the phone is off by one day for any habit logged close to midnight.
+1. **Display in the device's current timezone** — unchanged behaviour, made explicit: every log timestamp is bucketed into a calendar day using the browser's local timezone at render time. Travelling shifts the picture slightly, which is expected and accepted.
 
-The canvas drawing itself is fine: I re-ran the exact algorithm at a mobile track width and a desktop one against your real data and both produce the same shape, so width is not the cause.
+2. **Late-night grace rule** — reassign an early-hours entry back to the previous day when, per habit:
+   - the day has two or more entries logged for that habit, and
+   - the previous day has no entries for that habit, and
+   - the earliest entry of that day falls between 00:00 and 01:00 local time.
 
-## The fix
+   Then that earliest entry moves to the previous day, so the streak stays continuous. Applied per habit, not globally, and only ever shifts one entry back by one day.
 
-Bucket log entries into days using one fixed timezone for every device, so a given entry always lands on the same calendar day regardless of where the report is opened.
+   For your dehumidifier row on a UK phone: 26 Aug has entries at 00:44 and 10:45, 25 Aug is empty, so the 00:44 entry moves to 25 Aug and the streak reads as unbroken — matching the desktop view.
 
-- Use the timezone implied by the account (profile region) as the canonical one, falling back to UTC when none is set.
-- Apply the same rule to the account start date and to "today", so the track length and the right-hand edge line up with the buckets.
-- Apply it consistently to the other date-grouped views (activity log grouping, history) so the app never disagrees with itself about which day something happened.
+3. The rule only affects how the adherence report groups days. Nothing is written back to the database and no other screen's data changes.
 
 ## Technical notes
 
-- `src/pages/Report.tsx` currently calls `startOfDay(parseISO(entry.date))` and `differenceInCalendarDays(...)`, both of which resolve in the browser's local timezone. Replace with a helper that converts the UTC timestamp into a `yyyy-MM-dd` key in the canonical zone, then maps keys to day indices.
-- Add a small `src/lib/day.ts` with `dayKey(iso, tz)` and `dayIndex(iso, startKey, tz)` built on `Intl.DateTimeFormat` with `timeZone` (no new dependency needed), plus `todayKey(tz)`.
-- Canonical zone resolution: derive from the profile's region via a region → IANA timezone map added to `src/lib/regions.ts`; fall back to `UTC` if the region is missing or unmapped.
-- Reuse the same helper in `src/components/ActivityLog.tsx` and `src/pages/History.tsx` date grouping so "Today / Yesterday" headings agree with the report.
-- No database or schema changes; timestamps stay stored in UTC.
+- All logic lands in the `useMemo` in `src/pages/Report.tsx`; `HabitTimeline.tsx` is untouched.
+- Bucketing today stores only a day index per habit in a `Set`. To evaluate the rule it needs entry times too: build `Map<activityId, Map<dayIndex, Date[]>>` from the log, apply the grace pass over each habit's days in ascending order, then flatten to the sorted day-index array `HabitTimeline` already consumes.
+- Grace pass per habit: for each day index `d` with `entries.length >= 2` and no entries at `d - 1` and `d - 1 >= 0`, take the earliest entry; if its local hour is `0`, move it to `d - 1`.
+- Continue using `date-fns` `startOfDay` / `differenceInCalendarDays` (local timezone) for indices, and `getHours()` for the 00:00–01:00 check — both already resolve in device-local time.
+- Order matters: run the grace pass in ascending day order so a shifted entry can itself satisfy "previous day has no entries" for a later day only via the updated state.
 
 ## Verification
 
-Load the report at desktop and mobile widths with the browser timezone forced to UTC and to Europe/London, and confirm the dehumidifier row renders the identical streak in both.
+Render the report with the browser timezone forced to `Europe/London` and to `UTC`, and confirm the dehumidifier row shows the same unbroken run ending yesterday in both.
