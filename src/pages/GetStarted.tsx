@@ -58,6 +58,7 @@ const GetStarted = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
   const startingRef = useRef(false);
 
   useEffect(() => {
