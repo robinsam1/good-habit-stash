@@ -170,17 +170,11 @@ const GetStarted = () => {
           <div className="inline-flex items-center justify-center w-14 h-14 short:w-11 short:h-11 rounded-2xl bg-brand-gradient mb-2 short:mb-1 animate-pop-in shadow-soft">
             <Sparkles className="h-7 w-7 short:h-5 short:w-5 text-primary-foreground" />
           </div>
-          <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1 shorter:hidden">
-            Habit Visor
-          </div>
           <h1 className="font-display text-3xl short:text-2xl font-bold tracking-tight">
-            <span className="text-brand-gradient animate-shimmer">
-              Small habits, real rewards
-            </span>
+            <span className="text-brand-gradient animate-shimmer">Habit Visor</span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto short:hidden">
-            Habit Visor helps you track the small habits that get you to your goals — and pay
-            yourself for sticking with them.
+            A better you, one habit at a time
           </p>
         </header>
 
@@ -194,7 +188,7 @@ const GetStarted = () => {
                       What matters most?
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5 short:hidden">
-                      Pick a focus — we'll suggest habits to match.
+                      Choose a goal to work towards
                     </p>
                   </div>
                   <div className="flex flex-col gap-2.5 short:gap-2">
@@ -238,7 +232,7 @@ const GetStarted = () => {
                       Which habits will help?
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5 short:hidden">
-                      Tick the ones you want to start with, or add your own.
+                      Pick small things that you're struggling to achieve
                     </p>
                   </div>
                   <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
@@ -300,10 +294,10 @@ const GetStarted = () => {
                 <div className="flex flex-col min-h-0 flex-1 space-y-3 short:space-y-2">
                   <div>
                     <h2 className="font-display text-lg font-bold tracking-tight">
-                      You should reward yourself!
+                      Value your work
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Set a value for completing each habit.
+                      Science says it's easier to keep habits with rewards
                     </p>
                   </div>
 
