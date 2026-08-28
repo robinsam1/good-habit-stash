@@ -324,7 +324,7 @@ const GetStarted = () => {
                     </SelectContent>
                   </Select>
 
-                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 max-h-[38vh] space-y-1">
+                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
                     {selected.map((h) => (
                       <div key={h.id} className="flex items-center gap-2 py-1">
                         <div className="flex-1 min-w-0 text-sm truncate">{h.name}</div>
