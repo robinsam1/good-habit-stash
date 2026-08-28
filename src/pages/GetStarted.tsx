@@ -313,7 +313,10 @@ const GetStarted = () => {
                     </p>
                   </div>
 
-                  <div key={shakeKey} className={cn(!region && shakeKey > 0 && "animate-shake")}>
+                  <div
+                    key={shake?.step === 2 ? shake.key : "currency"}
+                    className={cn(shake?.step === 2 && !region && "animate-shake")}
+                  >
                   <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
                     <SelectTrigger
                       id="region"
