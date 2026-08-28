@@ -27,8 +27,8 @@ import {
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
 import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
-import demoVideoMp4 from "@/assets/demo-desk.mp4";
-import demoVideoWebm from "@/assets/demo-desk.webm";
+import demoVideoMp4 from "@/assets/demo-desk-ai2.mp4";
+import demoVideoWebm from "@/assets/demo-desk-ai2.webm";
 
 interface HabitDraft {
   id: string;
@@ -160,7 +160,7 @@ const GetStarted = () => {
           className="w-full h-full object-cover scale-[1.35] blur-[2px] opacity-60"
         >
           <source src={demoVideoWebm} type="video/webm" />
-          <source src={demoVideoMp4} type="video/mp4" />
+              <source src={demoVideoMp4} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-background/80" />
       </div>
@@ -405,7 +405,7 @@ const GetStarted = () => {
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse at center, transparent 42%, hsl(var(--background)) 88%)",
+                  "radial-gradient(ellipse at center, transparent 30%, hsl(var(--background)) 78%)",
               }}
             />
           </div>
