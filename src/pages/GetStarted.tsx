@@ -395,7 +395,7 @@ const GetStarted = () => {
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-contain"
+              className="absolute inset-0 w-full h-full object-cover"
             >
               <source src={demoVideoWebm} type="video/webm" />
               <source src={demoVideoMp4} type="video/mp4" />
@@ -405,7 +405,7 @@ const GetStarted = () => {
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse at center, transparent 62%, hsl(var(--background)) 100%)",
+                  "radial-gradient(ellipse at center, transparent 42%, hsl(var(--background)) 88%)",
               }}
             />
           </div>
