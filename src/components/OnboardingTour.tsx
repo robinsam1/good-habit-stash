@@ -33,14 +33,14 @@ const STEPS: Step[] = [
   {
     target: "picker",
     title: "What have you done for yourself today?",
-    body: "Pick any habit from the dropdown that you've already completed today — go on, give yourself credit.",
+    body: "This is just to show how it works — pick any habit from the dropdown. Don't worry about choosing the right one right now.",
     interactive: "log",
     hint: "Pick a habit to continue",
   },
   {
     target: "mark-paid",
     title: "Reward yourself",
-    body: "Open your banking app, set up a savings pot, and transfer the amount above into it. Then tap the pay-out button to mark it done — a job well done deserves a real reward.",
+    body: "This is just a demo of the pay-out step. In real life you'd open your banking app, set up a savings pot, and transfer the amount above into it. Then tap the pay-out button to mark it done.",
     interactive: "paid",
     hint: "Tap pay-out to continue",
   },
