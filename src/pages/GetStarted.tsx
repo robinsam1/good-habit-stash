@@ -203,7 +203,7 @@ const GetStarted = () => {
                       !goal && shakeKey > 0 && "animate-shake"
                     )}
                   >
-                    {GOALS.map((g, i) => {
+                    {GOALS.map((g) => {
                       const isSel = goal === g.code;
                       return (
                         <button
@@ -211,11 +211,10 @@ const GetStarted = () => {
                           type="button"
                           onClick={() => chooseGoal(g.code)}
                           className={cn(
-                            "pressable group relative rounded-lg border p-3 short:p-2 text-left animate-slide-up shadow-soft",
+                            "pressable group relative rounded-lg border p-3 short:p-2 text-left shadow-soft",
                             "hover:border-primary/50 flex items-center gap-3",
                             isSel ? "border-primary bg-primary/5" : "border-border bg-card"
                           )}
-                          style={{ animationDelay: `${0.05 * i}s`, animationFillMode: "both" }}
                         >
                           <div className="text-3xl short:text-2xl shrink-0">{g.emoji}</div>
                           <div className="flex-1 min-w-0">
