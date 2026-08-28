@@ -173,7 +173,7 @@ const GetStarted = () => {
           <h1 className="font-display text-3xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">Habit Visor</span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto short:hidden">
+          <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
             A better you, one habit at a time
           </p>
         </header>
@@ -187,7 +187,7 @@ const GetStarted = () => {
                     <h2 className="font-display text-lg font-bold tracking-tight">
                       What matters most?
                     </h2>
-                    <p className="text-xs text-muted-foreground mt-0.5 short:hidden">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       Choose a goal to work towards
                     </p>
                   </div>
@@ -231,7 +231,7 @@ const GetStarted = () => {
                     <h2 className="font-display text-lg font-bold tracking-tight">
                       Which habits will help?
                     </h2>
-                    <p className="text-xs text-muted-foreground mt-0.5 short:hidden">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       Pick small things that you're struggling to achieve
                     </p>
                   </div>
