@@ -205,7 +205,7 @@ const Index = () => {
                   <p className="text-sm font-semibold text-foreground">
                     Register your email to save your progress
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground hidden sm:block">
                     Your habits and balance are only stored on this device until you sign up.
                   </p>
                 </div>
