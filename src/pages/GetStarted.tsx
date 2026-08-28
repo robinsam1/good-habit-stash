@@ -27,8 +27,8 @@ import {
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
 import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
-import demoVideoMp4 from "@/assets/demo-phone.mp4";
-import demoVideoWebm from "@/assets/demo-phone.webm";
+import demoVideoMp4 from "@/assets/demo-desk.mp4";
+import demoVideoWebm from "@/assets/demo-desk.webm";
 
 interface HabitDraft {
   id: string;
