@@ -312,6 +312,7 @@ const GetStarted = () => {
                     </p>
                   </div>
 
+                  <div key={shakeKey} className={cn(!region && shakeKey > 0 && "animate-shake")}>
                   <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
                     <SelectTrigger
                       id="region"
@@ -330,6 +331,7 @@ const GetStarted = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  </div>
 
                   <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
                     {selected.map((h) => (
@@ -382,7 +384,7 @@ const GetStarted = () => {
                 </div>
                 <Button
                   onClick={handleNext}
-                  disabled={!canNext}
+                  disabled={submitting}
                   size="sm"
                   className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90"
                 >
