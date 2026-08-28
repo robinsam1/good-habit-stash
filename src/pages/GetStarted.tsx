@@ -166,26 +166,19 @@ const GetStarted = () => {
       </div>
 
       <div className="w-full max-w-lg sm:max-w-3xl relative z-10 flex-1 min-h-0 max-h-[820px] flex flex-col">
-        <Link to="/welcome" className="shrink-0">
-          <Button variant="ghost" size="sm" className="mb-2 short:mb-1 -ml-2 text-muted-foreground h-8">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </Link>
-
-        <header className="text-center mb-3 short:mb-2 shrink-0">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient mb-2 animate-pop-in short:hidden">
-            <Sparkles className="h-5 w-5 text-primary-foreground" />
+        <header className="text-center mb-4 short:mb-2 shrink-0">
+          <div className="inline-flex items-center justify-center w-14 h-14 short:w-11 short:h-11 rounded-2xl bg-brand-gradient mb-2 short:mb-1 animate-pop-in shadow-soft">
+            <Sparkles className="h-7 w-7 short:h-5 short:w-5 text-primary-foreground" />
           </div>
-          <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1">
+          <div className="text-[11px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-1 shorter:hidden">
             Habit Visor
           </div>
-          <h1 className="font-display text-2xl short:text-xl font-bold tracking-tight">
+          <h1 className="font-display text-3xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">
               Small habits, real rewards
             </span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto short:hidden">
+          <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto short:hidden">
             Habit Visor helps you track the small habits that get you to your goals — and pay
             yourself for sticking with them.
           </p>
