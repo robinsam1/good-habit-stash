@@ -398,13 +398,15 @@ const GetStarted = () => {
           {/* Desktop: demo video occupies the right half */}
           <div className="hidden sm:block relative min-h-0 overflow-hidden">
             <video
-              src={demoVideo}
               autoPlay
               loop
               muted
               playsInline
               className="absolute inset-0 w-full h-full object-contain"
-            />
+            >
+              <source src={demoVideoWebm} type="video/webm" />
+              <source src={demoVideoMp4} type="video/mp4" />
+            </video>
             <div className="absolute inset-0 bg-foreground/5" />
             <div
               className="absolute inset-0"
