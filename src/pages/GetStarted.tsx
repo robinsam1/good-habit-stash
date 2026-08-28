@@ -104,7 +104,11 @@ const GetStarted = () => {
   const canNext = step === 0 ? !!goal : step === 1 ? selected.length > 0 : !!region && !submitting;
 
   const handleNext = () => {
-    if (!canNext) return;
+    if (!canNext) {
+      // Nudge the user towards what needs selecting.
+      if ((step === 0 && !goal) || (step === 2 && !region)) setShakeKey((k) => k + 1);
+      return;
+    }
     if (step < 2) {
       setEditingId(null);
       setStep(step + 1);
@@ -192,7 +196,13 @@ const GetStarted = () => {
                       Choose a goal to work towards
                     </p>
                   </div>
-                  <div className="flex flex-col gap-2.5 short:gap-2">
+                  <div
+                    key={shakeKey}
+                    className={cn(
+                      "flex flex-col gap-2.5 short:gap-2",
+                      !goal && shakeKey > 0 && "animate-shake"
+                    )}
+                  >
                     {GOALS.map((g, i) => {
                       const isSel = goal === g.code;
                       return (
