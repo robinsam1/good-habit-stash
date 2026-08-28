@@ -27,7 +27,8 @@ import {
 } from "@/hooks/useAnonymousLifecycle";
 import { cn } from "@/lib/utils";
 import { CONFETTI_FLAGS } from "@/components/EmojiConfetti";
-import demoVideo from "@/assets/demo-log-habit.mp4.asset.json";
+import demoVideoMp4 from "@/assets/demo-phone.mp4";
+import demoVideoWebm from "@/assets/demo-phone.webm";
 
 interface HabitDraft {
   id: string;
@@ -152,25 +153,27 @@ const GetStarted = () => {
       {/* Mobile: demo video sits behind the panel */}
       <div className="sm:hidden absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <video
-          src={demoVideo.url}
           autoPlay
           loop
           muted
           playsInline
           className="w-full h-full object-cover scale-[1.35] blur-[2px] opacity-60"
-        />
+        >
+          <source src={demoVideoWebm} type="video/webm" />
+          <source src={demoVideoMp4} type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-background/80" />
       </div>
 
-      <div className="w-full max-w-lg sm:max-w-3xl relative z-10 max-h-full overflow-y-auto">
-        <Link to="/welcome">
+      <div className="w-full max-w-lg sm:max-w-3xl relative z-10 flex-1 min-h-0 max-h-[820px] flex flex-col">
+        <Link to="/welcome" className="shrink-0">
           <Button variant="ghost" size="sm" className="mb-2 short:mb-1 -ml-2 text-muted-foreground h-8">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </Link>
 
-        <header className="text-center mb-3 short:mb-2">
+        <header className="text-center mb-3 short:mb-2 shrink-0">
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient mb-2 animate-pop-in short:hidden">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
@@ -188,11 +191,11 @@ const GetStarted = () => {
           </p>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2 items-stretch">
-          <Card className="shadow-elevated overflow-hidden flex flex-col">
-            <CardContent className="pt-4 pb-0 short:pt-3 flex-1 flex flex-col min-h-0">
+        <div className="grid gap-4 sm:grid-cols-2 items-stretch flex-1 min-h-0">
+          <Card className="shadow-elevated overflow-hidden flex flex-col min-h-0">
+            <CardContent className="pt-4 pb-4 short:pt-3 flex-1 flex flex-col min-h-0 overflow-y-auto">
               {step === 0 && (
-                <div className="space-y-3 short:space-y-2">
+                <div className="space-y-3 short:space-y-2 pb-1">
                   <div>
                     <h2 className="font-display text-lg font-bold tracking-tight">
                       What matters most?
@@ -245,7 +248,7 @@ const GetStarted = () => {
                       Tick the ones you want to start with, or add your own.
                     </p>
                   </div>
-                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 max-h-[46vh] sm:max-h-[42vh] space-y-1">
+                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
                     {habits.map((h) => {
                       const isBlank = h.custom && h.name.trim() === "";
                       const editing = editingId === h.id;
@@ -324,7 +327,7 @@ const GetStarted = () => {
                     </SelectContent>
                   </Select>
 
-                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 max-h-[38vh] space-y-1">
+                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
                     {selected.map((h) => (
                       <div key={h.id} className="flex items-center gap-2 py-1">
                         <div className="flex-1 min-w-0 text-sm truncate">{h.name}</div>
@@ -346,7 +349,7 @@ const GetStarted = () => {
               )}
             </CardContent>
 
-            <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-3 bg-card">
+            <div className="shrink-0 flex items-center justify-between gap-3 border-t border-border px-4 py-3 bg-card">
               <div className="flex items-center gap-1.5">
                 {step > 0 ? (
                   <Button
@@ -393,27 +396,29 @@ const GetStarted = () => {
           </Card>
 
           {/* Desktop: demo video occupies the right half */}
-          <div className="hidden sm:block relative rounded-2xl overflow-hidden">
+          <div className="hidden sm:block relative min-h-0 overflow-hidden">
             <video
-              src={demoVideo.url}
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover scale-[1.15]"
-            />
-            <div className="absolute inset-0 bg-foreground/10" />
+              className="absolute inset-0 w-full h-full object-contain"
+            >
+              <source src={demoVideoWebm} type="video/webm" />
+              <source src={demoVideoMp4} type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-foreground/5" />
             <div
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse at center, transparent 58%, hsl(var(--background)) 100%)",
+                  "radial-gradient(ellipse at center, transparent 62%, hsl(var(--background)) 100%)",
               }}
             />
           </div>
         </div>
 
-        <p className="text-sm text-center text-muted-foreground mt-3 short:mt-2">
+        <p className="shrink-0 text-sm text-center text-muted-foreground mt-3 short:mt-2">
           Already have an account?{" "}
           <Link to="/auth" className="text-primary font-medium hover:underline">
             Sign in
