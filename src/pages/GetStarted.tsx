@@ -405,7 +405,7 @@ const GetStarted = () => {
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse at center, transparent 42%, hsl(var(--background)) 88%)",
+                  "radial-gradient(ellipse at center, transparent 30%, hsl(var(--background)) 78%)",
               }}
             />
           </div>
