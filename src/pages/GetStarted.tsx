@@ -152,7 +152,7 @@ const GetStarted = () => {
       {/* Mobile: demo video sits behind the panel */}
       <div className="sm:hidden absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <video
-          src={demoVideo.url}
+          src={demoVideo}
           autoPlay
           loop
           muted
@@ -162,15 +162,15 @@ const GetStarted = () => {
         <div className="absolute inset-0 bg-background/80" />
       </div>
 
-      <div className="w-full max-w-lg sm:max-w-3xl relative z-10 max-h-full overflow-y-auto">
-        <Link to="/welcome">
+      <div className="w-full max-w-lg sm:max-w-3xl relative z-10 flex-1 min-h-0 max-h-[820px] flex flex-col">
+        <Link to="/welcome" className="shrink-0">
           <Button variant="ghost" size="sm" className="mb-2 short:mb-1 -ml-2 text-muted-foreground h-8">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </Link>
 
-        <header className="text-center mb-3 short:mb-2">
+        <header className="text-center mb-3 short:mb-2 shrink-0">
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-gradient mb-2 animate-pop-in short:hidden">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
