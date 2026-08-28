@@ -153,13 +153,15 @@ const GetStarted = () => {
       {/* Mobile: demo video sits behind the panel */}
       <div className="sm:hidden absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <video
-          src={demoVideo}
           autoPlay
           loop
           muted
           playsInline
           className="w-full h-full object-cover scale-[1.35] blur-[2px] opacity-60"
-        />
+        >
+          <source src={demoVideoWebm} type="video/webm" />
+          <source src={demoVideoMp4} type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-background/80" />
       </div>
 
