@@ -393,27 +393,27 @@ const GetStarted = () => {
           </Card>
 
           {/* Desktop: demo video occupies the right half */}
-          <div className="hidden sm:block relative rounded-2xl overflow-hidden">
+          <div className="hidden sm:block relative min-h-0 overflow-hidden">
             <video
-              src={demoVideo.url}
+              src={demoVideo}
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover scale-[1.15]"
+              className="absolute inset-0 w-full h-full object-contain"
             />
-            <div className="absolute inset-0 bg-foreground/10" />
+            <div className="absolute inset-0 bg-foreground/5" />
             <div
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse at center, transparent 58%, hsl(var(--background)) 100%)",
+                  "radial-gradient(ellipse at center, transparent 62%, hsl(var(--background)) 100%)",
               }}
             />
           </div>
         </div>
 
-        <p className="text-sm text-center text-muted-foreground mt-3 short:mt-2">
+        <p className="shrink-0 text-sm text-center text-muted-foreground mt-3 short:mt-2">
           Already have an account?{" "}
           <Link to="/auth" className="text-primary font-medium hover:underline">
             Sign in
