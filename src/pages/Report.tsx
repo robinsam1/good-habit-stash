@@ -43,17 +43,37 @@ const Report = () => {
 
     const totalDays = Math.max(1, differenceInCalendarDays(today, startDate) + 1);
 
-    // activity_id -> set of day indices
-    const byActivity = new Map<number, Set<number>>();
+    // activity_id -> day index -> entry timestamps (device-local bucketing)
+    const byActivity = new Map<number, Map<number, Date[]>>();
     for (const entry of logs ?? []) {
-      const idx = differenceInCalendarDays(startOfDay(parseISO(entry.date)), startDate);
+      const when = parseISO(entry.date);
+      const idx = differenceInCalendarDays(startOfDay(when), startDate);
       if (idx < 0 || idx >= totalDays) continue;
-      let set = byActivity.get(entry.activity_id);
-      if (!set) {
-        set = new Set<number>();
-        byActivity.set(entry.activity_id, set);
+      let dayMap = byActivity.get(entry.activity_id);
+      if (!dayMap) {
+        dayMap = new Map<number, Date[]>();
+        byActivity.set(entry.activity_id, dayMap);
       }
-      set.add(idx);
+      const list = dayMap.get(idx);
+      if (list) list.push(when);
+      else dayMap.set(idx, [when]);
+    }
+
+    // Late-night grace: if a habit has 2+ entries on a day, the previous day is
+    // empty, and the earliest entry landed between 00:00 and 01:00 local time,
+    // treat that entry as belonging to the previous day so the streak holds.
+    for (const dayMap of byActivity.values()) {
+      const dayIndices = Array.from(dayMap.keys()).sort((a, b) => a - b);
+      for (const d of dayIndices) {
+        if (d - 1 < 0 || dayMap.has(d - 1)) continue;
+        const entries = dayMap.get(d);
+        if (!entries || entries.length < 2) continue;
+        entries.sort((a, b) => a.getTime() - b.getTime());
+        const earliest = entries[0];
+        if (earliest.getHours() !== 0) continue;
+        entries.shift();
+        dayMap.set(d - 1, [earliest]);
+      }
     }
 
     const rows = (activities ?? [])
@@ -62,8 +82,9 @@ const Report = () => {
       .map((activity) => ({
         id: activity.id,
         name: activity.name,
-        days: Array.from(byActivity.get(activity.id) ?? []).sort((a, b) => a - b),
+        days: Array.from(byActivity.get(activity.id)?.keys() ?? []).sort((a, b) => a - b),
       }));
+
 
     const emptyCount = rows.filter((row) => row.days.length === 0).length;
     const visibleRows = hideEmpty ? rows.filter((row) => row.days.length > 0) : rows;
