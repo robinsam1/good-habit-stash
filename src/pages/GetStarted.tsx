@@ -188,11 +188,11 @@ const GetStarted = () => {
           </p>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2 items-stretch">
-          <Card className="shadow-elevated overflow-hidden flex flex-col">
-            <CardContent className="pt-4 pb-0 short:pt-3 flex-1 flex flex-col min-h-0">
+        <div className="grid gap-4 sm:grid-cols-2 items-stretch flex-1 min-h-0">
+          <Card className="shadow-elevated overflow-hidden flex flex-col min-h-0">
+            <CardContent className="pt-4 pb-4 short:pt-3 flex-1 flex flex-col min-h-0 overflow-y-auto">
               {step === 0 && (
-                <div className="space-y-3 short:space-y-2">
+                <div className="space-y-3 short:space-y-2 pb-1">
                   <div>
                     <h2 className="font-display text-lg font-bold tracking-tight">
                       What matters most?
