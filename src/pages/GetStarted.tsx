@@ -58,6 +58,7 @@ const GetStarted = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
   const startingRef = useRef(false);
 
   useEffect(() => {
@@ -103,7 +104,11 @@ const GetStarted = () => {
   const canNext = step === 0 ? !!goal : step === 1 ? selected.length > 0 : !!region && !submitting;
 
   const handleNext = () => {
-    if (!canNext) return;
+    if (!canNext) {
+      // Nudge the user towards what needs selecting.
+      if ((step === 0 && !goal) || (step === 2 && !region)) setShakeKey((k) => k + 1);
+      return;
+    }
     if (step < 2) {
       setEditingId(null);
       setStep(step + 1);
@@ -191,7 +196,13 @@ const GetStarted = () => {
                       Choose a goal to work towards
                     </p>
                   </div>
-                  <div className="flex flex-col gap-2.5 short:gap-2">
+                  <div
+                    key={shakeKey}
+                    className={cn(
+                      "flex flex-col gap-2.5 short:gap-2",
+                      !goal && shakeKey > 0 && "animate-shake"
+                    )}
+                  >
                     {GOALS.map((g, i) => {
                       const isSel = goal === g.code;
                       return (
@@ -301,6 +312,7 @@ const GetStarted = () => {
                     </p>
                   </div>
 
+                  <div key={shakeKey} className={cn(!region && shakeKey > 0 && "animate-shake")}>
                   <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
                     <SelectTrigger
                       id="region"
@@ -319,6 +331,7 @@ const GetStarted = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  </div>
 
                   <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
                     {selected.map((h) => (
@@ -371,7 +384,7 @@ const GetStarted = () => {
                 </div>
                 <Button
                   onClick={handleNext}
-                  disabled={!canNext}
+                  disabled={submitting}
                   size="sm"
                   className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90"
                 >
