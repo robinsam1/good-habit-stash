@@ -287,6 +287,18 @@
   animation: pop-in 0.24s var(--ease-spring) both;
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
