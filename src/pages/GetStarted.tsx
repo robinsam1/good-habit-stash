@@ -245,7 +245,7 @@ const GetStarted = () => {
                       Tick the ones you want to start with, or add your own.
                     </p>
                   </div>
-                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 max-h-[46vh] sm:max-h-[42vh] space-y-1">
+                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
                     {habits.map((h) => {
                       const isBlank = h.custom && h.name.trim() === "";
                       const editing = editingId === h.id;
