@@ -53,9 +53,15 @@ export function useAuth() {
   /**
    * Create a temporary (anonymous) account. The handle_new_user trigger
    * reads `goal_code` from raw_user_meta_data and seeds tasks accordingly.
+   * When `habits` is supplied, those habits (values in minor units) are
+   * seeded instead of the default starter list.
    */
   const signInAnonymously = useCallback(
-    async (goal: GoalCode, region: Region) => {
+    async (
+      goal: GoalCode,
+      region: Region,
+      habits?: { name: string; value: number }[]
+    ) => {
       const { error } = await supabase.auth.signInAnonymously({
         options: {
           data: {
@@ -65,6 +71,7 @@ export function useAuth() {
             currency_symbol: region.currencySymbol,
             locale: region.locale,
             minor_unit_digits: region.minorUnitDigits,
+            ...(habits?.length ? { habits: habits.slice(0, 40) } : {}),
           },
         },
       });
@@ -72,6 +79,7 @@ export function useAuth() {
     },
     []
   );
+
 
   /**
    * Convert the current anonymous account into a permanent one.
