@@ -58,7 +58,7 @@ const GetStarted = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-  const [shakeKey, setShakeKey] = useState(0);
+  const [shake, setShake] = useState<{ step: number; key: number } | null>(null);
   const startingRef = useRef(false);
 
   useEffect(() => {
@@ -105,8 +105,10 @@ const GetStarted = () => {
 
   const handleNext = () => {
     if (!canNext) {
-      // Nudge the user towards what needs selecting.
-      if ((step === 0 && !goal) || (step === 2 && !region)) setShakeKey((k) => k + 1);
+      // Nudge the user towards what needs selecting — only for the current step.
+      if ((step === 0 && !goal) || (step === 2 && !region)) {
+        setShake({ step, key: Date.now() });
+      }
       return;
     }
     if (step < 2) {
@@ -197,10 +199,10 @@ const GetStarted = () => {
                     </p>
                   </div>
                   <div
-                    key={shakeKey}
+                    key={shake?.step === 0 ? shake.key : "goals"}
                     className={cn(
                       "flex flex-col gap-2.5 short:gap-2",
-                      !goal && shakeKey > 0 && "animate-shake"
+                      shake?.step === 0 && !goal && "animate-shake"
                     )}
                   >
                     {GOALS.map((g) => {
@@ -311,7 +313,10 @@ const GetStarted = () => {
                     </p>
                   </div>
 
-                  <div key={shakeKey} className={cn(!region && shakeKey > 0 && "animate-shake")}>
+                  <div
+                    key={shake?.step === 2 ? shake.key : "currency"}
+                    className={cn(shake?.step === 2 && !region && "animate-shake")}
+                  >
                   <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
                     <SelectTrigger
                       id="region"
