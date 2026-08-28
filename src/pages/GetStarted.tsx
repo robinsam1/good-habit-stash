@@ -346,7 +346,7 @@ const GetStarted = () => {
               )}
             </CardContent>
 
-            <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-3 bg-card">
+            <div className="shrink-0 flex items-center justify-between gap-3 border-t border-border px-4 py-3 bg-card">
               <div className="flex items-center gap-1.5">
                 {step > 0 ? (
                   <Button
