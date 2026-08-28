@@ -215,7 +215,7 @@ const GetStarted = () => {
                           <div className="text-3xl short:text-2xl shrink-0">{g.emoji}</div>
                           <div className="flex-1 min-w-0">
                             <div className="font-semibold text-sm leading-tight">{g.label}</div>
-                            <div className="text-xs text-muted-foreground mt-0.5 leading-snug short:hidden">
+                            <div className="text-xs text-muted-foreground mt-0.5 leading-snug shorter:hidden">
                               {g.blurb}
                             </div>
                           </div>
@@ -308,8 +308,14 @@ const GetStarted = () => {
                   </div>
 
                   <Select value={regionCode} onValueChange={setRegionCode} disabled={submitting}>
-                    <SelectTrigger id="region">
-                      <SelectValue placeholder="Choose your country" />
+                    <SelectTrigger
+                      id="region"
+                      className={cn(
+                        !regionCode &&
+                          "border-primary/60 bg-primary/5 text-muted-foreground ring-1 ring-primary/20"
+                      )}
+                    >
+                      <SelectValue placeholder="Choose your currency" />
                     </SelectTrigger>
                     <SelectContent className="max-h-72">
                       {REGION_GROUPS.flatMap((group) => group.regions).map((r) => (
@@ -332,7 +338,7 @@ const GetStarted = () => {
                             inputMode="decimal"
                             value={h.value}
                             onChange={(e) => updateHabit(h.id, { value: e.target.value })}
-                            className="h-9 w-20 text-base sm:text-sm text-right"
+                            className="h-9 w-12 text-base sm:text-sm text-right px-1"
                           />
                         </div>
                       </div>
