@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon, ListChecks, BarChart3 } from "lucide-react";
+import { History, LogOut, Loader2, Sparkles, Settings as SettingsIcon, ListChecks, BarChart3, Mail } from "lucide-react";
 import { TotalDisplay } from "@/components/TotalDisplay";
 import { ActivityPicker } from "@/components/ActivityPicker";
 import { ActivityLog } from "@/components/ActivityLog";
@@ -192,6 +192,30 @@ const Index = () => {
             Track habits, earn rewards ✨
           </p>
         </header>
+
+        {/* Guest save-progress banner */}
+        {isAnonymous && (
+          <Link to="/signup" className="block mb-6 animate-slide-up" style={{ animationDelay: "0.05s", animationFillMode: "both" }}>
+            <Card className="border border-primary/20 bg-primary/5 shadow-soft hover:shadow-md transition-shadow">
+              <div className="px-4 py-3 flex items-center gap-3">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                  <Mail className="h-4 w-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground">
+                    Register your email to save your progress
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Your habits and balance are only stored on this device until you sign up.
+                  </p>
+                </div>
+                <Button size="sm" className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90">
+                  Save progress
+                </Button>
+              </div>
+            </Card>
+          </Link>
+        )}
 
         {/* Total Display */}
         <Card data-tour="total" className="mb-10 border-border shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
