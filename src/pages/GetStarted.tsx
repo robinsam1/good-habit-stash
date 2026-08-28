@@ -105,8 +105,10 @@ const GetStarted = () => {
 
   const handleNext = () => {
     if (!canNext) {
-      // Nudge the user towards what needs selecting.
-      if ((step === 0 && !goal) || (step === 2 && !region)) setShakeKey((k) => k + 1);
+      // Nudge the user towards what needs selecting — only for the current step.
+      if ((step === 0 && !goal) || (step === 2 && !region)) {
+        setShake({ step, key: Date.now() });
+      }
       return;
     }
     if (step < 2) {
