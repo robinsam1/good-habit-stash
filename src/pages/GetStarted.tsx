@@ -199,10 +199,10 @@ const GetStarted = () => {
                     </p>
                   </div>
                   <div
-                    key={shakeKey}
+                    key={shake?.step === 0 ? shake.key : "goals"}
                     className={cn(
                       "flex flex-col gap-2.5 short:gap-2",
-                      !goal && shakeKey > 0 && "animate-shake"
+                      shake?.step === 0 && !goal && "animate-shake"
                     )}
                   >
                     {GOALS.map((g) => {
