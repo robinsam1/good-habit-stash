@@ -4,7 +4,7 @@ Adds a "Habits completed" counter alongside the money balance, a daily target, a
 
 ## Definition
 
-A completion = one log entry for an activity whose value is zero or positive, not deleted. Paid or unpaid doesn't matter. Logging the same habit five times in a day counts five times. Negative-value entries are excluded.
+A completion = one log entry for an activity whose value is zero or positive, not deleted. Paid or unpaid doesn't matter. Logging the same habit five times in a day counts five times. Negative-value entries are excluded. Counts are anchored to the time each entry was logged: deactivating a habit later never decrements the counter (its past entries still count), and a habit that is currently inactive contributes nothing new.
 
 All counts are computed in the browser from the existing log; nothing new is written to the database except the editable target.
 
