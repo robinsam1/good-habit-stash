@@ -176,6 +176,28 @@ const Report = () => {
           </div>
         </header>
 
+        {/* Top-line habits-completed metric */}
+        <div className="flex items-baseline gap-x-6 gap-y-1 flex-wrap mb-4">
+          <p className="text-sm text-muted-foreground">
+            Habits completed{" "}
+            <span className="font-display text-2xl font-bold text-foreground tabular-nums align-baseline">
+              {habitStats.isLoading ? "–" : habitStats.total}
+            </span>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Today{" "}
+            <span className="font-semibold text-foreground tabular-nums">
+              {habitStats.isLoading ? "–" : habitStats.today}
+            </span>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            7-day avg{" "}
+            <span className="font-semibold text-foreground tabular-nums">
+              {habitStats.isLoading ? "–" : habitStats.avg7}
+            </span>
+          </p>
+        </div>
+
         <Card className="p-4 sm:p-5 border-border shadow-lg overflow-hidden">
           {isLoading ? (
             <div className="space-y-3">
@@ -190,7 +212,7 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
+            <div className="grid grid-cols-[minmax(5rem,30%)_2.5rem_minmax(0,1fr)] sm:grid-cols-[minmax(6rem,30%)_3.5rem_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
               {/* Header */}
               <div
                 ref={habitHeaderRef}
