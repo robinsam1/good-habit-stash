@@ -267,6 +267,7 @@ export type Database = {
           locale: string
           minor_unit_digits: number
           region_code: string
+          timezone: string | null
           user_id: string
         }
         Insert: {
@@ -277,6 +278,7 @@ export type Database = {
           locale: string
           minor_unit_digits?: number
           region_code: string
+          timezone?: string | null
           user_id: string
         }
         Update: {
@@ -287,6 +289,7 @@ export type Database = {
           locale?: string
           minor_unit_digits?: number
           region_code?: string
+          timezone?: string | null
           user_id?: string
         }
         Relationships: []
