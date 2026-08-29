@@ -91,12 +91,18 @@ export function useAllLog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("log")
-        .select("id, date, activity_id, value")
+        .select("id, date, activity_id, value, activity:activities(is_onboarding)")
         .is("deleted_at", null)
         .order("date", { ascending: true });
 
       if (error) throw error;
-      return data as { id: number; date: string; activity_id: number; value: number }[];
+      // Exclude entries for onboarding "fake" activities (e.g. the FRE reward)
+      // so they never count toward completions or adherence.
+      return (
+        (data as { id: number; date: string; activity_id: number; value: number; activity: { is_onboarding: boolean } | null }[] | null)
+          ?.filter((entry) => !entry.activity?.is_onboarding)
+          .map(({ activity: _activity, ...entry }) => entry) ?? []
+      );
     },
   });
 }
@@ -215,9 +221,11 @@ export function usePaidLog() {
         .not("paid_out", "is", null)
         .is("deleted_at", null)
         .order("date", { ascending: false });
-      
+
       if (error) throw error;
-      return data as (LogEntry & { activity: Activity })[];
+      // Hide onboarding "fake" activity entries (e.g. the FRE reward) from history.
+      return ((data as (LogEntry & { activity: Activity })[] | null) ?? [])
+        .filter((entry) => !entry.activity?.is_onboarding);
     },
   });
 }
