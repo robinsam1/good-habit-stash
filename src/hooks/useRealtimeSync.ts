@@ -24,6 +24,7 @@ export function useRealtimeSync() {
           // Invalidate both unpaid and paid log queries
           // This refreshes the balance, pending habits, and history
           queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+          queryClient.invalidateQueries({ queryKey: ["allLog"] });
           queryClient.invalidateQueries({ queryKey: ["paidLog"] });
         }
       )
