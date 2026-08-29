@@ -187,9 +187,36 @@ const GetStarted = () => {
           <p className="text-lg italic text-foreground/80 mt-1.5 max-w-md mx-auto">
             A better you, one habit at a time
           </p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
+            Use this tool to log habits towards the goal that matters to you
+          </p>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2 items-stretch flex-1 min-h-0">
+        {/* Mobile intro: video hero + CTA before the panel appears */}
+        {!introDone && (
+          <div className="sm:hidden flex-1 min-h-0 flex flex-col justify-end pb-1">
+            <Button
+              className="w-full h-12 text-base pressable"
+              onClick={() => setIntroDone(true)}
+            >
+              Choose your goal
+              <ArrowRight className="h-4 w-4 ml-1.5" />
+            </Button>
+            <p className="text-sm text-center text-muted-foreground mt-3">
+              Already have an account?{" "}
+              <Link to="/auth" className="text-primary font-medium hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </div>
+        )}
+
+        <div
+          className={cn(
+            "gap-4 sm:grid-cols-2 items-stretch flex-1 min-h-0",
+            introDone ? "grid" : "hidden sm:grid"
+          )}
+        >
           <Card className="shadow-elevated overflow-hidden flex flex-col min-h-0">
             <CardContent className="pt-4 pb-4 short:pt-3 flex-1 flex flex-col min-h-0 overflow-y-auto">
               {step === 0 && (
