@@ -28,6 +28,12 @@ const PostHogPageviews = () => {
   return null;
 };
 
+/** Stores the browser-detected timezone on the profile the first time it's missing. */
+const TimezoneBootstrap = () => {
+  useEnsureTimezone();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -35,6 +41,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <PostHogPageviews />
+        <TimezoneBootstrap />
+
         <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/welcome" element={<Welcome />} />
