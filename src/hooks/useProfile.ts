@@ -10,6 +10,8 @@ export interface Profile {
   minor_unit_digits: number;
   bank_id: string | null;
   created_at: string;
+  /** Optional daily habits-completed target override. Null = auto. */
+  daily_target: number | null;
 }
 
 export function useProfile() {
