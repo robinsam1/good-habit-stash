@@ -59,6 +59,7 @@ const GetStarted = () => {
   const [regionCode, setRegionCode] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [shake, setShake] = useState<{ step: number; key: number } | null>(null);
+  const [introDone, setIntroDone] = useState(false);
   const startingRef = useRef(false);
 
   useEffect(() => {
@@ -164,12 +165,15 @@ const GetStarted = () => {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover scale-[1.35] blur-[2px] opacity-60"
+          className={cn(
+            "w-full h-full object-cover",
+            introDone ? "scale-[1.35] blur-[2px] opacity-60" : "scale-[1.15] opacity-90"
+          )}
         >
           <source src={demoVideoWebm} type="video/webm" />
               <source src={demoVideoMp4} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-background/80" />
+        <div className={cn("absolute inset-0", introDone ? "bg-background/80" : "bg-background/40")} />
       </div>
 
       <div className="w-full max-w-lg sm:max-w-3xl relative z-10 flex-1 min-h-0 max-h-[820px] flex flex-col">
