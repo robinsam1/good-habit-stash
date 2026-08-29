@@ -293,6 +293,7 @@ export function OnboardingTour({
         payoutVersion > payoutVersionBaselineRef.current) ||
         (paidUnpaidBaselineRef.current !== null &&
           unpaidCount < paidUnpaidBaselineRef.current) ||
+        (paidUnpaidBaselineRef.current === 0 && unpaidCount === 0) ||
         (paidBaselineRef.current !== null && paidCount > paidBaselineRef.current))
     ) {
       next();
