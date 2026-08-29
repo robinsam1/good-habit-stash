@@ -164,6 +164,7 @@ export function useLogActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+      queryClient.invalidateQueries({ queryKey: ["allLog"] });
     },
   });
 }
@@ -202,6 +203,7 @@ export function useMarkAsPaid() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+      queryClient.invalidateQueries({ queryKey: ["allLog"] });
       queryClient.invalidateQueries({ queryKey: ["paidLog"] });
     },
   });
@@ -225,6 +227,7 @@ export function useUpdateLogNotes() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+      queryClient.invalidateQueries({ queryKey: ["allLog"] });
       queryClient.invalidateQueries({ queryKey: ["paidLog"] });
     },
   });
@@ -267,6 +270,7 @@ export function useDeleteLogEntry() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+      queryClient.invalidateQueries({ queryKey: ["allLog"] });
       queryClient.invalidateQueries({ queryKey: ["paidLog"] });
     },
   });
@@ -289,6 +293,7 @@ export function useUpdateLogActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unpaidLog"] });
+      queryClient.invalidateQueries({ queryKey: ["allLog"] });
       queryClient.invalidateQueries({ queryKey: ["paidLog"] });
     },
   });
