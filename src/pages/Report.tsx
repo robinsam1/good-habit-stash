@@ -254,6 +254,9 @@ const Report = () => {
                         {row.name}
                       </span>
                     </div>
+                    <div className="text-sm text-muted-foreground tabular-nums text-right py-1">
+                      {habitStats.perActivity.get(row.id) ?? 0}
+                    </div>
                     <div className="py-1 min-w-0">
                       <HabitTimeline
                         days={row.days}
