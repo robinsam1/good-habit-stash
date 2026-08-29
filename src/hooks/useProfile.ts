@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { detectTimezone } from "@/lib/dayBucketing";
 
 export interface Profile {
   user_id: string;
@@ -12,6 +14,8 @@ export interface Profile {
   created_at: string;
   /** Optional daily habits-completed target override. Null = auto. */
   daily_target: number | null;
+  /** IANA timezone used to decide which calendar day a habit belongs to. */
+  timezone: string | null;
 }
 
 export function useProfile() {
@@ -30,6 +34,50 @@ export function useProfile() {
       return data as Profile | null;
     },
   });
+}
+
+/**
+ * The account's timezone. Falls back to the browser's zone until the profile
+ * has one stored.
+ */
+export function useTimezone(): string {
+  const { data: profile } = useProfile();
+  return profile?.timezone || detectTimezone();
+}
+
+/** Saves the account's timezone. */
+export function useUpdateTimezone() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (timezone: string) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ timezone })
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return timezone;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+    },
+  });
+}
+
+/**
+ * Writes the browser-detected timezone to the profile once, if it has none yet.
+ * Mount this near the app root.
+ */
+export function useEnsureTimezone() {
+  const { data: profile } = useProfile();
+  const { mutate: updateTimezone } = useUpdateTimezone();
+
+  useEffect(() => {
+    if (profile && !profile.timezone) {
+      updateTimezone(detectTimezone());
+    }
+  }, [profile, updateTimezone]);
 }
 
 /** Saves the user's daily habits-completed target (null = auto suggestion). */
@@ -51,6 +99,7 @@ export function useUpdateDailyTarget() {
     },
   });
 }
+
 
 /** Saves the user's preferred banking app for the "move to savings" hand-off. */
 export function useUpdateBank() {
