@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { posthog } from "./lib/posthog";
+import { useEnsureTimezone } from "@/hooks/useProfile";
+
 import Index from "./pages/Index";
 import History from "./pages/History";
 import Auth from "./pages/Auth";
@@ -28,6 +30,12 @@ const PostHogPageviews = () => {
   return null;
 };
 
+/** Stores the browser-detected timezone on the profile the first time it's missing. */
+const TimezoneBootstrap = () => {
+  useEnsureTimezone();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -35,6 +43,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <PostHogPageviews />
+        <TimezoneBootstrap />
+
         <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/welcome" element={<Welcome />} />

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, KeyRound, PiggyBank } from "lucide-react";
+import { ArrowLeft, Loader2, KeyRound, PiggyBank, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,11 +13,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
-import { useProfile, useUpdateBank } from "@/hooks/useProfile";
+import { useProfile, useUpdateBank, useUpdateTimezone } from "@/hooks/useProfile";
+import { detectTimezone } from "@/lib/dayBucketing";
 import { BANKS } from "@/lib/banks";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+const FALLBACK_TIMEZONES = [
+  "UTC",
+  "Europe/London",
+  "Europe/Dublin",
+  "Europe/Lisbon",
+  "Europe/Paris",
+  "Europe/Berlin",
+  "Europe/Madrid",
+  "Europe/Rome",
+  "Europe/Amsterdam",
+  "Europe/Stockholm",
+  "Europe/Warsaw",
+  "Europe/Athens",
+  "Europe/Istanbul",
+  "Europe/Moscow",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Toronto",
+  "America/Sao_Paulo",
+  "America/Mexico_City",
+  "Africa/Lagos",
+  "Africa/Cairo",
+  "Africa/Johannesburg",
+  "Asia/Dubai",
+  "Asia/Karachi",
+  "Asia/Kolkata",
+  "Asia/Dhaka",
+  "Asia/Bangkok",
+  "Asia/Singapore",
+  "Asia/Hong_Kong",
+  "Asia/Shanghai",
+  "Asia/Tokyo",
+  "Asia/Seoul",
+  "Australia/Perth",
+  "Australia/Sydney",
+  "Pacific/Auckland",
+];
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -27,6 +67,18 @@ const Settings = () => {
   const [saving, setSaving] = useState(false);
   const { data: profile } = useProfile();
   const { mutate: updateBank, isPending: savingBank } = useUpdateBank();
+  const { mutate: updateTimezone, isPending: savingTimezone } = useUpdateTimezone();
+
+  const TIMEZONES = useMemo(() => {
+    const intl = Intl as typeof Intl & { supportedValuesOf?: (key: string) => string[] };
+    const supported =
+      typeof intl.supportedValuesOf === "function"
+        ? intl.supportedValuesOf("timeZone")
+        : FALLBACK_TIMEZONES;
+    const all = new Set([...supported, "UTC", detectTimezone()]);
+    return Array.from(all).sort();
+  }, []);
+
 
   const handleBankChange = (bankId: string) => {
     updateBank(bankId, {
@@ -34,6 +86,14 @@ const Settings = () => {
       onError: () => toast.error("Couldn't save your banking app"),
     });
   };
+
+  const handleTimezoneChange = (tz: string) => {
+    updateTimezone(tz, {
+      onSuccess: () => toast.success("Time zone saved"),
+      onError: () => toast.error("Couldn't save your time zone"),
+    });
+  };
+
 
 
   useEffect(() => {
@@ -123,6 +183,39 @@ const Settings = () => {
 
         <Card className="p-6 border-border shadow-xl mt-6">
           <div className="flex items-center gap-2 mb-1">
+            <Clock className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-bold">Time zone</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Used to decide which day a habit belongs to, so your counts and adherence
+            match on every device and browser.
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="timezone">Time zone</Label>
+            <Select
+              value={profile?.timezone ?? undefined}
+              onValueChange={handleTimezoneChange}
+              disabled={savingTimezone}
+            >
+              <SelectTrigger id="timezone" className="h-12 text-base">
+                <SelectValue placeholder="Choose your time zone" />
+              </SelectTrigger>
+              <SelectContent className="max-h-80">
+                {TIMEZONES.map((tz) => (
+                  <SelectItem key={tz} value={tz} className="text-base">
+                    {tz.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              This browser reports {detectTimezone().replace(/_/g, " ")}.
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-6 border-border shadow-xl mt-6">
+          <div className="flex items-center gap-2 mb-1">
             <PiggyBank className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-bold">Savings</h2>
           </div>
@@ -150,6 +243,7 @@ const Settings = () => {
             </Select>
           </div>
         </Card>
+
       </div>
 
     </div>

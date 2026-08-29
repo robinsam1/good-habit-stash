@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { format, parseISO, differenceInCalendarDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,8 +8,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { HabitTimeline } from "@/components/HabitTimeline";
 import { useReportActivities, useAllLog } from "@/hooks/useHabits";
 import { useHabitStats } from "@/hooks/useHabitStats";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile, useTimezone } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
+import { bucketByActivity, dayNumberToDate, zonedDayNumber } from "@/lib/dayBucketing";
+
+/** Formats a day number (UTC-midnight anchored) without re-applying a timezone. */
+const dayLabelFormatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "UTC",
+  day: "numeric",
+  month: "short",
+  year: "2-digit",
+});
+const formatDayLabel = (dayNumber: number) =>
+  dayLabelFormatter.format(dayNumberToDate(dayNumber));
 
 const Report = () => {
   const navigate = useNavigate();
@@ -18,6 +28,7 @@ const Report = () => {
   const { data: activities, isLoading: activitiesLoading } = useReportActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const timeZone = useTimezone();
   const habitStats = useHabitStats();
   const [hideEmpty, setHideEmpty] = useState(true);
   const [singleLine, setSingleLine] = useState(true);
@@ -32,51 +43,19 @@ const Report = () => {
 
   const isLoading = activitiesLoading || logsLoading || profileLoading;
 
-  const { startDate, today, totalDays, rows, emptyCount } = useMemo(() => {
-    const today = startOfDay(new Date());
+  const { startDayNumber, todayDayNumber, totalDays, rows, emptyCount } = useMemo(() => {
+    const todayDayNumber = zonedDayNumber(new Date(), timeZone);
 
-    const candidates: Date[] = [];
-    if (profile?.created_at) candidates.push(startOfDay(parseISO(profile.created_at)));
-    if (user?.created_at) candidates.push(startOfDay(parseISO(user.created_at)));
-    if (logs?.length) candidates.push(startOfDay(parseISO(logs[0].date)));
-    const startDate = candidates.length
-      ? new Date(Math.min(...candidates.map((d) => d.getTime())))
-      : today;
+    const candidates: number[] = [];
+    if (profile?.created_at) candidates.push(zonedDayNumber(new Date(profile.created_at), timeZone));
+    if (user?.created_at) candidates.push(zonedDayNumber(new Date(user.created_at), timeZone));
+    if (logs?.length) candidates.push(zonedDayNumber(new Date(logs[0].date), timeZone));
+    const startDayNumber = candidates.length ? Math.min(...candidates) : todayDayNumber;
 
-    const totalDays = Math.max(1, differenceInCalendarDays(today, startDate) + 1);
+    const totalDays = Math.max(1, todayDayNumber - startDayNumber + 1);
 
-    // activity_id -> day index -> entry timestamps (device-local bucketing)
-    const byActivity = new Map<number, Map<number, Date[]>>();
-    for (const entry of logs ?? []) {
-      const when = parseISO(entry.date);
-      const idx = differenceInCalendarDays(startOfDay(when), startDate);
-      if (idx < 0 || idx >= totalDays) continue;
-      let dayMap = byActivity.get(entry.activity_id);
-      if (!dayMap) {
-        dayMap = new Map<number, Date[]>();
-        byActivity.set(entry.activity_id, dayMap);
-      }
-      const list = dayMap.get(idx);
-      if (list) list.push(when);
-      else dayMap.set(idx, [when]);
-    }
-
-    // Late-night grace: if a habit has 2+ entries on a day, the previous day is
-    // empty, and the earliest entry landed between 00:00 and 01:00 local time,
-    // treat that entry as belonging to the previous day so the streak holds.
-    for (const dayMap of byActivity.values()) {
-      const dayIndices = Array.from(dayMap.keys()).sort((a, b) => a - b);
-      for (const d of dayIndices) {
-        if (d - 1 < 0 || dayMap.has(d - 1)) continue;
-        const entries = dayMap.get(d);
-        if (!entries || entries.length < 2) continue;
-        entries.sort((a, b) => a.getTime() - b.getTime());
-        const earliest = entries[0];
-        if (earliest.getHours() !== 0) continue;
-        entries.shift();
-        dayMap.set(d - 1, [earliest]);
-      }
-    }
+    // Account-timezone bucketing with the late-night grace rule applied.
+    const byActivity = bucketByActivity(logs ?? [], timeZone);
 
     const rows = (activities ?? [])
       .slice()
@@ -84,15 +63,18 @@ const Report = () => {
       .map((activity) => ({
         id: activity.id,
         name: activity.name,
-        days: Array.from(byActivity.get(activity.id)?.keys() ?? []).sort((a, b) => a - b),
+        days: Array.from(byActivity.get(activity.id)?.keys() ?? [])
+          .map((dayNumber) => dayNumber - startDayNumber)
+          .filter((idx) => idx >= 0 && idx < totalDays)
+          .sort((a, b) => a - b),
       }));
-
 
     const emptyCount = rows.filter((row) => row.days.length === 0).length;
     const visibleRows = hideEmpty ? rows.filter((row) => row.days.length > 0) : rows;
 
-    return { startDate, today, totalDays, rows: visibleRows, emptyCount };
-  }, [activities, logs, profile?.created_at, user?.created_at, hideEmpty]);
+    return { startDayNumber, todayDayNumber, totalDays, rows: visibleRows, emptyCount };
+  }, [activities, logs, profile?.created_at, user?.created_at, hideEmpty, timeZone]);
+
 
   useEffect(() => {
     const header = habitHeaderRef.current;
@@ -224,8 +206,9 @@ const Report = () => {
                 Done
               </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
-                <span className="truncate">{format(startDate, "d MMM yy")}</span>
-                <span className="truncate">{format(today, "d MMM yy")}</span>
+                <span className="truncate">{formatDayLabel(startDayNumber)}</span>
+                <span className="truncate">{formatDayLabel(todayDayNumber)}</span>
+
               </div>
 
               {rows.map((row, index) => {
