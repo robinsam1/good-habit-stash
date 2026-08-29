@@ -70,13 +70,15 @@ const Settings = () => {
   const { mutate: updateTimezone, isPending: savingTimezone } = useUpdateTimezone();
 
   const TIMEZONES = useMemo(() => {
+    const intl = Intl as typeof Intl & { supportedValuesOf?: (key: string) => string[] };
     const supported =
-      typeof Intl.supportedValuesOf === "function"
-        ? (Intl.supportedValuesOf("timeZone") as string[])
+      typeof intl.supportedValuesOf === "function"
+        ? intl.supportedValuesOf("timeZone")
         : FALLBACK_TIMEZONES;
     const all = new Set([...supported, "UTC", detectTimezone()]);
     return Array.from(all).sort();
   }, []);
+
 
   const handleBankChange = (bankId: string) => {
     updateBank(bankId, {
