@@ -278,25 +278,26 @@ const GetStarted = () => {
                       Pick small things that you're struggling to achieve
                     </p>
                   </div>
-                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
-                    {habits.map((h) => {
-                      const isBlank = h.custom && h.name.trim() === "";
-                      const editing = editingId === h.id;
-                      return (
-                        <div
-                          key={h.id}
-                          className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-muted/50"
-                        >
-                          <Checkbox
-                            checked={h.checked}
-                            disabled={isBlank}
-                            onCheckedChange={(v) => updateHabit(h.id, { checked: !!v })}
-                            aria-label={h.name || "New habit"}
-                          />
-                          {editing || h.custom ? (
+
+                  {/* Pinned custom-habit inputs always sit above the scrollable preset list */}
+                  <div className="shrink-0 space-y-1">
+                    {habits
+                      .filter((h) => h.custom)
+                      .map((h) => {
+                        const isBlank = h.name.trim() === "";
+                        return (
+                          <div
+                            key={h.id}
+                            className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-muted/50"
+                          >
+                            <Checkbox
+                              checked={h.checked}
+                              disabled={isBlank}
+                              onCheckedChange={(v) => updateHabit(h.id, { checked: !!v })}
+                              aria-label={h.name || "New habit"}
+                            />
                             <Input
                               value={h.name}
-                              autoFocus={editing}
                               placeholder={isBlank ? "Add your own habit…" : undefined}
                               onChange={(e) =>
                                 updateHabit(h.id, {
@@ -307,28 +308,56 @@ const GetStarted = () => {
                               onBlur={() => setEditingId(null)}
                               className="h-8 text-base sm:text-sm border-none shadow-none bg-transparent px-1 focus-visible:ring-1"
                             />
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => updateHabit(h.id, { checked: !h.checked })}
-                                className="flex-1 min-w-0 text-left text-sm truncate"
-                              >
-                                {h.name}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setEditingId(h.id)}
-                                aria-label={`Edit ${h.name}`}
-                                className="shrink-0 text-muted-foreground hover:text-foreground p-1"
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      );
-                    })}
+                          </div>
+                        );
+                      })}
+                  </div>
+
+                  <div className="min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pb-1 space-y-1">
+                    {habits
+                      .filter((h) => !h.custom)
+                      .map((h) => {
+                        const editing = editingId === h.id;
+                        return (
+                          <div
+                            key={h.id}
+                            className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-muted/50"
+                          >
+                            <Checkbox
+                              checked={h.checked}
+                              onCheckedChange={(v) => updateHabit(h.id, { checked: !!v })}
+                              aria-label={h.name}
+                            />
+                            {editing ? (
+                              <Input
+                                value={h.name}
+                                autoFocus
+                                onChange={(e) => updateHabit(h.id, { name: e.target.value })}
+                                onBlur={() => setEditingId(null)}
+                                className="h-8 text-base sm:text-sm border-none shadow-none bg-transparent px-1 focus-visible:ring-1"
+                              />
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => updateHabit(h.id, { checked: !h.checked })}
+                                  className="flex-1 min-w-0 text-left text-sm truncate"
+                                >
+                                  {h.name}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingId(h.id)}
+                                  aria-label={`Edit ${h.name}`}
+                                  className="shrink-0 text-muted-foreground hover:text-foreground p-1"
+                                >
+                                  <Pencil className="h-3.5 w-3.5" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               )}
