@@ -288,7 +288,7 @@ const Index = () => {
         <div className="animate-slide-up" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-foreground">
-              Logged Today
+              Habits in Balance
             </h2>
             <Link to="/history">
               <Button variant="ghost" size="sm" className="text-muted-foreground">

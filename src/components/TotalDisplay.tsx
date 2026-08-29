@@ -16,7 +16,7 @@ export function TotalDisplay({ total, className, animate, isLoading }: TotalDisp
   return (
     <div className={cn("text-center", className)}>
       <p className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">
-        Your Balance
+        Open Balance
       </p>
       {isLoading ? (
         <Skeleton className="h-16 md:h-20 w-48 mx-auto" />
