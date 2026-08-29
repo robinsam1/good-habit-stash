@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, KeyRound, PiggyBank } from "lucide-react";
+import { ArrowLeft, Loader2, KeyRound, PiggyBank, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,11 +13,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
-import { useProfile, useUpdateBank } from "@/hooks/useProfile";
+import { useProfile, useUpdateBank, useUpdateTimezone } from "@/hooks/useProfile";
+import { detectTimezone } from "@/lib/dayBucketing";
 import { BANKS } from "@/lib/banks";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+const FALLBACK_TIMEZONES = [
+  "UTC",
+  "Europe/London",
+  "Europe/Dublin",
+  "Europe/Lisbon",
+  "Europe/Paris",
+  "Europe/Berlin",
+  "Europe/Madrid",
+  "Europe/Rome",
+  "Europe/Amsterdam",
+  "Europe/Stockholm",
+  "Europe/Warsaw",
+  "Europe/Athens",
+  "Europe/Istanbul",
+  "Europe/Moscow",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Toronto",
+  "America/Sao_Paulo",
+  "America/Mexico_City",
+  "Africa/Lagos",
+  "Africa/Cairo",
+  "Africa/Johannesburg",
+  "Asia/Dubai",
+  "Asia/Karachi",
+  "Asia/Kolkata",
+  "Asia/Dhaka",
+  "Asia/Bangkok",
+  "Asia/Singapore",
+  "Asia/Hong_Kong",
+  "Asia/Shanghai",
+  "Asia/Tokyo",
+  "Asia/Seoul",
+  "Australia/Perth",
+  "Australia/Sydney",
+  "Pacific/Auckland",
+];
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -27,6 +67,16 @@ const Settings = () => {
   const [saving, setSaving] = useState(false);
   const { data: profile } = useProfile();
   const { mutate: updateBank, isPending: savingBank } = useUpdateBank();
+  const { mutate: updateTimezone, isPending: savingTimezone } = useUpdateTimezone();
+
+  const TIMEZONES = useMemo(() => {
+    const supported =
+      typeof Intl.supportedValuesOf === "function"
+        ? (Intl.supportedValuesOf("timeZone") as string[])
+        : FALLBACK_TIMEZONES;
+    const all = new Set([...supported, "UTC", detectTimezone()]);
+    return Array.from(all).sort();
+  }, []);
 
   const handleBankChange = (bankId: string) => {
     updateBank(bankId, {
@@ -34,6 +84,14 @@ const Settings = () => {
       onError: () => toast.error("Couldn't save your banking app"),
     });
   };
+
+  const handleTimezoneChange = (tz: string) => {
+    updateTimezone(tz, {
+      onSuccess: () => toast.success("Time zone saved"),
+      onError: () => toast.error("Couldn't save your time zone"),
+    });
+  };
+
 
 
   useEffect(() => {
