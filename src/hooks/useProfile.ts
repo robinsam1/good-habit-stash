@@ -32,6 +32,26 @@ export function useProfile() {
   });
 }
 
+/** Saves the user's daily habits-completed target (null = auto suggestion). */
+export function useUpdateDailyTarget() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (target: number | null) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ daily_target: target })
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return target;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
+    },
+  });
+}
+
 /** Saves the user's preferred banking app for the "move to savings" hand-off. */
 export function useUpdateBank() {
   const { user } = useAuth();

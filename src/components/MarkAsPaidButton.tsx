@@ -100,7 +100,8 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
           className="w-full h-14 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/25 transition-all hover:shadow-xl hover:shadow-accent/30 disabled:opacity-70"
         >
           <Banknote className="h-5 w-5 mr-2" />
-          Move to savings
+          Move balance to savings
+        
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="sm:max-w-md z-[110]">
