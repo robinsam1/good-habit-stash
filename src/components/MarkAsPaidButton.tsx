@@ -20,7 +20,13 @@ import { getBank, openBank } from "@/lib/banks";
 import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { toast } from "sonner";
 
-export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: boolean }) {
+export function MarkAsPaidButton({
+  forceVisible = false,
+  onPaid,
+}: {
+  forceVisible?: boolean;
+  onPaid?: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const total = useRunningTotal();
@@ -74,6 +80,7 @@ export function MarkAsPaidButton({ forceVisible = false }: { forceVisible?: bool
           }
         }
         setOpen(false);
+        onPaid?.();
       },
       onError: () => {
         toast.error("Something went wrong", {

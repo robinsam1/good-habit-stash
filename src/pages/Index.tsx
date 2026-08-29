@@ -36,6 +36,7 @@ const Index = () => {
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [animateTotal, setAnimateTotal] = useState(false);
   const [tourTarget, setTourTarget] = useState<string | null>(null);
+  const [tourPayoutVersion, setTourPayoutVersion] = useState(0);
   const [confirmSignOut, setConfirmSignOut] = useState(false);
   const { formatMoneySigned } = useMoney();
 
@@ -277,7 +278,10 @@ const Index = () => {
 
         {/* Mark as Paid Button */}
         <div data-tour="mark-paid" className="mb-8 animate-slide-up" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
-          <MarkAsPaidButton forceVisible={tourTarget === "mark-paid"} />
+          <MarkAsPaidButton
+            forceVisible={tourTarget === "mark-paid"}
+            onPaid={() => setTourPayoutVersion((version) => version + 1)}
+          />
         </div>
 
         {/* Activity Log */}
@@ -304,6 +308,7 @@ const Index = () => {
         onTargetChange={setTourTarget}
         unpaidCount={unpaidLog?.length ?? 0}
         paidCount={paidLog?.length ?? 0}
+        payoutVersion={tourPayoutVersion}
       />
 
 

@@ -103,12 +103,14 @@ export function OnboardingTour({
   onTargetChange,
   unpaidCount = 0,
   paidCount = 0,
+  payoutVersion = 0,
 }: {
   enabled: boolean;
   isLoading?: boolean;
   onTargetChange?: (target: string | null) => void;
   unpaidCount?: number;
   paidCount?: number;
+  payoutVersion?: number;
 }) {
 
   // Initialise synchronously from localStorage so the overlay can paint on
@@ -253,6 +255,8 @@ export function OnboardingTour({
   // Auto-advance when the relevant counter moves past its baseline.
   const unpaidBaselineRef = useRef<number | null>(null);
   const paidBaselineRef = useRef<number | null>(null);
+  const paidUnpaidBaselineRef = useRef<number | null>(null);
+  const payoutVersionBaselineRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!active || !currentStep) return;
@@ -263,8 +267,12 @@ export function OnboardingTour({
     }
     if (currentStep.interactive === "paid") {
       paidBaselineRef.current = paidCount;
+      paidUnpaidBaselineRef.current = unpaidCount;
+      payoutVersionBaselineRef.current = payoutVersion;
     } else {
       paidBaselineRef.current = null;
+      paidUnpaidBaselineRef.current = null;
+      payoutVersionBaselineRef.current = null;
     }
     // We intentionally only re-run when step changes, not when counts move.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -281,13 +289,17 @@ export function OnboardingTour({
     }
     if (
       currentStep.interactive === "paid" &&
-      paidBaselineRef.current !== null &&
-      paidCount > paidBaselineRef.current
+      ((payoutVersionBaselineRef.current !== null &&
+        payoutVersion > payoutVersionBaselineRef.current) ||
+        (paidUnpaidBaselineRef.current !== null &&
+          unpaidCount < paidUnpaidBaselineRef.current) ||
+        (paidUnpaidBaselineRef.current === 0 && unpaidCount === 0) ||
+        (paidBaselineRef.current !== null && paidCount > paidBaselineRef.current))
     ) {
       next();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unpaidCount, paidCount, active, currentStep]);
+  }, [unpaidCount, paidCount, payoutVersion, active, currentStep]);
 
 
   const tooltipPos = useMemo(() => {
