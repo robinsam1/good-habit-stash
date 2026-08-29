@@ -459,7 +459,12 @@ const GetStarted = () => {
           </div>
         </div>
 
-        <p className="shrink-0 text-sm text-center text-muted-foreground mt-3 short:mt-2">
+        <p
+          className={cn(
+            "shrink-0 text-sm text-center text-muted-foreground mt-3 short:mt-2",
+            !introDone && "hidden sm:block"
+          )}
+        >
           Already have an account?{" "}
           <Link to="/auth" className="text-primary font-medium hover:underline">
             Sign in
