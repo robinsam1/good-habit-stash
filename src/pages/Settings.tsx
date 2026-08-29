@@ -123,6 +123,39 @@ const Settings = () => {
 
         <Card className="p-6 border-border shadow-xl mt-6">
           <div className="flex items-center gap-2 mb-1">
+            <Clock className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-bold">Time zone</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Used to decide which day a habit belongs to, so your counts and adherence
+            match on every device and browser.
+          </p>
+          <div className="space-y-2">
+            <Label htmlFor="timezone">Time zone</Label>
+            <Select
+              value={profile?.timezone ?? undefined}
+              onValueChange={handleTimezoneChange}
+              disabled={savingTimezone}
+            >
+              <SelectTrigger id="timezone" className="h-12 text-base">
+                <SelectValue placeholder="Choose your time zone" />
+              </SelectTrigger>
+              <SelectContent className="max-h-80">
+                {TIMEZONES.map((tz) => (
+                  <SelectItem key={tz} value={tz} className="text-base">
+                    {tz.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              This browser reports {detectTimezone().replace(/_/g, " ")}.
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-6 border-border shadow-xl mt-6">
+          <div className="flex items-center gap-2 mb-1">
             <PiggyBank className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-bold">Savings</h2>
           </div>
@@ -150,6 +183,7 @@ const Settings = () => {
             </Select>
           </div>
         </Card>
+
       </div>
 
     </div>
