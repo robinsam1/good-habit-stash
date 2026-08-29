@@ -167,13 +167,13 @@ const GetStarted = () => {
           playsInline
           className={cn(
             "w-full h-full object-cover",
-            introDone ? "scale-[1.35] blur-[2px] opacity-60" : "scale-[1.15] opacity-90"
+            introDone ? "scale-[1.35] blur-[2px] opacity-50" : "scale-[1.15] opacity-75"
           )}
         >
           <source src={demoVideoWebm} type="video/webm" />
               <source src={demoVideoMp4} type="video/mp4" />
         </video>
-        <div className={cn("absolute inset-0", introDone ? "bg-background/80" : "bg-background/40")} />
+        <div className={cn("absolute inset-0", introDone ? "bg-background/85" : "bg-background/55")} />
       </div>
 
       <div className="w-full max-w-lg sm:max-w-3xl relative z-10 flex-1 min-h-0 max-h-[820px] flex flex-col">
