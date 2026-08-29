@@ -160,6 +160,7 @@ export type Database = {
           date: string
           deleted_at: string | null
           id: number
+          is_demo: boolean
           notes: string | null
           paid_out: string | null
           user_id: string
@@ -170,6 +171,7 @@ export type Database = {
           date?: string
           deleted_at?: string | null
           id?: number
+          is_demo?: boolean
           notes?: string | null
           paid_out?: string | null
           user_id?: string
@@ -180,6 +182,7 @@ export type Database = {
           date?: string
           deleted_at?: string | null
           id?: number
+          is_demo?: boolean
           notes?: string | null
           paid_out?: string | null
           user_id?: string
@@ -324,6 +327,7 @@ export type Database = {
           date: string
           deleted_at: string | null
           id: number
+          is_demo: boolean
           notes: string | null
           paid_out: string | null
           user_id: string
@@ -363,6 +367,7 @@ export type Database = {
           date: string
           deleted_at: string | null
           id: number
+          is_demo: boolean
           notes: string | null
           paid_out: string | null
           user_id: string
@@ -401,6 +406,7 @@ export type Database = {
           date: string
           deleted_at: string | null
           id: number
+          is_demo: boolean
           notes: string | null
           paid_out: string | null
           user_id: string
@@ -429,6 +435,7 @@ export type Database = {
           date: string
           deleted_at: string | null
           id: number
+          is_demo: boolean
           notes: string | null
           paid_out: string | null
           user_id: string
@@ -448,6 +455,7 @@ export type Database = {
           date: string
           deleted_at: string | null
           id: number
+          is_demo: boolean
           notes: string | null
           paid_out: string | null
           user_id: string
