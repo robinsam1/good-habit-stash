@@ -220,6 +220,9 @@ const Report = () => {
               >
                 Habit
               </div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2 text-right">
+                Done
+              </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
                 <span className="truncate">{format(startDate, "d MMM yy")}</span>
                 <span className="truncate">{format(today, "d MMM yy")}</span>
@@ -230,7 +233,7 @@ const Report = () => {
                 return (
                   <div
                     key={row.id}
-                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
+                    className={`col-span-3 grid grid-cols-[minmax(5rem,30%)_2.5rem_minmax(0,1fr)] sm:grid-cols-[minmax(6rem,30%)_3.5rem_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
                       highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
