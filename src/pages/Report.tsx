@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HabitTimeline } from "@/components/HabitTimeline";
-import { useActivities, useAllLog } from "@/hooks/useHabits";
+import { useReportActivities, useAllLog } from "@/hooks/useHabits";
 import { useHabitStats } from "@/hooks/useHabitStats";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 const Report = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const { data: activities, isLoading: activitiesLoading } = useActivities();
+  const { data: activities, isLoading: activitiesLoading } = useReportActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const habitStats = useHabitStats();
