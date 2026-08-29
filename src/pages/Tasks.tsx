@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsPro } from "@/hooks/usePro";
 import { ManageActivities } from "@/components/ManageActivities";
 import { ProInterestCard } from "@/components/ProInterestCard";
+import { DailyTargetCard } from "@/components/DailyTargetCard";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -40,6 +41,8 @@ const Tasks = () => {
           </Link>
           <h1 className="font-display text-2xl font-bold ml-2">Edit Tasks</h1>
         </div>
+
+        <DailyTargetCard />
 
         {proLoading ? (
           <Card className="p-6 border-border shadow-xl">
