@@ -206,8 +206,9 @@ const Report = () => {
                 Done
               </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
-                <span className="truncate">{format(startDate, "d MMM yy")}</span>
-                <span className="truncate">{format(today, "d MMM yy")}</span>
+                <span className="truncate">{formatDayLabel(startDayNumber)}</span>
+                <span className="truncate">{formatDayLabel(todayDayNumber)}</span>
+
               </div>
 
               {rows.map((row, index) => {
