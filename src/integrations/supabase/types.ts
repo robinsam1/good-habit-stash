@@ -360,26 +360,47 @@ export type Database = {
       is_pro:
         | { Args: never; Returns: boolean }
         | { Args: { _user_id: string }; Returns: boolean }
-      log_activity: {
-        Args: { p_activity_id: number }
-        Returns: {
-          activity_id: number
-          date: string
-          deleted_at: string | null
-          id: number
-          is_demo: boolean
-          notes: string | null
-          paid_out: string | null
-          user_id: string
-          value: number
-        }
-        SetofOptions: {
-          from: "*"
-          to: "log"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
+      log_activity:
+        | {
+            Args: { p_activity_id: number }
+            Returns: {
+              activity_id: number
+              date: string
+              deleted_at: string | null
+              id: number
+              is_demo: boolean
+              notes: string | null
+              paid_out: string | null
+              user_id: string
+              value: number
+            }
+            SetofOptions: {
+              from: "*"
+              to: "log"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
+        | {
+            Args: { p_activity_id: number; p_is_demo?: boolean }
+            Returns: {
+              activity_id: number
+              date: string
+              deleted_at: string | null
+              id: number
+              is_demo: boolean
+              notes: string | null
+              paid_out: string | null
+              user_id: string
+              value: number
+            }
+            SetofOptions: {
+              from: "*"
+              to: "log"
+              isOneToOne: true
+              isSetofReturn: false
+            }
+          }
       mark_unpaid_as_paid: { Args: never; Returns: number }
       move_to_dlq: {
         Args: {
