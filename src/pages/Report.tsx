@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HabitTimeline } from "@/components/HabitTimeline";
 import { useActivities, useAllLog } from "@/hooks/useHabits";
+import { useHabitStats } from "@/hooks/useHabitStats";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -17,6 +18,7 @@ const Report = () => {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const habitStats = useHabitStats();
   const [hideEmpty, setHideEmpty] = useState(true);
   const [singleLine, setSingleLine] = useState(true);
   const [maxLines, setMaxLines] = useState(1);
@@ -174,6 +176,28 @@ const Report = () => {
           </div>
         </header>
 
+        {/* Top-line habits-completed metric */}
+        <div className="flex items-baseline gap-x-6 gap-y-1 flex-wrap mb-4">
+          <p className="text-sm text-muted-foreground">
+            Habits completed{" "}
+            <span className="font-display text-2xl font-bold text-foreground tabular-nums align-baseline">
+              {habitStats.isLoading ? "–" : habitStats.total}
+            </span>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Today{" "}
+            <span className="font-semibold text-foreground tabular-nums">
+              {habitStats.isLoading ? "–" : habitStats.today}
+            </span>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            7-day avg{" "}
+            <span className="font-semibold text-foreground tabular-nums">
+              {habitStats.isLoading ? "–" : habitStats.avg7}
+            </span>
+          </p>
+        </div>
+
         <Card className="p-4 sm:p-5 border-border shadow-lg overflow-hidden">
           {isLoading ? (
             <div className="space-y-3">
@@ -188,13 +212,16 @@ const Report = () => {
                 : "No habits to report on yet."}
             </p>
           ) : (
-            <div className="grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
+            <div className="grid grid-cols-[minmax(5rem,30%)_2.5rem_minmax(0,1fr)] sm:grid-cols-[minmax(6rem,30%)_3.5rem_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center min-w-0">
               {/* Header */}
               <div
                 ref={habitHeaderRef}
                 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2"
               >
                 Habit
+              </div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground pb-2 text-right">
+                Done
               </div>
               <div className="flex items-center justify-between gap-2 text-[10px] sm:text-xs text-muted-foreground pb-2 min-w-0">
                 <span className="truncate">{format(startDate, "d MMM yy")}</span>
@@ -206,7 +233,7 @@ const Report = () => {
                 return (
                   <div
                     key={row.id}
-                    className={`col-span-2 grid grid-cols-[minmax(6rem,35%)_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
+                    className={`col-span-3 grid grid-cols-[minmax(5rem,30%)_2.5rem_minmax(0,1fr)] sm:grid-cols-[minmax(6rem,30%)_3.5rem_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-center px-2 -mx-2 rounded-[3px] ${
                       highlighted ? "bg-secondary/70" : "bg-transparent"
                     }`}
                   >
@@ -226,6 +253,9 @@ const Report = () => {
                       >
                         {row.name}
                       </span>
+                    </div>
+                    <div className="text-sm text-muted-foreground tabular-nums text-right py-1">
+                      {habitStats.perActivity.get(row.id) ?? 0}
                     </div>
                     <div className="py-1 min-w-0">
                       <HabitTimeline

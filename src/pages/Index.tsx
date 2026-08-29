@@ -10,6 +10,7 @@ import { SaveProgressButton } from "@/components/SaveProgressButton";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { fireConfetti, CONFETTI_FLAGS } from "@/components/EmojiConfetti";
 import { useLogActivity, usePaidLog, useRunningTotal, useUnpaidLog } from "@/hooks/useHabits";
+import { useHabitStats } from "@/hooks/useHabitStats";
 import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 import { useAuth } from "@/hooks/useAuth";
 import { useAnonymousLifecycle } from "@/hooks/useAnonymousLifecycle";
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 import { useMoney } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,6 +55,7 @@ const Index = () => {
   const { data: paidLog } = usePaidLog();
   const total = useRunningTotal();
   const { mutate: logActivity, isPending } = useLogActivity();
+  const habitStats = useHabitStats();
 
   const handleSelectActivity = useCallback((activityId: number) => {
     logActivity(activityId, {
@@ -139,12 +142,15 @@ const Index = () => {
             <Link to="/report">
               <Button
                 variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:text-foreground"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground gap-1.5 px-2 tabular-nums"
                 title="Adherence report"
-                aria-label="Adherence report"
+                aria-label={`Adherence report — ${habitStats.total} habits completed`}
               >
                 <BarChart3 className="h-4 w-4" />
+                <span className="text-sm font-semibold">
+                  {habitStats.isLoading ? "–" : habitStats.total}
+                </span>
               </Button>
             </Link>
             {isAnonymous && <SaveProgressButton data-tour="save" />}
@@ -218,9 +224,46 @@ const Index = () => {
         )}
 
         {/* Total Display */}
-        <Card data-tour="total" className="mb-10 border-border shadow-elevated overflow-hidden animate-slide-up" style={{ animationFillMode: "both" }}>
+        <Card data-tour="total" className="mb-10 border-border shadow-elevated overflow-hidden animate-slide-up relative" style={{ animationFillMode: "both" }}>
           <div className="py-8 px-4">
             <TotalDisplay total={total} animate={animateTotal} isLoading={isLoadingLog} />
+          </div>
+          {/* Habits-completed stats — deliberately smaller so they never compete with the balance */}
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-0.5 text-right">
+            {habitStats.isLoading ? (
+              <div className="space-y-1.5">
+                <Skeleton className="h-3.5 w-24" />
+                <Skeleton className="h-3.5 w-20" />
+                <Skeleton className="h-3.5 w-16" />
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground">
+                  Completed today{" "}
+                  <span className="font-semibold text-foreground tabular-nums">
+                    {habitStats.today}
+                  </span>
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  7-day avg{" "}
+                  <span className="font-semibold text-foreground tabular-nums">
+                    {habitStats.avg7}
+                  </span>
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Target{" "}
+                  <span
+                    className={
+                      habitStats.today >= habitStats.target
+                        ? "font-semibold text-positive tabular-nums"
+                        : "font-semibold text-foreground tabular-nums"
+                    }
+                  >
+                    {habitStats.target}
+                  </span>
+                </p>
+              </>
+            )}
           </div>
         </Card>
 

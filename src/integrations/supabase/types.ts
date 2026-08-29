@@ -260,6 +260,7 @@ export type Database = {
           bank_id: string | null
           created_at: string
           currency_code: string
+          daily_target: number | null
           locale: string
           minor_unit_digits: number
           region_code: string
@@ -269,6 +270,7 @@ export type Database = {
           bank_id?: string | null
           created_at?: string
           currency_code: string
+          daily_target?: number | null
           locale: string
           minor_unit_digits?: number
           region_code: string
@@ -278,6 +280,7 @@ export type Database = {
           bank_id?: string | null
           created_at?: string
           currency_code?: string
+          daily_target?: number | null
           locale?: string
           minor_unit_digits?: number
           region_code?: string

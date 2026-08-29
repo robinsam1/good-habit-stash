@@ -28,7 +28,7 @@ const STEPS: Step[] = [
   {
     target: "total",
     title: "Your digital piggy bank",
-    body: "Every habit you tick adds real money to this pot. Watch it grow as your streak grows.",
+    body: "Every habit you tick adds real money to this pot. Watch it grow as your streak grows — the corner stats track how many habits you complete against your daily target.",
   },
   {
     target: "picker",

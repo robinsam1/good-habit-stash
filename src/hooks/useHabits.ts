@@ -91,12 +91,12 @@ export function useAllLog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("log")
-        .select("id, date, activity_id")
+        .select("id, date, activity_id, value")
         .is("deleted_at", null)
         .order("date", { ascending: true });
 
       if (error) throw error;
-      return data as { id: number; date: string; activity_id: number }[];
+      return data as { id: number; date: string; activity_id: number; value: number }[];
     },
   });
 }

@@ -10,6 +10,8 @@ export interface Profile {
   minor_unit_digits: number;
   bank_id: string | null;
   created_at: string;
+  /** Optional daily habits-completed target override. Null = auto. */
+  daily_target: number | null;
 }
 
 export function useProfile() {
@@ -26,6 +28,26 @@ export function useProfile() {
         .maybeSingle();
       if (error) throw error;
       return data as Profile | null;
+    },
+  });
+}
+
+/** Saves the user's daily habits-completed target (null = auto suggestion). */
+export function useUpdateDailyTarget() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (target: number | null) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ daily_target: target })
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return target;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
     },
   });
 }
