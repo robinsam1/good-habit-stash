@@ -117,22 +117,21 @@ export function useLogActivity() {
   
   return useMutation({
     mutationFn: async (activityId: number) => {
+      // Entries logged while the FRE guided tour is pending are demo entries:
+      // the RPC flags them so they stay out of completion counts, adherence, and history.
+      const isDemo =
+        typeof window !== "undefined" &&
+        localStorage.getItem(ONBOARDING_PENDING_KEY) === "1";
+
       // Server-side RPC resolves the reward value from activity_values and inserts the log entry.
       const { data: inserted, error } = await supabase.rpc("log_activity", {
         p_activity_id: activityId,
-      });
+        p_is_demo: isDemo,
+      } as { p_activity_id: number });
 
       if (error) throw error;
       if (!inserted) throw new Error("Could not log activity.");
 
-      // Entries logged while the FRE guided tour is pending are demo entries:
-      // flag them so they stay out of completion counts, adherence, and history.
-      if (localStorage.getItem(ONBOARDING_PENDING_KEY) === "1") {
-        await supabase
-          .from("log")
-          .update({ is_demo: true })
-          .eq("id", (inserted as { id: number }).id);
-      }
 
       // Fetch with joined activity for the UI.
       const { data, error: fetchError } = await supabase
