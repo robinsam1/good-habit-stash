@@ -305,7 +305,18 @@ const GetStarted = () => {
                                   checked: h.custom ? e.target.value.trim() !== "" : h.checked,
                                 })
                               }
-                              onBlur={() => setEditingId(null)}
+                              onBlur={() => {
+                                setEditingId(null);
+                                setHabits((prev) => {
+                                  const thisOne = prev.find((x) => x.id === h.id);
+                                  if (!thisOne || thisOne.name.trim() !== "") return prev;
+                                  const blankCustoms = prev.filter(
+                                    (x) => x.custom && x.name.trim() === ""
+                                  );
+                                  if (blankCustoms.length <= 1) return prev;
+                                  return prev.filter((x) => x.id !== h.id);
+                                });
+                              }}
                               className="h-8 text-base sm:text-sm border-none shadow-none bg-transparent px-1 focus-visible:ring-1"
                             />
                           </div>
