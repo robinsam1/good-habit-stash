@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HabitTimeline } from "@/components/HabitTimeline";
 import { useActivities, useAllLog } from "@/hooks/useHabits";
+import { useHabitStats } from "@/hooks/useHabitStats";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -17,6 +18,7 @@ const Report = () => {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: logs, isLoading: logsLoading } = useAllLog();
   const { data: profile, isLoading: profileLoading } = useProfile();
+  const habitStats = useHabitStats();
   const [hideEmpty, setHideEmpty] = useState(true);
   const [singleLine, setSingleLine] = useState(true);
   const [maxLines, setMaxLines] = useState(1);
