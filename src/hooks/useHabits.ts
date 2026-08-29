@@ -50,6 +50,25 @@ export function useActivities() {
   });
 }
 
+// Fetch active activities INCLUDING the onboarding habit — used by the adherence
+// report so "Onboarding – Completed onboarding" shows up in the timeline.
+export function useReportActivities() {
+  return useQuery({
+    queryKey: ["reportActivities"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activities")
+        .select("*")
+        .eq("active", true)
+        .order("name");
+
+      if (error) throw error;
+      return data as Activity[];
+    },
+  });
+}
+
+
 // Get the latest value for an activity
 async function getLatestActivityValue(activityId: number): Promise<number> {
   const { data, error } = await supabase
