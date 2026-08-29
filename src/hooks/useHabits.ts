@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ONBOARDING_PENDING_KEY } from "./useAnonymousLifecycle";
 
 // Single onboarding reward, granted once the whole onboarding is complete.
 export const ONBOARDING_COMPLETE_STEP = "onboarding_complete";
@@ -91,18 +92,13 @@ export function useAllLog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("log")
-        .select("id, date, activity_id, value, activity:activities(is_onboarding)")
+        .select("id, date, activity_id, value")
         .is("deleted_at", null)
+        .eq("is_demo", false)
         .order("date", { ascending: true });
 
       if (error) throw error;
-      // Exclude entries for onboarding "fake" activities (e.g. the FRE reward)
-      // so they never count toward completions or adherence.
-      return (
-        (data as { id: number; date: string; activity_id: number; value: number; activity: { is_onboarding: boolean } | null }[] | null)
-          ?.filter((entry) => !entry.activity?.is_onboarding)
-          .map(({ activity: _activity, ...entry }) => entry) ?? []
-      );
+      return data as { id: number; date: string; activity_id: number; value: number }[];
     },
   });
 }
@@ -128,6 +124,15 @@ export function useLogActivity() {
 
       if (error) throw error;
       if (!inserted) throw new Error("Could not log activity.");
+
+      // Entries logged while the FRE guided tour is pending are demo entries:
+      // flag them so they stay out of completion counts, adherence, and history.
+      if (localStorage.getItem(ONBOARDING_PENDING_KEY) === "1") {
+        await supabase
+          .from("log")
+          .update({ is_demo: true })
+          .eq("id", (inserted as { id: number }).id);
+      }
 
       // Fetch with joined activity for the UI.
       const { data, error: fetchError } = await supabase
@@ -220,12 +225,11 @@ export function usePaidLog() {
         `)
         .not("paid_out", "is", null)
         .is("deleted_at", null)
+        .eq("is_demo", false)
         .order("date", { ascending: false });
 
       if (error) throw error;
-      // Hide onboarding "fake" activity entries (e.g. the FRE reward) from history.
-      return ((data as (LogEntry & { activity: Activity })[] | null) ?? [])
-        .filter((entry) => !entry.activity?.is_onboarding);
+      return data as (LogEntry & { activity: Activity })[];
     },
   });
 }
