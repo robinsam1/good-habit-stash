@@ -167,28 +167,28 @@ const GetStarted = () => {
           playsInline
           className={cn(
             "w-full h-full object-cover",
-            introDone ? "scale-[1.35] blur-[2px] opacity-60" : "scale-[1.15] opacity-90"
+            introDone ? "scale-[1.35] blur-[2px] opacity-50" : "scale-[1.15] opacity-75"
           )}
         >
           <source src={demoVideoWebm} type="video/webm" />
               <source src={demoVideoMp4} type="video/mp4" />
         </video>
-        <div className={cn("absolute inset-0", introDone ? "bg-background/80" : "bg-background/40")} />
+        <div className={cn("absolute inset-0", introDone ? "bg-background/85" : "bg-background/55")} />
       </div>
 
       <div className="w-full max-w-lg sm:max-w-3xl relative z-10 flex-1 min-h-0 max-h-[820px] flex flex-col">
-        <header className="text-center mb-4 short:mb-2 shrink-0">
+        <header className="text-center mb-4 short:mb-2 shrink-0 sm:bg-transparent sm:backdrop-blur-none bg-background/70 backdrop-blur-md rounded-2xl px-4 py-3 shadow-soft">
           <div className="inline-flex items-center justify-center w-14 h-14 short:w-11 short:h-11 rounded-2xl bg-brand-gradient mb-2 short:mb-1 animate-pop-in shadow-soft">
             <Sparkles className="h-7 w-7 short:h-5 short:w-5 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl short:text-2xl font-bold tracking-tight">
             <span className="text-brand-gradient animate-shimmer">Habit Visor</span>
           </h1>
-          <p className="text-lg italic text-foreground/80 mt-1.5 max-w-md mx-auto">
-            A better you, one habit at a time
+          <p className="text-xl italic text-foreground mt-1.5 max-w-md mx-auto drop-shadow-sm">
+            A better you, one step at a time
           </p>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-            Use this tool to log habits towards the goal that matters to you
+          <p className="text-sm font-medium text-foreground/90 mt-1.5 max-w-md mx-auto drop-shadow-sm">
+            Use this tool to log habits towards a goal that matters to you
           </p>
         </header>
 
